@@ -6,7 +6,14 @@ import html
 import mimetypes
 from urllib.parse import parse_qs
 from string import Template
-from dys import _query, _msg, get_script_address, get_executor_address, dys_eval, get_attached_messages
+from dys import (
+    _query,
+    _msg,
+    get_script_address,
+    get_executor_address,
+    dys_eval,
+    get_attached_messages,
+)
 from typing import Dict, Any, Optional, List
 
 
@@ -55,7 +62,7 @@ def save_message(message="Hello, world!"):
     - sender: the address of the sender
     - message_id: the ID of the message
     - coins: the coins sent to the script
-    
+
     Build the attached bank MsgSend to the script with the following format:
      [{
         "@type": "/cosmos.bank.v1beta1.MsgSend",
@@ -71,7 +78,10 @@ def save_message(message="Hello, world!"):
     # Check for attached bank send messages to this script
     coins = {}
     for msg in get_attached_messages():
-        if msg["@type"] == "/cosmos.bank.v1beta1.MsgSend" and msg["to_address"] == script_address:
+        if (
+            msg["@type"] == "/cosmos.bank.v1beta1.MsgSend"
+            and msg["to_address"] == script_address
+        ):
             for coin in msg["amount"]:
                 denom = coin["denom"]
                 coins[denom] = coins.get(denom, 0) + int(coin["amount"])
@@ -79,10 +89,10 @@ def save_message(message="Hello, world!"):
     index = f"messages/{coins.get('dys', 0):010d}/{message_id}"
 
     message_data = {
-        "greeting": message, 
-        "sender": caller, 
+        "greeting": message,
+        "sender": caller,
         "message_id": message_id,
-        "coins": coins
+        "coins": coins,
     }
 
     _msg(
@@ -152,7 +162,7 @@ def list_messages(limit=10, key="", reverse=True):
     pagination = {"limit": str(limit), "reverse": reverse}
     if key:
         pagination["key"] = key
-        
+
     return _query(
         {
             "@type": "/dysonprotocol.storage.v1.QueryStorageListRequest",
@@ -355,7 +365,7 @@ def extract_functions(
         def literal_unparse(node):
             """Unparse and literal eval"""
             return ast.literal_eval(ast.unparse(node)) if node else None
-        
+
         getdoc = ast.get_docstring  # local ref
 
         result: Dict[str, Dict[str, Any]] = {}
@@ -382,7 +392,9 @@ def extract_functions(
                     {
                         "name": a.arg,
                         "type": unp(a.annotation) if a.annotation else None,
-                        "default": literal_unparse(default_node) if default_node else None,
+                        "default": (
+                            literal_unparse(default_node) if default_node else None
+                        ),
                     }
                 )
 
@@ -425,6 +437,7 @@ def extract_functions(
     except Exception as e:
         return {"error": f"Failed to parse code: {e}"}
 
+
 @route(r"^/demo$")
 def handle_demo(environ, start_response):
     start_response("200 OK", [("Content-Type", "text/html; charset=utf-8")])
@@ -432,6 +445,7 @@ def handle_demo(environ, start_response):
     messages_template = SafeTemplate(fetch_template("demo.html"))
     main = messages_template.substitute(data)
     return [main.encode()]
+
 
 def wsgi(environ, start_response):
     path_info = environ["PATH_INFO"]
@@ -446,31 +460,33 @@ def wsgi(environ, start_response):
 def fib(n: int = 3) -> int:
     if n <= 1:
         return n
-    return fib(n-1) + fib(n-2) + 1
+    return fib(n - 1) + fib(n - 2) + 1
 
 
 def test_fib(n: int = 1):
-    fib(n)      
-        
+    fib(n)
+
 
 def memoize(func):
     """Decorator that caches function results to avoid redundant computations"""
     cache = {}
+
     def wrapper(*args, **kwargs):
         # Create a cache key from arguments
         key = (args, tuple(sorted(kwargs.items())))
-        
+
         if key not in cache:
             cache[key] = func(*args, **kwargs)
         return cache[key]
-    
+
     return wrapper
+
 
 @memoize
 def fib2(n: int = 3) -> int:
     if n <= 1:
         return n
-    return fib2(n-1) + fib2(n-2) + 1
+    return fib2(n - 1) + fib2(n - 2) + 1
 
 
 def test_fib2(n: int = 1):
