@@ -19,17 +19,13 @@
                 <td class="font-semibold">Address:</td>
                 <td><code class="text-sm bg-base-300 px-2 py-1 rounded" x-text="scriptAddress"></code></td>
               </tr>
-              <tr x-show="scriptInfo.creator_address">
-                <td class="font-semibold">Creator:</td>
-                <td><code class="text-sm bg-base-300 px-2 py-1 rounded" x-text="scriptInfo.creator_address"></code></td>
-              </tr>
-              <tr x-show="scriptInfo.current_version">
+              <tr x-show="scriptInfo.version">
                 <td class="font-semibold">Version:</td>
-                <td x-text="scriptInfo.current_version"></td>
+                <td x-text="scriptInfo.version"></td>
               </tr>
-              <tr x-show="scriptInfo.code_size">
+              <tr x-show="scriptInfo.code">
                 <td class="font-semibold">Code Size:</td>
-                <td x-text="scriptInfo.code_size + ' bytes'"></td>
+                <td x-text="(scriptInfo.code ? scriptInfo.code.length : 0) + ' bytes'"></td>
               </tr>
               <tr x-show="scriptInfo.error">
                 <td class="font-semibold">Error:</td>
@@ -59,8 +55,18 @@
     
     <!-- Left Column: Functions and Tests -->
     <div class="space-y-6">
+      <!-- Functions Loading State -->
+      <div x-show="functionsLoading" class="card bg-base-200 shadow-xl">
+        <div class="card-body">
+          <div class="flex items-center gap-3">
+            <div class="loading loading-spinner loading-md"></div>
+            <p class="text-base-content/70">Loading functions...</p>
+          </div>
+        </div>
+      </div>
+
       <!-- Available Functions -->
-      <div x-show="functions.length > 0">
+      <div x-show="!functionsLoading && functions.length > 0">
         <h2 class="text-2xl font-bold mb-4">Available Functions</h2>
         
                 <template x-for="func in functions" :key="func.id">
@@ -259,14 +265,14 @@
       </div>
 
       <!-- No Functions Found -->
-      <div x-show="functions.length === 0 && currentCode" class="card bg-base-200 shadow-xl">
+      <div x-show="!functionsLoading && functions.length === 0 && tests.length === 0 && currentCode" class="card bg-base-200 shadow-xl">
         <div class="card-body">
           <p class="text-base-content/70 italic">No functions found in the script code.</p>
         </div>
       </div>
       
       <!-- Available Tests Section -->
-      <div x-show="tests.length > 0" class="mt-8">
+      <div x-show="!functionsLoading && tests.length > 0" class="mt-8">
         <h2 class="text-2xl font-bold mb-4">Available Tests</h2>
         
         <!-- Test Functions List -->
@@ -493,10 +499,6 @@
     <div>
       <div class="card bg-base-200 shadow-xl h-full">
         <div class="card-body">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="card-title">Python Code</h2>
-
-          </div>
           
           <pre class="border border-base-300 rounded-lg overflow-x-auto p-4 bg-base-100" style="min-height: 100px;"><code 
             id="editor" 

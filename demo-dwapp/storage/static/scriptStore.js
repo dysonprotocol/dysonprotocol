@@ -7,6 +7,7 @@ document.addEventListener("alpine:init", () => {
     
     // Function parsing
     functions: [],
+    functionsLoading: false,
     
     // Test functions
     tests: [],
@@ -79,6 +80,7 @@ document.addEventListener("alpine:init", () => {
     // Load functions from the /script/functions API endpoint
     async loadFunctions() {
       try {
+        this.functionsLoading = true;
         const response = await fetch('/script/functions');
         if (response.ok) {
           const functionsData = await response.json();
@@ -90,6 +92,8 @@ document.addEventListener("alpine:init", () => {
       } catch (error) {
         console.error('Error loading functions:', error);
         this.functions = [];
+      } finally {
+        this.functionsLoading = false;
       }
     },
 
