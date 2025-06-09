@@ -1,0 +1,75 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QuerySigningInfosResponse",
+    "definitions": {
+        "QuerySigningInfosResponse": {
+            "properties": {
+                "info": {
+                    "items": {
+                        "$ref": "#/definitions/cosmos.slashing.v1beta1.ValidatorSigningInfo"
+                    },
+                    "type": "array",
+                    "description": "info is the signing info of all validators"
+                },
+                "pagination": {
+                    "$ref": "#/definitions/cosmos.base.query.v1beta1.PageResponse",
+                    "additionalProperties": true
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Signing Infos Response",
+            "description": "QuerySigningInfosResponse is the response type for the Query/SigningInfos RPC method"
+        },
+        "cosmos.base.query.v1beta1.PageResponse": {
+            "properties": {
+                "next_key": {
+                    "type": "string",
+                    "description": "next_key is the key to be passed to PageRequest.key to query the next page most efficiently. It will be empty if there are no more results.",
+                    "format": "binary",
+                    "binaryEncoding": "base64"
+                },
+                "total": {
+                    "type": "string",
+                    "description": "total is total number of results available if PageRequest.count_total was set, its value is undefined otherwise"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Page Response",
+            "description": "PageResponse is to be embedded in gRPC response messages where the corresponding request message has used PageRequest.  message SomeResponse {          repeated Bar results = 1;          PageResponse page = 2;  }"
+        },
+        "cosmos.slashing.v1beta1.ValidatorSigningInfo": {
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "start_height": {
+                    "type": "string",
+                    "description": "Height at which validator was first a candidate OR was un-jailed"
+                },
+                "index_offset": {
+                    "type": "string",
+                    "description": "Index which is incremented every time a validator is bonded in a block and _may_ have signed a pre-commit or not. This in conjunction with the signed_blocks_window param determines the index in the missed block bitmap."
+                },
+                "jailed_until": {
+                    "type": "string",
+                    "description": "Timestamp until which the validator is jailed due to liveness downtime.",
+                    "format": "date-time"
+                },
+                "tombstoned": {
+                    "type": "boolean",
+                    "description": "Whether or not a validator has been tombstoned (killed out of validator set). It is set once the validator commits an equivocation or for any other configured misbehavior."
+                },
+                "missed_blocks_counter": {
+                    "type": "string",
+                    "description": "A counter of missed (unsigned) blocks. It is used to avoid unnecessary reads in the missed block bitmap."
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Validator Signing Info",
+            "description": "ValidatorSigningInfo defines a validator's signing info for monitoring their liveness activity."
+        }
+    }
+}

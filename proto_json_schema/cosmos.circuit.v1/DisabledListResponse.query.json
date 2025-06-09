@@ -1,0 +1,20 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/DisabledListResponse",
+    "definitions": {
+        "DisabledListResponse": {
+            "properties": {
+                "disabled_list": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Disabled List Response",
+            "description": "DisabledListResponse is the response type for the Query/DisabledList RPC method."
+        }
+    }
+}

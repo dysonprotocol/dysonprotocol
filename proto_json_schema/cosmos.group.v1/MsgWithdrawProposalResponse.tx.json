@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgWithdrawProposalResponse",
+    "definitions": {
+        "MsgWithdrawProposalResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Withdraw Proposal Response",
+            "description": "MsgWithdrawProposalResponse is the Msg/WithdrawProposal response type."
+        }
+    }
+}

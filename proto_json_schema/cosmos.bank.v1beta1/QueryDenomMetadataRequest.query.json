@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryDenomMetadataRequest",
+    "definitions": {
+        "QueryDenomMetadataRequest": {
+            "properties": {
+                "denom": {
+                    "type": "string",
+                    "description": "denom is the coin denom to query the metadata for."
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Denom Metadata Request",
+            "description": "QueryDenomMetadataRequest is the request type for the Query/DenomMetadata RPC method."
+        }
+    }
+}

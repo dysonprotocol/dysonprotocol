@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgIncreaseCountResponse",
+    "definitions": {
+        "MsgIncreaseCountResponse": {
+            "properties": {
+                "new_count": {
+                    "type": "string",
+                    "description": "new_count is the number of times the counter was incremented."
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Increase Count Response",
+            "description": "MsgIncreaseCountResponse is the Msg/Counter response type."
+        }
+    }
+}

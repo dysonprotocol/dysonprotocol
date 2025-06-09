@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgCreateGroupResponse",
+    "definitions": {
+        "MsgCreateGroupResponse": {
+            "properties": {
+                "group_id": {
+                    "type": "string",
+                    "description": "group_id is the unique ID of the newly created group."
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Create Group Response",
+            "description": "MsgCreateGroupResponse is the Msg/CreateGroup response type."
+        }
+    }
+}

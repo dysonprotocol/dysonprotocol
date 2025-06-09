@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgRevokeAllowanceResponse",
+    "definitions": {
+        "MsgRevokeAllowanceResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Revoke Allowance Response",
+            "description": "MsgRevokeAllowanceResponse defines the Msg/RevokeAllowanceResponse response type."
+        }
+    }
+}

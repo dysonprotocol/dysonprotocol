@@ -1,0 +1,11 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgSetValuationResponse",
+    "definitions": {
+        "MsgSetValuationResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Set Valuation Response"
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgChannelOpenAckResponse",
+    "definitions": {
+        "MsgChannelOpenAckResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Channel Open Ack Response",
+            "description": "MsgChannelOpenAckResponse defines the Msg/ChannelOpenAck response type."
+        }
+    }
+}

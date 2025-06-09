@@ -1,0 +1,94 @@
+syntax = "proto3";
+package dysonprotocol.crontask.v1;
+
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "dysonprotocol/crontask/v1/crontask.proto";
+
+option go_package = "dysonprotocol.com/x/crontask/types";
+
+// Query defines the gRPC query service for the crontask module
+service Query {
+  // TaskByID returns a task by its ID
+  rpc TaskByID(QueryTaskByIDRequest) returns (QueryTaskByIDResponse) {
+    option (google.api.http) = {
+      get : "/dysonprotocol/crontask/v1/tasks/{task_id}"
+    };
+  }
+
+  // TasksByAddress returns all tasks created by a specific address
+  rpc TasksByAddress(QueryTasksByAddressRequest) returns (QueryTasksResponse) {
+    option (google.api.http) = {
+      get : "/dysonprotocol/crontask/v1/tasks/creator/{creator}"
+    };
+  }
+
+  // TasksByStatusTimestamp returns tasks filtered by status and ordered by
+  // timestamp
+  rpc TasksByStatusTimestamp(QueryTasksByStatusTimestampRequest)
+      returns (QueryTasksResponse) {
+    option (google.api.http) = {
+      get : "/dysonprotocol/crontask/v1/tasks/status/{status}"
+    };
+  }
+
+  // TasksByStatusGasPrice returns tasks filtered by status and ordered by gas
+  // price
+  rpc TasksByStatusGasPrice(QueryTasksByStatusGasPriceRequest)
+      returns (QueryTasksResponse) {
+    option (google.api.http) = {
+      get : "/dysonprotocol/crontask/v1/tasks/status/{status}/by_gas"
+    };
+  }
+
+  // Params returns the module parameters
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http) = {
+      get : "/dysonprotocol/crontask/v1/params"
+    };
+  }
+}
+
+// QueryTaskByIDRequest is the request type for the Query/TaskByID RPC method
+message QueryTaskByIDRequest { uint64 task_id = 1; }
+
+// QueryTaskByIDResponse is the response type for the Query/TaskByID RPC method
+message QueryTaskByIDResponse { Task task = 1; }
+
+// QueryTasksByAddressRequest is the request type for the Query/TasksByAddress
+// RPC method
+message QueryTasksByAddressRequest {
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryTasksByStatusTimestampRequest is the request type for the
+// Query/TasksByStatusTimestamp RPC method
+message QueryTasksByStatusTimestampRequest {
+  string status = 1;
+  bool ascending = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+// QueryTasksByStatusGasPriceRequest is the request type for the
+// Query/TasksByStatusGasPrice RPC method
+message QueryTasksByStatusGasPriceRequest {
+  string status = 1;
+  bool ascending = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+// QueryTasksResponse is the response type for task queries with multiple
+// results
+message QueryTasksResponse {
+  repeated Task tasks = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method
+message QueryParamsResponse { Params params = 1; }

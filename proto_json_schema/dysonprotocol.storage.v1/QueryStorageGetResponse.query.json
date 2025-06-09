@@ -1,0 +1,36 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryStorageGetResponse",
+    "definitions": {
+        "QueryStorageGetResponse": {
+            "properties": {
+                "entry": {
+                    "$ref": "#/definitions/dysonprotocol.storage.v1.Storage",
+                    "additionalProperties": true
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Storage Get Response"
+        },
+        "dysonprotocol.storage.v1.Storage": {
+            "properties": {
+                "owner": {
+                    "type": "string",
+                    "description": "owner is the account address that owns this storage entry."
+                },
+                "index": {
+                    "type": "string",
+                    "description": "index is the key/index for the storage entry (within the owner's namespace)."
+                },
+                "data": {
+                    "type": "string",
+                    "description": "data is the stored string value associated with the index."
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Storage"
+        }
+    }
+}

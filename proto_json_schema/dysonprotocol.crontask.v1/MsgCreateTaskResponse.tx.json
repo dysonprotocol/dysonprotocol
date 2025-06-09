@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgCreateTaskResponse",
+    "definitions": {
+        "MsgCreateTaskResponse": {
+            "properties": {
+                "task_id": {
+                    "type": "string",
+                    "description": "The ID of the created task"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Create Task Response",
+            "description": "MsgCreateTaskResponse defines the response for creating a new task"
+        }
+    }
+}

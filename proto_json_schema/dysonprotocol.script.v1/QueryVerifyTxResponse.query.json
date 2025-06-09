@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryVerifyTxResponse",
+    "definitions": {
+        "QueryVerifyTxResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Verify Tx Response",
+            "description": "QueryVerifyTxResponse will be empty response on success, error will be raised on failure"
+        }
+    }
+}

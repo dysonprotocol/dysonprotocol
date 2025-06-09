@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package dysonprotocol.crontask.module.v1;
+
+option go_package = "dysonprotocol.com/x/crontask/module/v1";
+
+import "cosmos/app/v1alpha1/module.proto";
+import "gogoproto/gogo.proto";
+import "google/protobuf/duration.proto";
+import "amino/amino.proto";
+
+// Module is the config object of the crontask module.
+message Module {
+  option (cosmos.app.v1alpha1.module) = {
+    go_import : "dysonprotocol.com/x/crontask"
+  };
+
+  // max_execution_period defines the max duration after a cron task is
+  // scheduled that it can be executed.
+  google.protobuf.Duration max_execution_period = 1 [
+    (gogoproto.stdduration) = true,
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // MaxMetadataLen defines the max chars allowed in metadata field
+  // Defaults to 255 if not explicitly set.
+  uint64 max_metadata_len = 2;
+}

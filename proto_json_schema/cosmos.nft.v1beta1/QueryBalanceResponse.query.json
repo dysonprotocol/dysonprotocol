@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryBalanceResponse",
+    "definitions": {
+        "QueryBalanceResponse": {
+            "properties": {
+                "amount": {
+                    "type": "string",
+                    "description": "amount is the number of all NFTs of a given class owned by the owner"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Balance Response",
+            "description": "QueryBalanceResponse is the response type for the Query/Balance RPC method"
+        }
+    }
+}

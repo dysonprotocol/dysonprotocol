@@ -1,0 +1,95 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/AccountsResponse",
+    "definitions": {
+        "AccountsResponse": {
+            "properties": {
+                "accounts": {
+                    "items": {
+                        "$ref": "#/definitions/cosmos.circuit.v1.GenesisAccountPermissions"
+                    },
+                    "type": "array"
+                },
+                "pagination": {
+                    "$ref": "#/definitions/cosmos.base.query.v1beta1.PageResponse",
+                    "additionalProperties": true,
+                    "description": "pagination defines the pagination in the response."
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Accounts Response",
+            "description": "AccountsResponse is the response type for the Query/Accounts RPC method."
+        },
+        "cosmos.base.query.v1beta1.PageResponse": {
+            "properties": {
+                "next_key": {
+                    "type": "string",
+                    "description": "next_key is the key to be passed to PageRequest.key to query the next page most efficiently. It will be empty if there are no more results.",
+                    "format": "binary",
+                    "binaryEncoding": "base64"
+                },
+                "total": {
+                    "type": "string",
+                    "description": "total is total number of results available if PageRequest.count_total was set, its value is undefined otherwise"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Page Response",
+            "description": "PageResponse is to be embedded in gRPC response messages where the corresponding request message has used PageRequest.  message SomeResponse {          repeated Bar results = 1;          PageResponse page = 2;  }"
+        },
+        "cosmos.circuit.v1.GenesisAccountPermissions": {
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "permissions": {
+                    "$ref": "#/definitions/cosmos.circuit.v1.Permissions",
+                    "additionalProperties": true
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Genesis Account Permissions",
+            "description": "GenesisAccountPermissions is the account permissions for the circuit breaker in genesis"
+        },
+        "cosmos.circuit.v1.Permissions": {
+            "properties": {
+                "level": {
+                    "enum": [
+                        "LEVEL_NONE_UNSPECIFIED",
+                        0,
+                        "LEVEL_SOME_MSGS",
+                        1,
+                        "LEVEL_ALL_MSGS",
+                        2,
+                        "LEVEL_SUPER_ADMIN",
+                        3
+                    ],
+                    "oneOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "integer"
+                        }
+                    ],
+                    "title": "Level",
+                    "description": "Level is the permission level."
+                },
+                "limit_type_urls": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array",
+                    "description": "limit_type_urls is used with LEVEL_SOME_MSGS to limit the lists of Msg type URLs that the account can trip. It is an error to use limit_type_urls with a level other than LEVEL_SOME_MSGS."
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Permissions",
+            "description": "Permissions are the permissions that an account has to trip or reset the circuit breaker."
+        }
+    }
+}

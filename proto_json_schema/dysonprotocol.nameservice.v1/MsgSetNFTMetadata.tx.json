@@ -1,0 +1,25 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgSetNFTMetadata",
+    "definitions": {
+        "MsgSetNFTMetadata": {
+            "properties": {
+                "owner": {
+                    "type": "string"
+                },
+                "class_id": {
+                    "type": "string"
+                },
+                "nft_id": {
+                    "type": "string"
+                },
+                "metadata": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Set NFT Metadata"
+        }
+    }
+}

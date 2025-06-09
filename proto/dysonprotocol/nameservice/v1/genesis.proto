@@ -1,0 +1,21 @@
+syntax = "proto3";
+package dysonprotocol.nameservice.v1;
+
+import "gogoproto/gogo.proto";
+import "dysonprotocol/nameservice/v1/nameservice.proto";
+import "dysonprotocol/nameservice/v1/params.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "dysonprotocol.com/x/nameservice/types";
+
+// GenesisState defines the nameservice module's genesis state.
+message GenesisState {
+  // params defines all the parameters of the module.
+  Params params = 1 [ (gogoproto.nullable) = false ];
+  repeated Commitment commitments = 3 [ (gogoproto.nullable) = false ];
+
+  // For backward compatibility during migration, but will be ignored
+  // in future versions
+  reserved 2;
+  reserved "name_records";
+}

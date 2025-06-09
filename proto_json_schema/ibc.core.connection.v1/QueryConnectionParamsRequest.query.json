@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryConnectionParamsRequest",
+    "definitions": {
+        "QueryConnectionParamsRequest": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Connection Params Request",
+            "description": "QueryConnectionParamsRequest is the request type for the Query/ConnectionParams RPC method."
+        }
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryClientStateRequest",
+    "definitions": {
+        "QueryClientStateRequest": {
+            "properties": {
+                "client_id": {
+                    "type": "string",
+                    "description": "client state unique identifier"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Client State Request",
+            "description": "QueryClientStateRequest is the request type for the Query/ClientState RPC method"
+        }
+    }
+}

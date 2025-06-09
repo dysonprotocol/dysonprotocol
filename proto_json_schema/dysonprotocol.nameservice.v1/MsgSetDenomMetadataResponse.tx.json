@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgSetDenomMetadataResponse",
+    "definitions": {
+        "MsgSetDenomMetadataResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Set Denom Metadata Response",
+            "description": "MsgSetDenomMetadataResponse defines the response structure for executing a MsgSetDenomMetadata message."
+        }
+    }
+}

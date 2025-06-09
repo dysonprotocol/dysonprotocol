@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgTransferResponse",
+    "definitions": {
+        "MsgTransferResponse": {
+            "properties": {
+                "sequence": {
+                    "type": "string",
+                    "description": "sequence number of the transfer packet sent"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Transfer Response",
+            "description": "MsgTransferResponse defines the Msg/Transfer response type."
+        }
+    }
+}

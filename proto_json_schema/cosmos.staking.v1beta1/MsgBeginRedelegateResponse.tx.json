@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgBeginRedelegateResponse",
+    "definitions": {
+        "MsgBeginRedelegateResponse": {
+            "properties": {
+                "completion_time": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Begin Redelegate Response",
+            "description": "MsgBeginRedelegateResponse defines the Msg/BeginRedelegate response type."
+        }
+    }
+}

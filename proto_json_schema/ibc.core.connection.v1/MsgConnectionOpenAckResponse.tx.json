@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgConnectionOpenAckResponse",
+    "definitions": {
+        "MsgConnectionOpenAckResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Connection Open Ack Response",
+            "description": "MsgConnectionOpenAckResponse defines the Msg/ConnectionOpenAck response type."
+        }
+    }
+}

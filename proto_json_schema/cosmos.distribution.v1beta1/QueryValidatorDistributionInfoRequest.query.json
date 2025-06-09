@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryValidatorDistributionInfoRequest",
+    "definitions": {
+        "QueryValidatorDistributionInfoRequest": {
+            "properties": {
+                "validator_address": {
+                    "type": "string",
+                    "description": "validator_address defines the validator address to query for."
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Validator Distribution Info Request",
+            "description": "QueryValidatorDistributionInfoRequest is the request type for the Query/ValidatorDistributionInfo RPC method."
+        }
+    }
+}

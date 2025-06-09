@@ -1,0 +1,30 @@
+syntax = "proto3";
+package dysonprotocol.crontask.v1;
+
+option go_package = "dysonprotocol.com/x/crontask/types";
+
+// EventTaskCreated is emitted when a new task is created
+message EventTaskCreated {
+  uint64 task_id = 1;
+  string creator = 2;
+}
+
+// EventTaskDeleted is emitted when a task is deleted
+message EventTaskDeleted {
+  uint64 task_id = 1;
+  string creator = 2;
+}
+
+// EventTaskExecuted is emitted when a task is executed
+message EventTaskExecuted {
+  uint64 task_id = 1;
+  string creator = 2;
+  string status = 3;
+  bool success = 4;
+}
+
+// EventTaskExpired is emitted when a task expires without being executed
+message EventTaskExpired {
+  uint64 task_id = 1;
+  string creator = 2;
+}

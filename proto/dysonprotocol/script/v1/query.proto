@@ -1,0 +1,124 @@
+// Since: cosmos-sdk 0.46
+syntax = "proto3";
+
+package dysonprotocol.script.v1;
+
+import "dysonprotocol/script/v1/script.proto";
+import "dysonprotocol/script/v1/tx.proto";
+import "dysonprotocol/script/v1/params.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "cosmos_proto/cosmos.proto";
+import "amino/amino.proto";
+
+option go_package = "dysonprotocol.com/x/script/types";
+
+// Query is the dysonprotocol.script.v1 Query service.
+service Query {
+
+  // ScriptInfo queries script info based on script address
+  rpc ScriptInfo(QueryScriptInfoRequest) returns (QueryScriptInfoResponse) {
+    option (google.api.http).get =
+        "/dysonprotocol/script/v1/script_info/{address}";
+  };
+
+  // Queries the WSGI web application function of a script.
+  rpc Web(QueryWebRequest) returns (QueryWebResponse) {
+    option (google.api.http) = {
+      post : "/dysonprotocol/script/v1/web_request"
+      body : "*"
+    };
+  }
+
+  // EncodeJson encodes a JSON string to bytes.
+  rpc EncodeJson(QueryEncodeJsonRequest) returns (QueryEncodeJsonResponse) {
+    option (google.api.http).get = "/dysonprotocol/script/v1/encode_json";
+  }
+
+  // DecodeBytes decodes bytes to a JSON string.
+  rpc DecodeBytes(QueryDecodeBytesRequest) returns (QueryDecodeBytesResponse) {
+    option (google.api.http).get = "/dysonprotocol/script/v1/decode_bytes";
+  }
+
+  // VerifyTx verifies a transaction.
+  rpc VerifyTx(QueryVerifyTxRequest) returns (QueryVerifyTxResponse) {
+    option (google.api.http).get = "/dysonprotocol/script/v1/verify_tx";
+  }
+
+  // Params queries the parameters of the script module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/dysonprotocol/script/v1/params";
+  }
+}
+
+// QueryScriptInfoRequest is the Query/ScriptInfo request type.
+message QueryScriptInfoRequest {
+  // address is the account address of the script.
+  string address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+// QueryScriptInfoResponse is the Query/ScriptInfo response type.
+message QueryScriptInfoResponse {
+  // info is the ScriptInfo of the script.
+  Script script = 1;
+}
+
+// QueryWebRequest is the Query/Web request type.
+message QueryWebRequest {
+  // address is the account address of the script.
+  string address_or_name = 1;
+  // httprequest is the http request.
+  string httprequest = 2;
+}
+
+// QueryWebResponse is the Query/Web response type.
+message QueryWebResponse {
+  // httpresponse is the http response.
+  string httpresponse = 1;
+}
+
+// QueryEncodeJsonRequest is the Query/EncodeJson request type.
+message QueryEncodeJsonRequest {
+  // json is the json string to encode.
+  string json = 1;
+}
+
+// QueryEncodeJsonResponse is the Query/EncodeJson response type.
+message QueryEncodeJsonResponse {
+  // bytes is the encoded bytes.
+  bytes bytes = 1;
+}
+
+// QueryDecodeBytesRequest is the Query/DecodeBytes request type.
+message QueryDecodeBytesRequest {
+  string type_url = 1;
+  // bytes is the encoded bytes.
+  bytes bytes = 2;
+}
+
+// QueryDecodeBytesResponse is the Query/DecodeBytes response type.
+message QueryDecodeBytesResponse {
+  // json is the decoded json string.
+  string json = 1;
+}
+
+message QueryVerifyTxRequest {
+  // The transaction as a JSON string
+  string tx_json = 1;
+}
+
+// QueryVerifyTxResponse will be empty response on success, error will be raised
+// on failure
+message QueryVerifyTxResponse {}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [ (gogoproto.nullable) = false ];
+}

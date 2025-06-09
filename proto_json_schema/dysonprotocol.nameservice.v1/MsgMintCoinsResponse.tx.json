@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgMintCoinsResponse",
+    "definitions": {
+        "MsgMintCoinsResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Mint Coins Response",
+            "description": "Response for MintCoins"
+        }
+    }
+}

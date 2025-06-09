@@ -1,0 +1,37 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/DenomOwner",
+    "definitions": {
+        "DenomOwner": {
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "description": "address defines the address that owns a particular denomination."
+                },
+                "balance": {
+                    "$ref": "#/definitions/cosmos.base.v1beta1.Coin",
+                    "additionalProperties": true,
+                    "description": "balance is the balance of the denominated coin for an account."
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Denom Owner",
+            "description": "DenomOwner defines structure representing an account that owns or holds a particular denominated token. It contains the account address and account balance of the denominated token."
+        },
+        "cosmos.base.v1beta1.Coin": {
+            "properties": {
+                "denom": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Coin",
+            "description": "Coin defines a token with a denomination and an amount. NOTE: The amount field is an Int which implements the custom method signatures required by gogoproto."
+        }
+    }
+}

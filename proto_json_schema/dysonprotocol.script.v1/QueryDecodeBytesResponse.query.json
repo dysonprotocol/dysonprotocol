@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryDecodeBytesResponse",
+    "definitions": {
+        "QueryDecodeBytesResponse": {
+            "properties": {
+                "json": {
+                    "type": "string",
+                    "description": "json is the decoded json string."
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Decode Bytes Response",
+            "description": "QueryDecodeBytesResponse is the Query/DecodeBytes response type."
+        }
+    }
+}

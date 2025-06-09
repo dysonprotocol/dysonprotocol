@@ -1,0 +1,17 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgSendPacketResponse",
+    "definitions": {
+        "MsgSendPacketResponse": {
+            "properties": {
+                "sequence": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Send Packet Response",
+            "description": "MsgSendPacketResponse defines the Msg/SendPacket response type."
+        }
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryVerifyTxRequest",
+    "definitions": {
+        "QueryVerifyTxRequest": {
+            "properties": {
+                "tx_json": {
+                    "type": "string",
+                    "description": "The transaction as a JSON string"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Verify Tx Request"
+        }
+    }
+}

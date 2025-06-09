@@ -1,0 +1,20 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryEncodeJsonResponse",
+    "definitions": {
+        "QueryEncodeJsonResponse": {
+            "properties": {
+                "bytes": {
+                    "type": "string",
+                    "description": "bytes is the encoded bytes.",
+                    "format": "binary",
+                    "binaryEncoding": "base64"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Encode Json Response",
+            "description": "QueryEncodeJsonResponse is the Query/EncodeJson response type."
+        }
+    }
+}

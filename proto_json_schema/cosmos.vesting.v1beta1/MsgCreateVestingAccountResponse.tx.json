@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgCreateVestingAccountResponse",
+    "definitions": {
+        "MsgCreateVestingAccountResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Create Vesting Account Response",
+            "description": "MsgCreateVestingAccountResponse defines the Msg/CreateVestingAccount response type."
+        }
+    }
+}

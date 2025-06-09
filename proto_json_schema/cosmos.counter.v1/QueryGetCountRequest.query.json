@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryGetCountRequest",
+    "definitions": {
+        "QueryGetCountRequest": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Get Count Request",
+            "description": "QueryGetCountRequest defines the request type for querying x/mock count."
+        }
+    }
+}

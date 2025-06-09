@@ -1,0 +1,11 @@
+syntax = "proto3";
+package dysonprotocol.script.v1;
+
+option go_package = "dysonprotocol.com/x/script/types";
+
+message Script {
+
+  string address = 1;
+  uint64 version = 2;
+  string code = 3;
+}

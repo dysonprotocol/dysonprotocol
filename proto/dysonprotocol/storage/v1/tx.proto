@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package dysonprotocol.storage.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/msg/v1/msg.proto";
+import "amino/amino.proto";
+
+option go_package = "dysonprotocol.com/x/storage/types";
+
+// Msg defines the storage Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+  // Sets a storage entry. Only the owner can set.
+  rpc StorageSet(MsgStorageSet) returns (MsgStorageSetResponse);
+  // Deletes storage entries. Only the owner can delete.
+  rpc StorageDelete(MsgStorageDelete) returns (MsgStorageDeleteResponse);
+}
+
+// MsgStorageSet is the message for setting a storage entry.
+message MsgStorageSet {
+  option (cosmos.msg.v1.signer) = "owner";
+  // The owner of the storage entry to set.
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  // The index of the storage entry to set.
+  string index = 2;
+  // The data to set for the storage entry.
+  string data = 3;
+}
+
+// MsgStorageSetResponse is the response for setting a storage entry.
+message MsgStorageSetResponse {}
+
+// MsgStorageDelete is the message for deleting storage entries.
+message MsgStorageDelete {
+  option (cosmos.msg.v1.signer) = "owner";
+  // The owner of the storage entries to delete.
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  // List of indexes to delete
+  repeated string indexes = 2;
+}
+
+// MsgStorageDeleteResponse is the response for deleting storage entries.
+message MsgStorageDeleteResponse {
+  // List of indexes that were successfully deleted
+  repeated string deleted_indexes = 1;
+}

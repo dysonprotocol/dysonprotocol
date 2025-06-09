@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryDelegatorWithdrawAddressResponse",
+    "definitions": {
+        "QueryDelegatorWithdrawAddressResponse": {
+            "properties": {
+                "withdraw_address": {
+                    "type": "string",
+                    "description": "withdraw_address defines the delegator address to query for."
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Delegator Withdraw Address Response",
+            "description": "QueryDelegatorWithdrawAddressResponse is the response type for the Query/DelegatorWithdrawAddress RPC method."
+        }
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/ComputeHashResponse",
+    "definitions": {
+        "ComputeHashResponse": {
+            "properties": {
+                "hex_hash": {
+                    "type": "string",
+                    "description": "hex_hash is the computed hash as a hex string"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Compute Hash Response",
+            "description": "ComputeHashResponse contains the computed hash as a hex string"
+        }
+    }
+}

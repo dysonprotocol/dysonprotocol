@@ -1,0 +1,22 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryNextSequenceSendRequest",
+    "definitions": {
+        "QueryNextSequenceSendRequest": {
+            "properties": {
+                "port_id": {
+                    "type": "string",
+                    "description": "port unique identifier"
+                },
+                "channel_id": {
+                    "type": "string",
+                    "description": "channel unique identifier"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Next Sequence Send Request",
+            "description": "QueryNextSequenceSendRequest is the request type for the Query/QueryNextSequenceSend RPC method"
+        }
+    }
+}

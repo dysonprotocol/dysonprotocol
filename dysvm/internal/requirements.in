@@ -1,0 +1,8 @@
+file:./py-dyslang
+pytest
+ConfigArgParse
+python-forge
+google-re2
+freezegun
+requests
+simplejson

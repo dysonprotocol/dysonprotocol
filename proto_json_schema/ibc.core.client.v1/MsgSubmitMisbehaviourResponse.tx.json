@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgSubmitMisbehaviourResponse",
+    "definitions": {
+        "MsgSubmitMisbehaviourResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Submit Misbehaviour Response",
+            "description": "MsgSubmitMisbehaviourResponse defines the Msg/SubmitMisbehaviour response type."
+        }
+    }
+}

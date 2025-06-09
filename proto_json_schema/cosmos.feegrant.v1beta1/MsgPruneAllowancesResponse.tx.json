@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgPruneAllowancesResponse",
+    "definitions": {
+        "MsgPruneAllowancesResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Prune Allowances Response",
+            "description": "MsgPruneAllowancesResponse defines the Msg/PruneAllowancesResponse response type."
+        }
+    }
+}

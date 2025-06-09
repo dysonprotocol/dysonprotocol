@@ -1,0 +1,155 @@
+// Since: cosmos-sdk 0.46
+syntax = "proto3";
+
+package dysonprotocol.script.v1;
+
+option go_package = "dysonprotocol.com/x/script/types";
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "google/protobuf/any.proto";
+import "cosmos/msg/v1/msg.proto";
+import "amino/amino.proto";
+import "dysonprotocol/script/v1/params.proto";
+
+// Msg is the dysonprotocol.script.v1 Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // Update Script updates the script of the given address and increments the
+  // the version.
+  rpc UpdateScript(MsgUpdateScript) returns (MsgUpdateScriptResponse);
+
+  // ExecScript executes a script by calling a function with arguments.
+  rpc ExecScript(MsgExec) returns (MsgExecResponse);
+
+  // Create a new script with new address = hash(creator + content), a new authz
+  // updatescript permission will also be created for the creator
+  rpc CreateNewScript(MsgCreateNewScript) returns (MsgCreateNewScriptResponse);
+
+  // UpdateParams defines a governance operation for updating the x/script
+  // module parameters. The authority defaults to the x/gov module account.
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+}
+
+// MsgUpdateScript is the Msg/UpdateScript request type.
+message MsgUpdateScript {
+  option (cosmos.msg.v1.signer) = "address";
+  option (amino.name) = "dys/script/MsgUpdateScript";
+
+  // address is the account address of the script.
+  string address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // script is the updated script.
+  string code = 2;
+}
+
+// MsgUpdateScriptResponse is the Msg/UpdateScript response type.
+message MsgUpdateScriptResponse {
+  // version is the updated script version.
+  uint64 version = 1;
+}
+
+// MsgExec executes a script by calling a function with arguments.
+message MsgExec {
+  option (cosmos.msg.v1.signer) = "executor_address";
+  option (amino.name) = "dys/script/MsgExec";
+
+  // executor is the account address used to execute the script.
+  string executor_address = 1
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // address is the script address to execute.
+  // This can be either a bech32 address or a nameservice name (e.g.,
+  // "example.dys")
+  string script_address = 2;
+
+  // Only if the executor is the owner of the script  will the optional
+  // extra_code be temporary appended to the script for this message before
+  // calling the function.
+  string extra_code = 3;
+
+  // The function name to run
+  string function_name = 4;
+
+  // The positional arguments to pass to the function (*args) encoded as a
+  // json list
+  string args = 5;
+
+  // The keyword argument to pass to the function (**kwargs) encoded as a
+  // json dict
+  string kwargs = 6;
+
+  // Any attached_messages is the list of attached messages
+  // to run before the script and the result will be passed
+  // to the script. If any of the attached messages fails,
+  // the script execution will be aborted.
+  repeated google.protobuf.Any attached_messages = 7;
+}
+
+// MsgExecResponse is the Msg/Exec request type.
+message MsgExecResponse {
+  // result is the final result of the proposal execution.
+  string result = 1;
+
+  // Results of the attached messages.
+  repeated google.protobuf.Any attached_message_results = 4;
+}
+
+// MsgCreateNewScript is the Msg/CreateNewScript request type.
+message MsgCreateNewScript {
+  option (cosmos.msg.v1.signer) = "creator_address";
+  option (amino.name) = "dys/script/MsgCreateNewScript";
+
+  // creator is the account address creating the script.
+  string creator_address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // code is the script content.
+  string code = 2;
+}
+
+// MsgCreateNewScriptResponse is the Msg/CreateNewScript response type.
+message MsgCreateNewScriptResponse {
+  // script_address is the address of the newly created script.
+  string script_address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // version is the initial script version.
+  uint64 version = 2;
+}
+
+// MsgUpdateParams is the Msg/UpdateParams request type.
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "dys/script/MsgUpdateParams";
+
+  // authority is the address that controls the module (defaults to x/gov unless
+  // overwritten).
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // params defines the x/script parameters to update.
+  //
+  // NOTE: All parameters must be supplied.
+  Params params = 2 [ (gogoproto.nullable) = false ];
+}
+
+// MsgUpdateParamsResponse defines the response structure for executing a
+// MsgUpdateParams message.
+message MsgUpdateParamsResponse {}
+
+// MsgArbitraryData is used for signing arbitrary data for verification purposes
+message MsgArbitraryData {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "dys/script/MsgArbitraryData";
+
+  // signer is the account address signing the data
+  string signer = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // data is the arbitrary data being signed
+  string data = 2;
+
+  // app_domain is an optional application domain for the data
+  string app_domain = 3;
+}
+
+// MsgArbitraryDataResponse is the response for MsgArbitraryData
+message MsgArbitraryDataResponse {}

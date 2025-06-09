@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgLeaveGroupResponse",
+    "definitions": {
+        "MsgLeaveGroupResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Leave Group Response",
+            "description": "MsgLeaveGroupResponse is the Msg/LeaveGroup response type."
+        }
+    }
+}

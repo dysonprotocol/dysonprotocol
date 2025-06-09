@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package dysonprotocol.storage.v1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "cosmos_proto/cosmos.proto";
+import "amino/amino.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "dysonprotocol.com/x/storage/types";
+
+message Storage {
+  // owner is the account address that owns this storage entry.
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // index is the key/index for the storage entry (within the owner's
+  // namespace).
+  string index = 2;
+
+  // data is the stored string value associated with the index.
+  string data = 3;
+}

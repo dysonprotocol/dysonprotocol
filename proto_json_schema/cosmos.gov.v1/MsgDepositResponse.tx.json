@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgDepositResponse",
+    "definitions": {
+        "MsgDepositResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Deposit Response",
+            "description": "MsgDepositResponse defines the Msg/Deposit response type."
+        }
+    }
+}

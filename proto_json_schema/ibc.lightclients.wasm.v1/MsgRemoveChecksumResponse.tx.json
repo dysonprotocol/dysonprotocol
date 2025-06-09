@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgRemoveChecksumResponse",
+    "definitions": {
+        "MsgRemoveChecksumResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Remove Checksum Response",
+            "description": "MsgStoreChecksumResponse defines the response type for the StoreCode rpc"
+        }
+    }
+}

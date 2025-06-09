@@ -1,0 +1,20 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryInflationResponse",
+    "definitions": {
+        "QueryInflationResponse": {
+            "properties": {
+                "inflation": {
+                    "type": "string",
+                    "description": "inflation is the current minting inflation value.",
+                    "format": "binary",
+                    "binaryEncoding": "base64"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Inflation Response",
+            "description": "QueryInflationResponse is the response type for the Query/Inflation RPC method."
+        }
+    }
+}

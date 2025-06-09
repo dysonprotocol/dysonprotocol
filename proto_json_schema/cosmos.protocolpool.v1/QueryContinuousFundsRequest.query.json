@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryContinuousFundsRequest",
+    "definitions": {
+        "QueryContinuousFundsRequest": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Continuous Funds Request",
+            "description": "QueryContinuousFundRequest is the request type for the Query/ContinuousFunds RPC method."
+        }
+    }
+}

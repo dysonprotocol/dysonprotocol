@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QuerySigningInfoRequest",
+    "definitions": {
+        "QuerySigningInfoRequest": {
+            "properties": {
+                "cons_address": {
+                    "type": "string",
+                    "description": "cons_address is the address to query signing info of"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Signing Info Request",
+            "description": "QuerySigningInfoRequest is the request type for the Query/SigningInfo RPC method"
+        }
+    }
+}

@@ -1,0 +1,36 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgExecResponse",
+    "definitions": {
+        "MsgExecResponse": {
+            "properties": {
+                "result": {
+                    "enum": [
+                        "PROPOSAL_EXECUTOR_RESULT_UNSPECIFIED",
+                        0,
+                        "PROPOSAL_EXECUTOR_RESULT_NOT_RUN",
+                        1,
+                        "PROPOSAL_EXECUTOR_RESULT_SUCCESS",
+                        2,
+                        "PROPOSAL_EXECUTOR_RESULT_FAILURE",
+                        3
+                    ],
+                    "oneOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "integer"
+                        }
+                    ],
+                    "title": "Proposal Executor Result",
+                    "description": "ProposalExecutorResult defines types of proposal executor results."
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Exec Response",
+            "description": "MsgExecResponse is the Msg/Exec request type."
+        }
+    }
+}

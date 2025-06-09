@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgArbitraryDataResponse",
+    "definitions": {
+        "MsgArbitraryDataResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Arbitrary Data Response",
+            "description": "MsgArbitraryDataResponse is the response for MsgArbitraryData"
+        }
+    }
+}

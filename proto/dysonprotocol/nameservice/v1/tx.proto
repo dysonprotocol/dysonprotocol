@@ -1,0 +1,247 @@
+syntax = "proto3";
+package dysonprotocol.nameservice.v1;
+
+import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/msg/v1/msg.proto";
+import "dysonprotocol/nameservice/v1/params.proto";
+import "google/protobuf/timestamp.proto";
+import "amino/amino.proto";
+import "cosmos/bank/v1beta1/bank.proto";
+option go_package = "dysonprotocol.com/x/nameservice/types";
+
+// Msg defines the Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+  rpc Commit(MsgCommit) returns (MsgCommitResponse);
+  rpc Reveal(MsgReveal) returns (MsgRevealResponse);
+  rpc SetValuation(MsgSetValuation) returns (MsgSetValuationResponse);
+  rpc Renew(MsgRenew) returns (MsgRenewResponse);
+  rpc PlaceBid(MsgPlaceBid) returns (MsgPlaceBidResponse);
+  rpc AcceptBid(MsgAcceptBid) returns (MsgAcceptBidResponse);
+  rpc RejectBid(MsgRejectBid) returns (MsgRejectBidResponse);
+  rpc ClaimBid(MsgClaimBid) returns (MsgClaimBidResponse);
+  rpc SetDestination(MsgSetDestination) returns (MsgSetDestinationResponse);
+  rpc SetNFTMetadata(MsgSetNFTMetadata) returns (MsgSetNFTMetadataResponse);
+  rpc SetNFTClassExtraData(MsgSetNFTClassExtraData)
+      returns (MsgSetNFTClassExtraDataResponse);
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+  rpc MintCoins(MsgMintCoins) returns (MsgMintCoinsResponse);
+  rpc BurnCoins(MsgBurnCoins) returns (MsgBurnCoinsResponse);
+  rpc SetDenomMetadata(MsgSetDenomMetadata)
+      returns (MsgSetDenomMetadataResponse);
+  rpc SaveClass(MsgSaveClass) returns (MsgSaveClassResponse);
+  rpc MintNFT(MsgMintNFT) returns (MsgMintNFTResponse);
+  rpc BurnNFT(MsgBurnNFT) returns (MsgBurnNFTResponse);
+}
+
+message MsgCommit {
+  option (cosmos.msg.v1.signer) = "committer";
+  string committer = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string hexhash = 2;
+  cosmos.base.v1beta1.Coin valuation = 3 [ (gogoproto.nullable) = false ];
+}
+message MsgCommitResponse {}
+
+message MsgReveal {
+  option (cosmos.msg.v1.signer) = "committer";
+  string committer = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string name = 2;
+  string salt = 3;
+}
+message MsgRevealResponse {}
+
+message MsgSetValuation {
+  option (cosmos.msg.v1.signer) = "owner";
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string nft_class_id = 2;
+  string nft_id = 3;
+  cosmos.base.v1beta1.Coin valuation = 4
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+message MsgSetValuationResponse {}
+
+message MsgRenew {
+  option (cosmos.msg.v1.signer) = "payer";
+  string payer = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string nft_class_id = 2;
+  string nft_id = 3;
+}
+message MsgRenewResponse {
+  google.protobuf.Timestamp expiry = 1
+      [ (gogoproto.stdtime) = true, (gogoproto.nullable) = false ];
+}
+
+message MsgPlaceBid {
+  option (cosmos.msg.v1.signer) = "bidder";
+  string bidder = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string nft_class_id = 2;
+  string nft_id = 3;
+  cosmos.base.v1beta1.Coin bid_amount = 4
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+message MsgPlaceBidResponse {}
+
+message MsgAcceptBid {
+  option (cosmos.msg.v1.signer) = "owner";
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string nft_class_id = 2;
+  string nft_id = 3;
+}
+message MsgAcceptBidResponse {}
+
+message MsgRejectBid {
+  option (cosmos.msg.v1.signer) = "owner";
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string nft_class_id = 2;
+  string nft_id = 3;
+  cosmos.base.v1beta1.Coin new_valuation = 4
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+message MsgRejectBidResponse {}
+
+message MsgClaimBid {
+  option (cosmos.msg.v1.signer) = "bidder";
+  string bidder = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string nft_class_id = 2;
+  string nft_id = 3;
+}
+message MsgClaimBidResponse {}
+
+message MsgSetDestination {
+  option (cosmos.msg.v1.signer) = "owner";
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string name = 2;
+  string destination = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+message MsgSetDestinationResponse {}
+
+message MsgSetNFTMetadata {
+  option (cosmos.msg.v1.signer) = "owner";
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string class_id = 2;
+  string nft_id = 3;
+  string metadata = 4;
+}
+message MsgSetNFTMetadataResponse {}
+
+message MsgSetNFTClassExtraData {
+  option (cosmos.msg.v1.signer) = "owner";
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string class_id = 2;
+  string extra_data = 3;
+}
+message MsgSetNFTClassExtraDataResponse {}
+
+// MsgUpdateParams is the Msg/UpdateParams request type.
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+
+  // authority is the address that controls the module (defaults to x/gov unless
+  // overwritten).
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // params defines the x/nameservice parameters to update.
+  //
+  // NOTE: All parameters must be supplied.
+  Params params = 2 [ (gogoproto.nullable) = false ];
+}
+
+// MsgUpdateParamsResponse defines the response structure for executing a
+// MsgUpdateParams message.
+message MsgUpdateParamsResponse {}
+
+// MsgMintCoins mints coins into the owner's balance, as long as each coin's
+// "root name" is owned by that owner.
+message MsgMintCoins {
+  option (cosmos.msg.v1.signer) = "owner";
+  // Owner must be a valid address
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // Using repeated cosmos.base.v1beta1.Coin with the annotation
+  // (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  // so that the generated Go code will have `Amount sdk.Coins` automatically.
+  repeated cosmos.base.v1beta1.Coin amount = 2 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (amino.dont_omitempty) = true,
+    (amino.encoding) = "legacy_coins"
+  ];
+}
+
+// Response for MintCoins
+message MsgMintCoinsResponse {}
+
+// MsgBurnCoins burns coins from the owner's balance, if each coin's root name
+// is owned by that owner.
+message MsgBurnCoins {
+  option (cosmos.msg.v1.signer) = "owner";
+  // Owner address
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // Using the same annotation as MintCoins for consistency
+  repeated cosmos.base.v1beta1.Coin amount = 2 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
+
+// Response for BurnCoins
+message MsgBurnCoinsResponse {}
+
+// MsgSetDenomMetadata allows a governance-authorized account to set denom
+// metadata.
+message MsgSetDenomMetadata {
+  option (cosmos.msg.v1.signer) = "authority";
+
+  // authority is the address that controls the module (defaults to x/gov unless
+  // overwritten).
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // The bank module metadata describing the denom, display, base, etc.
+  cosmos.bank.v1beta1.Metadata metadata = 2 [ (gogoproto.nullable) = false ];
+}
+
+// MsgSetDenomMetadataResponse defines the response structure for executing a
+// MsgSetDenomMetadata message.
+message MsgSetDenomMetadataResponse {}
+
+// SaveClass
+message MsgSaveClass {
+  option (cosmos.msg.v1.signer) = "owner";
+
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string class_id = 2;    // must match regex
+  string name = 3;        // optional
+  string symbol = 4;      // optional
+  string description = 5; // optional
+  string uri = 6;         // optional
+  string uri_hash = 7;    // optional
+}
+
+message MsgSaveClassResponse {}
+
+// MintNFT
+message MsgMintNFT {
+  option (cosmos.msg.v1.signer) = "owner";
+
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string class_id = 2; // must exist
+  string nft_id = 3;   // must match printable ASCII
+  string uri = 4;      // optional
+  string uri_hash = 5; // optional
+}
+
+message MsgMintNFTResponse {}
+
+// BurnNFT
+message MsgBurnNFT {
+  option (cosmos.msg.v1.signer) = "owner";
+
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string class_id = 2; // must exist
+  string nft_id = 3;   // must exist
+}
+
+message MsgBurnNFTResponse {}

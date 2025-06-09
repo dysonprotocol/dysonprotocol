@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryAppliedPlanResponse",
+    "definitions": {
+        "QueryAppliedPlanResponse": {
+            "properties": {
+                "height": {
+                    "type": "string",
+                    "description": "height is the block height at which the plan was applied."
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Applied Plan Response",
+            "description": "QueryAppliedPlanResponse is the response type for the Query/AppliedPlan RPC method."
+        }
+    }
+}

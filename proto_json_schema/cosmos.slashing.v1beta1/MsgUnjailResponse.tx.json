@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgUnjailResponse",
+    "definitions": {
+        "MsgUnjailResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Unjail Response",
+            "description": "MsgUnjailResponse defines the Msg/Unjail response type"
+        }
+    }
+}

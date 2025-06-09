@@ -1,0 +1,120 @@
+syntax = "proto3";
+package dysonprotocol.nameservice.v1;
+
+import "gogoproto/gogo.proto";
+import "amino/amino.proto";
+
+import "cosmos/base/v1beta1/coin.proto";
+import "dysonprotocol/nameservice/v1/params.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "dysonprotocol.com/x/nameservice/types";
+
+// EventCommitmentCreated is emitted when a commitment is created
+message EventCommitmentCreated { string hexhash = 2; }
+
+// EventNameRegistered is emitted when a name is registered
+message EventNameRegistered {
+  string name = 1;
+  repeated cosmos.base.v1beta1.Coin fee = 2
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// EventNameRenewed is emitted when a name is renewed
+message EventNameRenewed {
+  string name = 1;
+  google.protobuf.Timestamp new_expiry = 3 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// EventNameValuationUpdated is emitted when a name's valuation is updated
+message EventNameValuationUpdated {
+  string name = 1;
+  cosmos.base.v1beta1.Coin new_valuation = 3;
+}
+
+// EventBidPlaced is emitted when a bid is placed
+message EventBidPlaced {
+  string class_id = 1;
+  string nft_id = 2;
+  string bidder = 3;
+  cosmos.base.v1beta1.Coin bid_amount = 4;
+}
+
+// EventBidAccepted is emitted when a bid is accepted by the owner
+message EventBidAccepted {
+  string class_id = 1;
+  string nft_id = 2;
+  string new_owner = 3;
+}
+
+// EventBidRejected is emitted when a bid is rejected by the owner
+message EventBidRejected {
+  string class_id = 1;
+  string nft_id = 2;
+}
+
+// EventNameClaimed is emitted when a name is claimed after bid timeout
+message EventBidClaimed {
+  string class_id = 1;
+  string nft_id = 2;
+  string bidder = 3;
+}
+
+// EventNameDestinationSet is emitted when the destination address for a name is
+// set
+message EventNameDestinationSet {
+  string name = 1;
+  string destination = 3;
+}
+
+// EventParamsUpdated is emitted when the module parameters are updated
+message EventParamsUpdated {
+  Params params = 2
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// EventDenomMetadataSet is emitted when denom metadata is set
+message EventDenomMetadataSet { string denom = 2; }
+
+// EventNFTClassExtraDataUpdated is emitted when NFT class extra data is updated
+message EventNFTClassExtraDataUpdated { string class_id = 1; }
+
+// EventNFTMetadataUpdated is emitted when NFT metadata is updated
+message EventNFTMetadataUpdated {
+  string class_id = 1;
+  string nft_id = 2;
+}
+
+// EventCoinsMinted is emitted when coins are minted
+message EventCoinsMinted {
+  repeated cosmos.base.v1beta1.Coin amount = 2
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// EventCoinsBurned is emitted when coins are burned
+message EventCoinsBurned {
+  repeated cosmos.base.v1beta1.Coin amount = 2
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// EventClassSaved is emitted when an NFT class is saved
+message EventClassSaved { string class_id = 1; }
+
+// EventClassUpdated is emitted when an NFT class is updated
+message EventClassUpdated { string class_id = 1; }
+
+// EventNFTMinted is emitted when an NFT is minted
+message EventNFTMinted {
+  string class_id = 1;
+  string nft_id = 2;
+}
+
+// EventNFTBurned is emitted when an NFT is burned
+message EventNFTBurned {
+  string class_id = 1;
+  string nft_id = 2;
+}

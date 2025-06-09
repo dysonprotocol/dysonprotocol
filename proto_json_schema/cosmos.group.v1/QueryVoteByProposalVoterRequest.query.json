@@ -1,0 +1,22 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryVoteByProposalVoterRequest",
+    "definitions": {
+        "QueryVoteByProposalVoterRequest": {
+            "properties": {
+                "proposal_id": {
+                    "type": "string",
+                    "description": "proposal_id is the unique ID of a proposal."
+                },
+                "voter": {
+                    "type": "string",
+                    "description": "voter is a proposal voter account address."
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Vote By Proposal Voter Request",
+            "description": "QueryVoteByProposalVoterRequest is the Query/VoteByProposalVoter request type."
+        }
+    }
+}

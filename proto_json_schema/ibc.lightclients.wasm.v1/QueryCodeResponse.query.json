@@ -1,0 +1,19 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryCodeResponse",
+    "definitions": {
+        "QueryCodeResponse": {
+            "properties": {
+                "data": {
+                    "type": "string",
+                    "format": "binary",
+                    "binaryEncoding": "base64"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Code Response",
+            "description": "QueryCodeResponse is the response type for the Query/Code RPC method."
+        }
+    }
+}

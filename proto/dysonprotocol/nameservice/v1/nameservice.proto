@@ -1,0 +1,45 @@
+syntax = "proto3";
+package dysonprotocol.nameservice.v1;
+
+import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "dysonprotocol.com/x/nameservice/types";
+
+// Commitment represents a commitment to register a name
+message Commitment {
+  string hexhash = 1;
+  bytes data = 2;
+  string owner = 3;
+  google.protobuf.Timestamp timestamp = 4
+      [ (gogoproto.stdtime) = true, (gogoproto.nullable) = false ];
+  cosmos.base.v1beta1.Coin valuation = 5 [ (gogoproto.nullable) = false ];
+}
+
+// NFTClassData represents metadata for an NFT class
+message NFTClassData {
+  bool always_listed =
+      1; // If true, all NFTs of this class are always listed for sale
+  string annual_pct = 2; // Annual percentage for fee calculation, default 0
+  string extra_data = 3; // Additional arbitrary metadata for the NFT class
+}
+
+// NFTData represents metadata for an individual NFT
+message NFTData {
+  bool listed =
+      1; // Used if parent NFTClass.always_listed is false, default false
+  cosmos.base.v1beta1.Coin valuation = 2 [ (gogoproto.nullable) = false ];
+  google.protobuf.Timestamp valuation_expiry = 3
+      [ (gogoproto.stdtime) = true, (gogoproto.nullable) = false ];
+
+  // Bid information
+  string current_bidder = 4; // Address of the current highest bidder
+  cosmos.base.v1beta1.Coin current_bid = 5 [ (gogoproto.nullable) = false ];
+  google.protobuf.Timestamp bid_timestamp = 6
+      [ (gogoproto.stdtime) = true ]; // Timestamp of when the bid was placed
+
+  // Additional metadata
+  string metadata = 8;
+}

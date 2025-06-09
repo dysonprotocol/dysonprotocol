@@ -1,0 +1,46 @@
+// Since: cosmos-sdk 0.46
+syntax = "proto3";
+
+package dysonprotocol.script.v1;
+
+import "cosmos_proto/cosmos.proto";
+import "dysonprotocol/script/v1/tx.proto";
+import "gogoproto/gogo.proto";
+import "amino/amino.proto";
+import "google/protobuf/any.proto";
+
+option go_package = "dysonprotocol.com/x/script/types";
+
+// EventUpdateScript is an event emitted when a script is updated.
+message EventUpdateScript {
+
+  // The new version of the script.
+  uint64 version = 1;
+}
+
+// Event ExecScript is an event emitted when a script is executed.
+message EventExecScript {
+  // The result of the script execution.
+  MsgExec request = 1;
+  MsgExecResponse response = 2;
+}
+
+// EventScriptEvent is an event emitted by the script itself.
+message EventScriptEvent {
+  // Address of the script
+  string address = 1;
+  // The key of the event.
+  string key = 2;
+  // The value of the event.
+  string value = 3;
+}
+
+// EventCreateNewScript is an event emitted when a new script is created.
+message EventCreateNewScript {
+  // The address of the newly created script.
+  string script_address = 1;
+  // The address of the creator.
+  string creator_address = 2;
+  // The initial version of the script.
+  uint64 version = 3;
+}

@@ -1,0 +1,133 @@
+<section x-data="messagesStore" class="space-y-6">
+  <h2 class="text-2xl font-bold">Messages</h2>
+  
+  <!-- Submit Message Form -->
+  <div class="card bg-base-200 shadow-xl">
+    <div class="card-body">
+      <h3 class="card-title">Send a Message</h3>
+      <form @submit.prevent.stop="submitMessage" hx-boost="false" class="space-y-4">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Your Message:</span>
+          </label>
+          <input 
+            x-model="message" 
+            placeholder="Enter your greeting..." 
+            :disabled="!$store.walletStore.activeWalletMeta"
+            required
+            class="input input-bordered"
+          />
+        </div>
+        
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Sponsor Amount (DYS):</span>
+          </label>
+          <input 
+            x-model="sponsorAmount" 
+            type="number"
+            min="0"
+            step="1"
+            placeholder="0 (optional)" 
+            :disabled="!$store.walletStore.activeWalletMeta"
+            class="input input-bordered"
+          />
+          <label class="label">
+            <span class="label-text-alt">Optional: Send DYS coins to sponsor this message and make it stand out!</span>
+          </label>
+        </div>
+        
+        <!-- Show Connect Wallet link when no wallet is connected -->
+        <template x-if="!$store.walletStore.activeWalletMeta">
+          <a href="/wallet" class="btn btn-primary w-full">Connect Wallet</a>
+        </template>
+        
+        <!-- Show Send Message button when wallet is connected -->
+        <template x-if="$store.walletStore.activeWalletMeta">
+          <button 
+            type="submit" 
+            :disabled="!message.trim()"
+            class="btn w-full"
+            :class="sponsorAmount > 0 ? 'btn-success' : 'btn-primary'"
+          >
+            <span x-show="!sponsorAmount || sponsorAmount == 0">Send Message</span>
+            <span x-show="sponsorAmount > 0">💰 Send Sponsored Message (<span x-text="sponsorAmount"></span> DYS) 💰</span>
+          </button>
+        </template>
+      </form>
+    </div>
+  </div>
+
+  <!-- Messages List -->
+  <div class="card bg-base-200 shadow-xl">
+    <div class="card-body">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="card-title">All Messages</h3>
+        <button @click="fetchMessages()" class="btn btn-sm btn-outline">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Refresh Messages
+        </button>
+      </div>
+      
+      <template x-if="messages.length === 0">
+        <div class="text-center py-8">
+          <p class="text-base-content/70">No messages yet. Be the first to send one!</p>
+        </div>
+      </template>
+      
+      <div class="space-y-4">
+        <template x-for="msg in messages" :key="msg.index">
+          <div 
+            class="card shadow-md"
+            :class="(msg.data.coins && Object.keys(msg.data.coins).length > 0) ? 'bg-success/10 border-2 border-success' : 'bg-base-100'"
+          >
+            <div class="card-body">
+              <!-- Sponsored Badge -->
+              <template x-if="msg.data.coins && Object.keys(msg.data.coins).length > 0">
+                <div class="badge badge-success gap-2 mb-3">
+                  💰 SPONSORED MESSAGE 💰
+                </div>
+              </template>
+              
+              <div class="space-y-2">
+                <p class="text-sm font-semibold">Message #<span x-text="msg.data.message_id"></span></p>
+                <p class="text-sm"><span class="font-semibold">From:</span> <code class="text-xs bg-base-300 px-2 py-1 rounded" x-text="msg.data.sender"></code></p>
+                <p><span class="font-semibold">Message:</span> <span x-text="msg.data.greeting"></span></p>
+              </div>
+              
+              <!-- Sponsored Details -->
+              <template x-if="msg.data.coins && Object.keys(msg.data.coins).length > 0">
+                <div class="alert alert-success mt-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <div>
+                    <p class="font-bold">🏆 SPONSORED WITH:</p>
+                    <div class="flex flex-wrap gap-2 mt-1">
+                      <template x-for="[denom, amount] in Object.entries(msg.data.coins)" :key="denom">
+                        <span class="badge badge-success badge-lg" x-text="amount + ' ' + denom.toUpperCase()"></span>
+                      </template>
+                    </div>
+                  </div>
+                </div>
+              </template>
+              
+              <!-- Delete button - only show if sender matches current wallet address -->
+              <template x-if="$store.walletStore.activeWalletMeta && msg.data.sender === $store.walletStore.activeWalletMeta.address">
+                <button 
+                  @click="deleteMessage(msg.data.message_id)" 
+                  class="btn btn-error btn-sm mt-3"
+                  :disabled="deletingMessageId === msg.data.message_id"
+                  :class="{ 'loading': deletingMessageId === msg.data.message_id }"
+                >
+                  <span x-show="deletingMessageId !== msg.data.message_id">Delete</span>
+                  <span x-show="deletingMessageId === msg.data.message_id">Deleting...</span>
+                </button>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</section> 

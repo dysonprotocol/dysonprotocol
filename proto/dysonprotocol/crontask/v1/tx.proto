@@ -1,0 +1,71 @@
+syntax = "proto3";
+package dysonprotocol.crontask.v1;
+
+import "gogoproto/gogo.proto";
+import "amino/amino.proto";
+
+import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/msg/v1/msg.proto";
+import "google/protobuf/any.proto";
+
+option go_package = "dysonprotocol.com/x/crontask/types";
+
+// Msg defines the crontask Msg service
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // CreateTask creates a new scheduled task
+  rpc CreateTask(MsgCreateTask) returns (MsgCreateTaskResponse);
+
+  // DeleteTask deletes a scheduled task
+  rpc DeleteTask(MsgDeleteTask) returns (MsgDeleteTaskResponse);
+}
+
+// MsgCreateTask defines the message for creating a new task
+message MsgCreateTask {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  // Address of the creator of the task
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // Unix timestamp when the task is scheduled to execute
+  // Can be either a Unix timestamp or a time offset prefixed with "+" (e.g.
+  // "+1h30m") Offset is relative to the current block time
+  string scheduled_timestamp = 2;
+
+  // Unix timestamp after which the task will expire if not executed
+  // Can be either a Unix timestamp or a time offset prefixed with "+" (e.g.
+  // "+2h") When using an offset, it's relative to the scheduled_timestamp
+  string expiry_timestamp = 3;
+
+  // Maximum gas limit for the task execution
+  uint64 task_gas_limit = 4;
+
+  // Gas fee for the task execution
+  cosmos.base.v1beta1.Coin task_gas_fee = 5
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+
+  // Messages to execute as part of the task
+  repeated google.protobuf.Any msgs = 7;
+}
+
+// MsgCreateTaskResponse defines the response for creating a new task
+message MsgCreateTaskResponse {
+  // The ID of the created task
+  uint64 task_id = 1;
+}
+
+// MsgDeleteTask defines the message for deleting a task
+message MsgDeleteTask {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  // Address of the creator of the task
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // ID of the task to delete
+  uint64 task_id = 2;
+}
+
+// MsgDeleteTaskResponse defines the response for deleting a task
+message MsgDeleteTaskResponse {}

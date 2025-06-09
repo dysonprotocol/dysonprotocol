@@ -1,0 +1,17 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryConstitutionResponse",
+    "definitions": {
+        "QueryConstitutionResponse": {
+            "properties": {
+                "constitution": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Constitution Response",
+            "description": "QueryConstitutionResponse is the response type for the Query/Constitution RPC method"
+        }
+    }
+}

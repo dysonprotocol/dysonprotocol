@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgBurnCoinsResponse",
+    "definitions": {
+        "MsgBurnCoinsResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Burn Coins Response",
+            "description": "Response for BurnCoins"
+        }
+    }
+}

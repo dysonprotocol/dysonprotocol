@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryConnectionRequest",
+    "definitions": {
+        "QueryConnectionRequest": {
+            "properties": {
+                "connection_id": {
+                    "type": "string",
+                    "description": "connection unique identifier"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Connection Request",
+            "description": "QueryConnectionRequest is the request type for the Query/Connection RPC method"
+        }
+    }
+}

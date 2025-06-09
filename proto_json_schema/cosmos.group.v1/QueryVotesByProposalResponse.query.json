@@ -1,0 +1,93 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryVotesByProposalResponse",
+    "definitions": {
+        "QueryVotesByProposalResponse": {
+            "properties": {
+                "votes": {
+                    "items": {
+                        "$ref": "#/definitions/cosmos.group.v1.Vote"
+                    },
+                    "type": "array",
+                    "description": "votes are the list of votes for given proposal_id."
+                },
+                "pagination": {
+                    "$ref": "#/definitions/cosmos.base.query.v1beta1.PageResponse",
+                    "additionalProperties": true,
+                    "description": "pagination defines the pagination in the response."
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Votes By Proposal Response",
+            "description": "QueryVotesByProposalResponse is the Query/VotesByProposal response type."
+        },
+        "cosmos.base.query.v1beta1.PageResponse": {
+            "properties": {
+                "next_key": {
+                    "type": "string",
+                    "description": "next_key is the key to be passed to PageRequest.key to query the next page most efficiently. It will be empty if there are no more results.",
+                    "format": "binary",
+                    "binaryEncoding": "base64"
+                },
+                "total": {
+                    "type": "string",
+                    "description": "total is total number of results available if PageRequest.count_total was set, its value is undefined otherwise"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Page Response",
+            "description": "PageResponse is to be embedded in gRPC response messages where the corresponding request message has used PageRequest.  message SomeResponse {          repeated Bar results = 1;          PageResponse page = 2;  }"
+        },
+        "cosmos.group.v1.Vote": {
+            "properties": {
+                "proposal_id": {
+                    "type": "string",
+                    "description": "proposal is the unique ID of the proposal."
+                },
+                "voter": {
+                    "type": "string",
+                    "description": "voter is the account address of the voter."
+                },
+                "option": {
+                    "enum": [
+                        "VOTE_OPTION_UNSPECIFIED",
+                        0,
+                        "VOTE_OPTION_YES",
+                        1,
+                        "VOTE_OPTION_ABSTAIN",
+                        2,
+                        "VOTE_OPTION_NO",
+                        3,
+                        "VOTE_OPTION_NO_WITH_VETO",
+                        4
+                    ],
+                    "oneOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "integer"
+                        }
+                    ],
+                    "title": "Vote Option",
+                    "description": "VoteOption enumerates the valid vote options for a given proposal."
+                },
+                "metadata": {
+                    "type": "string",
+                    "description": "metadata is any arbitrary metadata attached to the vote. the recommended format of the metadata is to be found here: https://docs.cosmos.network/v0.47/modules/group#vote-2"
+                },
+                "submit_time": {
+                    "type": "string",
+                    "description": "submit_time is the timestamp when the vote was submitted.",
+                    "format": "date-time"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Vote",
+            "description": "Vote represents a vote for a proposal.string metadata"
+        }
+    }
+}

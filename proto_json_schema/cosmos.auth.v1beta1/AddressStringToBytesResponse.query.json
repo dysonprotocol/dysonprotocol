@@ -1,0 +1,19 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/AddressStringToBytesResponse",
+    "definitions": {
+        "AddressStringToBytesResponse": {
+            "properties": {
+                "address_bytes": {
+                    "type": "string",
+                    "format": "binary",
+                    "binaryEncoding": "base64"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Address String To Bytes Response",
+            "description": "AddressStringToBytesResponse is the response type for AddressBytes rpc method."
+        }
+    }
+}

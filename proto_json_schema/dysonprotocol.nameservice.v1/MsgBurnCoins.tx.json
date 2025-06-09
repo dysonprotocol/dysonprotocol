@@ -1,0 +1,39 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgBurnCoins",
+    "definitions": {
+        "MsgBurnCoins": {
+            "properties": {
+                "owner": {
+                    "type": "string",
+                    "description": "Owner address"
+                },
+                "amount": {
+                    "items": {
+                        "$ref": "#/definitions/cosmos.base.v1beta1.Coin"
+                    },
+                    "type": "array",
+                    "description": "Using the same annotation as MintCoins for consistency"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Burn Coins",
+            "description": "MsgBurnCoins burns coins from the owner's balance, if each coin's root name is owned by that owner."
+        },
+        "cosmos.base.v1beta1.Coin": {
+            "properties": {
+                "denom": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Coin",
+            "description": "Coin defines a token with a denomination and an amount. NOTE: The amount field is an Int which implements the custom method signatures required by gogoproto."
+        }
+    }
+}

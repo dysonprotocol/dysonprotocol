@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryVerifyMembershipResponse",
+    "definitions": {
+        "QueryVerifyMembershipResponse": {
+            "properties": {
+                "success": {
+                    "type": "boolean",
+                    "description": "boolean indicating success or failure of proof verification."
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Verify Membership Response",
+            "description": "QueryVerifyMembershipResponse is the response type for the Query/VerifyMembership RPC method"
+        }
+    }
+}

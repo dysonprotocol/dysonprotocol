@@ -1,0 +1,436 @@
+<!-- Script Management Page -->
+
+<div x-data="scriptStore" x-init="init()">
+  
+  <!-- Script Information Section -->
+  <div class="mb-8">
+    <div class="text-center mb-6">
+      <h1 class="text-3xl font-bold">Script Management</h1>
+      <p class="text-base-content/70 mt-2">View and execute Python functions</p>
+    </div>
+    
+    <div class="card bg-base-200 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">Script Information</h2>
+        <div class="overflow-x-auto">
+          <table class="table table-zebra">
+            <tbody>
+              <tr>
+                <td class="font-semibold">Address:</td>
+                <td><code class="text-sm bg-base-300 px-2 py-1 rounded" x-text="scriptAddress"></code></td>
+              </tr>
+              <tr x-show="scriptInfo.creator_address">
+                <td class="font-semibold">Creator:</td>
+                <td><code class="text-sm bg-base-300 px-2 py-1 rounded" x-text="scriptInfo.creator_address"></code></td>
+              </tr>
+              <tr x-show="scriptInfo.current_version">
+                <td class="font-semibold">Version:</td>
+                <td x-text="scriptInfo.current_version"></td>
+              </tr>
+              <tr x-show="scriptInfo.code_size">
+                <td class="font-semibold">Code Size:</td>
+                <td x-text="scriptInfo.code_size + ' bytes'"></td>
+              </tr>
+              <tr x-show="scriptInfo.error">
+                <td class="font-semibold">Error:</td>
+                <td class="text-error" x-text="scriptInfo.error"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wallet Connection Warning -->
+  <div x-show="!$store.walletStore.activeWalletMeta" class="mb-8">
+    <div class="alert alert-warning shadow-lg">
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+      <div>
+        <h3 class="font-bold">Note</h3>
+        <div class="text-sm">Connect a wallet to simulate and execute functions.</div>
+      </div>
+      <a href="/wallet" class="btn btn-sm">Connect Wallet</a>
+    </div>
+  </div>
+
+  <!-- Two Column Layout: Functions and Editor -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    
+    <!-- Left Column: Functions and Tests -->
+    <div class="space-y-6">
+      <!-- Available Functions -->
+      <div x-show="functions.length > 0">
+        <h2 class="text-2xl font-bold mb-4">Available Functions</h2>
+        
+        <template x-for="func in functions" :key="func.id">
+          <div class="card bg-base-200 shadow-xl mb-6">
+            <div class="card-body">
+              <div class="card-title flex flex-col items-start">
+                <pre class="text-lg bg-base-300 p-2 rounded w-full overflow-x-auto"><span x-text="func.name"></span>(<span x-text="func.pretty"></span>)</pre>
+                <pre x-show="func.doc" class="text-sm text-base-content/70 whitespace-pre-wrap mt-2" x-text="func.doc"></pre>
+              </div>
+              
+              <!-- Function Execution Form -->
+              <form @submit.prevent class="space-y-4 mt-4">
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Kwargs (JSON object):</span>
+                  </label>
+                  <textarea 
+                    :value="func.kwargs"
+                    @input="updateFunctionArgs(func.id, 'kwargs', $event.target.value)"
+                    :placeholder="getKwargsPlaceholder(func)"
+                    rows="5"
+                    class="textarea textarea-bordered font-mono text-sm">
+                  </textarea>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="form-control">
+                    <label class="label">
+                      <span class="label-text">Gas Limit:</span>
+                    </label>
+                    <input 
+                      type="number" 
+                      :value="func.gasLimit"
+                      @input="updateFunctionArgs(func.id, 'gasLimit', parseInt($event.target.value) || 200000)"
+                      min="1" 
+                      step="1000"
+                      class="input input-bordered"
+                    />
+                  </div>
+                  
+                  <div class="form-control">
+                    <label class="label">
+                      <span class="label-text">Gas Price:</span>
+                    </label>
+                    <input 
+                      type="number" 
+                      step="0.001"
+                      :value="$store.walletStore.gasPrice"
+                      @input="$store.walletStore.gasPrice = $event.target.value"
+                      min="0" 
+                      class="input input-bordered"
+                      placeholder="0.025"
+                    />
+                  </div>
+                </div>
+                
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Attached Msgs (JSON array):</span>
+                  </label>
+                  <textarea 
+                    :value="func.attachedMsg"
+                    @input="updateFunctionArgs(func.id, 'attachedMsg', $event.target.value)"
+                    placeholder="[]"
+                    rows="3"
+                    class="textarea textarea-bordered font-mono text-sm">
+                  </textarea>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                  <button 
+                    type="button" 
+                    @click="simulateFunction(func)"
+                    :disabled="isExecuting(func.id) || !$store.walletStore.activeWalletMeta"
+                    class="btn btn-outline btn-info"
+                    :class="{ 'loading': isExecuting(func.id, 'simulating') }"
+                  >
+                    <span x-show="!isExecuting(func.id, 'simulating')">Simulate</span>
+                    <span x-show="isExecuting(func.id, 'simulating')">Simulating...</span>
+                  </button>
+                  <button 
+                    type="button" 
+                    @click="executeFunction(func)"
+                    :disabled="isExecuting(func.id) || !$store.walletStore.activeWalletMeta"
+                    class="btn btn-primary"
+                    :class="{ 'loading': isExecuting(func.id, 'executing') }"
+                  >
+                    <span x-show="!isExecuting(func.id, 'executing')">Sign Tx</span>
+                    <span x-show="isExecuting(func.id, 'executing')">Executing...</span>
+                  </button>
+                </div>
+                
+                <!-- Execution Status -->
+                <div x-show="isExecuting(func.id)" class="mt-2">
+                  <p class="text-sm text-base-content/70" x-text="getExecutionStatus(func.id)"></p>
+                </div>
+              </form>
+              
+              <!-- Results Section -->
+              <div x-show="results[func.id]" class="mt-4">
+                <div class="collapse collapse-arrow bg-base-100" open>
+                  <input type="checkbox" checked /> 
+                  <div class="collapse-title font-medium">
+                    Result
+                    <span class="text-sm text-base-content/70 ml-2" x-text="results[func.id]?.timestamp"></span>
+                  </div>
+                  <div class="collapse-content">
+                    <pre 
+                      class="text-sm p-4 rounded-lg overflow-x-auto"
+                      :class="results[func.id]?.hasError ? 'text-error bg-error/10' : 'text-success bg-success/10'"
+                      x-text="results[func.id]?.output">
+                    </pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- No Functions Found -->
+      <div x-show="functions.length === 0 && currentCode" class="card bg-base-200 shadow-xl">
+        <div class="card-body">
+          <p class="text-base-content/70 italic">No functions found in the script code.</p>
+        </div>
+      </div>
+      
+      <!-- Available Tests Section -->
+      <div x-show="tests.length > 0" class="mt-8">
+        <h2 class="text-2xl font-bold mb-4">Available Tests</h2>
+        
+        <!-- Test Functions List -->
+        <div class="space-y-6">
+          <template x-for="test in tests" :key="test.id">
+            <div class="card bg-base-200 shadow-xl">
+              <div class="card-body">
+                <div class="card-title flex flex-col items-start">
+                  <pre class="text-lg bg-base-300 p-2 rounded w-full overflow-x-auto"><span x-text="test.name"></span>(<span x-text="test.pretty"></span>)</pre>
+                  <pre x-show="test.doc" class="text-sm text-base-content/70 whitespace-pre-wrap mt-2" x-text="test.doc"></pre>
+                </div>
+                
+                <!-- Test Execution Form -->
+                <form @submit.prevent class="space-y-4 mt-4">
+                  <div class="form-control">
+                    <label class="label">
+                      <span class="label-text">Kwargs (JSON object):</span>
+                    </label>
+                    <textarea 
+                      :value="test.kwargs"
+                      @input="updateTestArgs(test.id, 'kwargs', $event.target.value)"
+                      :placeholder="getKwargsPlaceholder(test)"
+                      rows="5"
+                      class="textarea textarea-bordered font-mono text-sm">
+                    </textarea>
+                  </div>
+                  
+                  <div class="grid grid-cols-2 gap-4">
+                    <div class="form-control">
+                      <label class="label">
+                        <span class="label-text">Gas Limit:</span>
+                      </label>
+                      <input 
+                        type="number" 
+                        :value="test.gasLimit"
+                        @input="updateTestArgs(test.id, 'gasLimit', parseInt($event.target.value) || 200000)"
+                        min="1" 
+                        step="1000"
+                        class="input input-bordered"
+                      />
+                    </div>
+                    
+                    <div class="form-control">
+                      <label class="label">
+                        <span class="label-text">Gas Price:</span>
+                      </label>
+                      <input 
+                        type="number" 
+                        step="0.001"
+                        :value="$store.walletStore.gasPrice"
+                        @input="$store.walletStore.gasPrice = $event.target.value"
+                        min="0" 
+                        class="input input-bordered"
+                        placeholder="0.025"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div class="form-control">
+                    <label class="label">
+                      <span class="label-text">Attached Msgs (JSON array):</span>
+                    </label>
+                    <textarea 
+                      :value="test.attachedMsg"
+                      @input="updateTestArgs(test.id, 'attachedMsg', $event.target.value)"
+                      placeholder="[]"
+                      rows="3"
+                      class="textarea textarea-bordered font-mono text-sm">
+                    </textarea>
+                  </div>
+                  
+                  <!-- Run Test Button (no Sign Tx) -->
+                  <div>
+                    <button 
+                      type="button" 
+                      @click="runTest(test)"
+                      :disabled="isTestExecuting(test.id) || !$store.walletStore.activeWalletMeta"
+                      class="btn btn-success"
+                      :class="{ 'loading': isTestExecuting(test.id) }"
+                    >
+                      <span x-show="!isTestExecuting(test.id)">Run Test</span>
+                      <span x-show="isTestExecuting(test.id)">Running...</span>
+                    </button>
+                  </div>
+                  
+                  <!-- Test Execution Status -->
+                  <div x-show="isTestExecuting(test.id)" class="mt-2">
+                    <p class="text-sm text-base-content/70">Running test...</p>
+                  </div>
+                </form>
+                
+                <!-- Test Results Section -->
+                <div x-show="testResults[test.id]" class="mt-4">
+                  <div class="collapse collapse-arrow bg-base-100" open>
+                    <input type="checkbox" checked /> 
+                    <div class="collapse-title font-medium">
+                      Test Result
+                      <span class="text-sm text-base-content/70 ml-2" x-text="testResults[test.id]?.timestamp"></span>
+                      <span x-show="testResults[test.id]?.hasError" class="badge badge-error ml-2">Failed</span>
+                      <span x-show="!testResults[test.id]?.hasError" class="badge badge-success ml-2">Passed</span>
+                    </div>
+                    <div class="collapse-content">
+                      <pre 
+                        class="text-sm p-4 rounded-lg overflow-x-auto"
+                        :class="testResults[test.id]?.hasError ? 'text-error bg-error/10' : 'text-success bg-success/10'"
+                        x-text="testResults[test.id]?.output">
+                      </pre>
+                      <div x-show="testResults[test.id]?.coverageData" class="mt-2">
+                        <div class="alert alert-info">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                          <span>Coverage data available - click buttons below to visualize</span>
+                        </div>
+                        
+                        <div class="flex items-center space-x-2 mt-2">
+                          <span class="text-sm">Visualize:</span>
+                          <div class="btn-group">
+                            <button 
+                              type="button" 
+                              @click="reapplyTestCoverage(test.id, 'coverage')"
+                              class="btn btn-sm"
+                              :class="currentTestCoverageId === test.id && visualizationMode === 'coverage' ? 'btn-active' : ''"
+                            >
+                              Coverage
+                            </button>
+                            <button 
+                              type="button" 
+                              @click="reapplyTestCoverage(test.id, 'performance')"
+                              class="btn btn-sm"
+                              :class="currentTestCoverageId === test.id && visualizationMode === 'performance' ? 'btn-active' : ''"
+                            >
+                              Performance
+                            </button>
+                          </div>
+                          
+                          <button 
+                            type="button" 
+                            @click="clearCoverage()"
+                            class="btn btn-sm btn-outline"
+                          >
+                            Clear
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Code Editor -->
+    <div>
+      <div class="card bg-base-200 shadow-xl h-full">
+        <div class="card-body">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="card-title">Python Code</h2>
+
+          </div>
+          
+          <pre class="border border-base-300 rounded-lg overflow-x-auto p-4 bg-base-100" style="min-height: 100px;"><code 
+            id="editor" 
+            contenteditable="true"
+            @input="
+              clearTimeout($el._inputTimer);
+              $el._inputTimer = setTimeout(() => {
+                currentCode = $el.textContent;
+              }, 300);
+            "
+            @paste.prevent="
+              const text = $event.clipboardData.getData('text/plain');
+              document.execCommand('insertText', false, text);
+            "
+            x-init="
+              $el.textContent = currentCode;
+              // Watch for external code changes
+              $watch('currentCode', (value) => {
+                if ($el.textContent !== value) {
+                  $el.textContent = value;
+                }
+              });
+            "
+            @keydown.tab.prevent="
+              document.execCommand('insertText', false, '    ');
+            "
+            class="block text-sm font-mono outline-none"
+            style="white-space: pre-wrap; word-wrap: break-word;">
+          </code></pre>
+          
+          <!-- Update Script Button -->
+          <div class="mt-4">
+            <button 
+              type="button" 
+              @click="updateScript()"
+              :disabled="isUpdatingScript || !$store.walletStore.activeWalletMeta"
+              class="btn btn-primary w-full"
+              :class="{ 'loading': isUpdatingScript }"
+            >
+              <span x-show="!isUpdatingScript">Update Script</span>
+              <span x-show="isUpdatingScript">Updating...</span>
+            </button>
+          </div>
+          
+          <!-- Update Status -->
+          <div x-show="updateStatus" class="mt-2">
+            <p class="text-sm text-base-content/70" x-text="updateStatus"></p>
+          </div>
+          
+          <!-- Update Result -->
+          <div x-show="updateResult" class="mt-4">
+            <div class="collapse collapse-arrow bg-base-100" open>
+              <input type="checkbox" checked /> 
+              <div class="collapse-title font-medium">
+                Update Result
+                <span class="text-sm text-base-content/70 ml-2" x-text="updateResult?.timestamp"></span>
+              </div>
+              <div class="collapse-content">
+                <pre 
+                  class="text-sm p-4 rounded-lg overflow-x-auto"
+                  :class="updateResult?.hasError ? 'text-error bg-error/10' : 'text-success bg-success/10'"
+                  x-text="updateResult?.output">
+                </pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  /* Coverage visualization styles */
+  #editor mark {
+    border-radius: 2px;
+  }
+  #editor mark:hover {
+    outline: 1px solid #000;
+    cursor: pointer;
+  }
+</style>

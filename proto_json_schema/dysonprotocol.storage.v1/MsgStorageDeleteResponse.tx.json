@@ -1,0 +1,21 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgStorageDeleteResponse",
+    "definitions": {
+        "MsgStorageDeleteResponse": {
+            "properties": {
+                "deleted_indexes": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array",
+                    "description": "List of indexes that were successfully deleted"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Storage Delete Response",
+            "description": "MsgStorageDeleteResponse is the response for deleting storage entries."
+        }
+    }
+}

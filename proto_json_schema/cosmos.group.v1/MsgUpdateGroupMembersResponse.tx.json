@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgUpdateGroupMembersResponse",
+    "definitions": {
+        "MsgUpdateGroupMembersResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Update Group Members Response",
+            "description": "MsgUpdateGroupMembersResponse is the Msg/UpdateGroupMembers response type."
+        }
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryCodeRequest",
+    "definitions": {
+        "QueryCodeRequest": {
+            "properties": {
+                "checksum": {
+                    "type": "string",
+                    "description": "checksum is a hex encoded string of the code stored."
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Code Request",
+            "description": "QueryCodeRequest is the request type for the Query/Code RPC method."
+        }
+    }
+}

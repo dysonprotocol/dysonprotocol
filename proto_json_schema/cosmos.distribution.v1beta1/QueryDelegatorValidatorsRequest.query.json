@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryDelegatorValidatorsRequest",
+    "definitions": {
+        "QueryDelegatorValidatorsRequest": {
+            "properties": {
+                "delegator_address": {
+                    "type": "string",
+                    "description": "delegator_address defines the delegator address to query for."
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Delegator Validators Request",
+            "description": "QueryDelegatorValidatorsRequest is the request type for the Query/DelegatorValidators RPC method."
+        }
+    }
+}

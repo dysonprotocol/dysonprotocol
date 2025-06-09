@@ -1,0 +1,476 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "ibc/core/connection/v1/tx.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/ibc.core.connection.v1.Msg/ConnectionOpenAck": {
+      "post": {
+        "summary": "ConnectionOpenAck defines a rpc handler method for MsgConnectionOpenAck.",
+        "operationId": "Msg_ConnectionOpenAck",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ibc.core.connection.v1.MsgConnectionOpenAckResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ibc.core.connection.v1.MsgConnectionOpenAck"
+            }
+          }
+        ],
+        "tags": [
+          "Msg"
+        ]
+      }
+    },
+    "/ibc.core.connection.v1.Msg/ConnectionOpenConfirm": {
+      "post": {
+        "summary": "ConnectionOpenConfirm defines a rpc handler method for\nMsgConnectionOpenConfirm.",
+        "operationId": "Msg_ConnectionOpenConfirm",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ibc.core.connection.v1.MsgConnectionOpenConfirmResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ibc.core.connection.v1.MsgConnectionOpenConfirm"
+            }
+          }
+        ],
+        "tags": [
+          "Msg"
+        ]
+      }
+    },
+    "/ibc.core.connection.v1.Msg/ConnectionOpenInit": {
+      "post": {
+        "summary": "ConnectionOpenInit defines a rpc handler method for MsgConnectionOpenInit.",
+        "operationId": "Msg_ConnectionOpenInit",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ibc.core.connection.v1.MsgConnectionOpenInitResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ibc.core.connection.v1.MsgConnectionOpenInit"
+            }
+          }
+        ],
+        "tags": [
+          "Msg"
+        ]
+      }
+    },
+    "/ibc.core.connection.v1.Msg/ConnectionOpenTry": {
+      "post": {
+        "summary": "ConnectionOpenTry defines a rpc handler method for MsgConnectionOpenTry.",
+        "operationId": "Msg_ConnectionOpenTry",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ibc.core.connection.v1.MsgConnectionOpenTryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ibc.core.connection.v1.MsgConnectionOpenTry"
+            }
+          }
+        ],
+        "tags": [
+          "Msg"
+        ]
+      }
+    },
+    "/ibc.core.connection.v1.Msg/UpdateConnectionParams": {
+      "post": {
+        "summary": "UpdateConnectionParams defines a rpc handler method for\nMsgUpdateParams.",
+        "operationId": "Msg_UpdateConnectionParams",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ibc.core.connection.v1.MsgUpdateParamsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ibc.core.connection.v1.MsgUpdateParams"
+            }
+          }
+        ],
+        "tags": [
+          "Msg"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "google.protobuf.Any": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string",
+          "description": "A URL/resource name that uniquely identifies the type of the serialized\nprotocol buffer message. This string must contain at least\none \"/\" character. The last segment of the URL's path must represent\nthe fully qualified name of the type (as in\n`path/google.protobuf.Duration`). The name should be in a canonical form\n(e.g., leading \".\" is not accepted).\n\nIn practice, teams usually precompile into the binary all types that they\nexpect it to use in the context of Any. However, for URLs which use the\nscheme `http`, `https`, or no scheme, one can optionally set up a type\nserver that maps type URLs to message definitions as follows:\n\n* If no scheme is provided, `https` is assumed.\n* An HTTP GET on the URL must yield a [google.protobuf.Type][]\n  value in binary format, or produce an error.\n* Applications are allowed to cache lookup results based on the\n  URL, or have them precompiled into a binary to avoid any\n  lookup. Therefore, binary compatibility needs to be preserved\n  on changes to types. (Use versioned type names to manage\n  breaking changes.)\n\nNote: this functionality is not currently available in the official\nprotobuf release, and it is not used for type URLs beginning with\ntype.googleapis.com. As of May 2023, there are no widely used type server\nimplementations and no plans to implement one.\n\nSchemes other than `http`, `https` (or the empty scheme) might be\nused with implementation specific semantics."
+        },
+        "value": {
+          "type": "string",
+          "format": "byte",
+          "description": "Must be a valid serialized protocol buffer of the above specified type."
+        }
+      },
+      "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n    // or ...\n    if (any.isSameTypeAs(Foo.getDefaultInstance())) {\n      foo = any.unpack(Foo.getDefaultInstance());\n    }\n\n Example 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\n Example 4: Pack and unpack a message in Go\n\n     foo := \u0026pb.Foo{...}\n     any, err := anypb.New(foo)\n     if err != nil {\n       ...\n     }\n     ...\n     foo := \u0026pb.Foo{}\n     if err := any.UnmarshalTo(foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\nJSON\n====\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }"
+    },
+    "grpc.gateway.runtime.Error": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/google.protobuf.Any"
+          }
+        }
+      }
+    },
+    "ibc.core.client.v1.Height": {
+      "type": "object",
+      "properties": {
+        "revision_number": {
+          "type": "string",
+          "format": "uint64",
+          "title": "the revision that the client is currently on"
+        },
+        "revision_height": {
+          "type": "string",
+          "format": "uint64",
+          "title": "the height within the given revision"
+        }
+      },
+      "description": "Normally the RevisionHeight is incremented at each height while keeping\nRevisionNumber the same. However some consensus algorithms may choose to\nreset the height in certain conditions e.g. hard forks, state-machine\nbreaking changes In these cases, the RevisionNumber is incremented so that\nheight continues to be monitonically increasing even as the RevisionHeight\ngets reset\n\nPlease note that json tags for generated Go code are overridden to explicitly\nexclude the omitempty jsontag. This enforces the Go json marshaller to always\nemit zero values for both revision_number and revision_height.",
+      "title": "Height is a monotonically increasing data type\nthat can be compared against another Height for the purposes of updating and\nfreezing clients"
+    },
+    "ibc.core.commitment.v1.MerklePrefix": {
+      "type": "object",
+      "properties": {
+        "key_prefix": {
+          "type": "string",
+          "format": "byte"
+        }
+      },
+      "title": "MerklePrefix is merkle path prefixed to the key.\nThe constructed key from the Path and the key will be append(Path.KeyPath,\nappend(Path.KeyPrefix, key...))"
+    },
+    "ibc.core.connection.v1.Counterparty": {
+      "type": "object",
+      "properties": {
+        "client_id": {
+          "type": "string",
+          "description": "identifies the client on the counterparty chain associated with a given\nconnection."
+        },
+        "connection_id": {
+          "type": "string",
+          "description": "identifies the connection end on the counterparty chain associated with a\ngiven connection."
+        },
+        "prefix": {
+          "$ref": "#/definitions/ibc.core.commitment.v1.MerklePrefix",
+          "description": "commitment merkle prefix of the counterparty chain."
+        }
+      },
+      "description": "Counterparty defines the counterparty chain associated with a connection end."
+    },
+    "ibc.core.connection.v1.MsgConnectionOpenAck": {
+      "type": "object",
+      "properties": {
+        "connection_id": {
+          "type": "string"
+        },
+        "counterparty_connection_id": {
+          "type": "string"
+        },
+        "version": {
+          "$ref": "#/definitions/ibc.core.connection.v1.Version"
+        },
+        "client_state": {
+          "$ref": "#/definitions/google.protobuf.Any",
+          "description": "Deprecated: this field is unused."
+        },
+        "proof_height": {
+          "$ref": "#/definitions/ibc.core.client.v1.Height"
+        },
+        "proof_try": {
+          "type": "string",
+          "format": "byte",
+          "title": "proof of the initialization the connection on Chain B: `UNINITIALIZED -\u003e\nTRYOPEN`"
+        },
+        "proof_client": {
+          "type": "string",
+          "format": "byte",
+          "description": "Deprecated: this field is unused."
+        },
+        "proof_consensus": {
+          "type": "string",
+          "format": "byte",
+          "description": "Deprecated: this field is unused."
+        },
+        "consensus_height": {
+          "$ref": "#/definitions/ibc.core.client.v1.Height",
+          "description": "Deprecated: this field is unused."
+        },
+        "signer": {
+          "type": "string"
+        },
+        "host_consensus_state_proof": {
+          "type": "string",
+          "format": "byte",
+          "description": "Deprecated: this field is unused."
+        }
+      },
+      "description": "MsgConnectionOpenAck defines a msg sent by a Relayer to Chain A to\nacknowledge the change of connection state to TRYOPEN on Chain B."
+    },
+    "ibc.core.connection.v1.MsgConnectionOpenAckResponse": {
+      "type": "object",
+      "description": "MsgConnectionOpenAckResponse defines the Msg/ConnectionOpenAck response type."
+    },
+    "ibc.core.connection.v1.MsgConnectionOpenConfirm": {
+      "type": "object",
+      "properties": {
+        "connection_id": {
+          "type": "string"
+        },
+        "proof_ack": {
+          "type": "string",
+          "format": "byte",
+          "title": "proof for the change of the connection state on Chain A: `INIT -\u003e OPEN`"
+        },
+        "proof_height": {
+          "$ref": "#/definitions/ibc.core.client.v1.Height"
+        },
+        "signer": {
+          "type": "string"
+        }
+      },
+      "description": "MsgConnectionOpenConfirm defines a msg sent by a Relayer to Chain B to\nacknowledge the change of connection state to OPEN on Chain A."
+    },
+    "ibc.core.connection.v1.MsgConnectionOpenConfirmResponse": {
+      "type": "object",
+      "description": "MsgConnectionOpenConfirmResponse defines the Msg/ConnectionOpenConfirm\nresponse type."
+    },
+    "ibc.core.connection.v1.MsgConnectionOpenInit": {
+      "type": "object",
+      "properties": {
+        "client_id": {
+          "type": "string"
+        },
+        "counterparty": {
+          "$ref": "#/definitions/ibc.core.connection.v1.Counterparty"
+        },
+        "version": {
+          "$ref": "#/definitions/ibc.core.connection.v1.Version"
+        },
+        "delay_period": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "signer": {
+          "type": "string"
+        }
+      },
+      "description": "MsgConnectionOpenInit defines the msg sent by an account on Chain A to\ninitialize a connection with Chain B."
+    },
+    "ibc.core.connection.v1.MsgConnectionOpenInitResponse": {
+      "type": "object",
+      "description": "MsgConnectionOpenInitResponse defines the Msg/ConnectionOpenInit response\ntype."
+    },
+    "ibc.core.connection.v1.MsgConnectionOpenTry": {
+      "type": "object",
+      "properties": {
+        "client_id": {
+          "type": "string"
+        },
+        "previous_connection_id": {
+          "type": "string",
+          "description": "Deprecated: this field is unused. Crossing hellos are no longer supported\nin core IBC."
+        },
+        "client_state": {
+          "$ref": "#/definitions/google.protobuf.Any",
+          "description": "Deprecated: this field is unused."
+        },
+        "counterparty": {
+          "$ref": "#/definitions/ibc.core.connection.v1.Counterparty"
+        },
+        "delay_period": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "counterparty_versions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ibc.core.connection.v1.Version"
+          }
+        },
+        "proof_height": {
+          "$ref": "#/definitions/ibc.core.client.v1.Height"
+        },
+        "proof_init": {
+          "type": "string",
+          "format": "byte",
+          "title": "proof of the initialization the connection on Chain A: `UNINITIALIZED -\u003e\nINIT`"
+        },
+        "proof_client": {
+          "type": "string",
+          "format": "byte",
+          "description": "Deprecated: this field is unused."
+        },
+        "proof_consensus": {
+          "type": "string",
+          "format": "byte",
+          "description": "Deprecated: this field is unused."
+        },
+        "consensus_height": {
+          "$ref": "#/definitions/ibc.core.client.v1.Height",
+          "description": "Deprecated: this field is unused."
+        },
+        "signer": {
+          "type": "string"
+        },
+        "host_consensus_state_proof": {
+          "type": "string",
+          "format": "byte",
+          "description": "Deprecated: this field is unused."
+        }
+      },
+      "description": "MsgConnectionOpenTry defines a msg sent by a Relayer to try to open a\nconnection on Chain B."
+    },
+    "ibc.core.connection.v1.MsgConnectionOpenTryResponse": {
+      "type": "object",
+      "description": "MsgConnectionOpenTryResponse defines the Msg/ConnectionOpenTry response type."
+    },
+    "ibc.core.connection.v1.MsgUpdateParams": {
+      "type": "object",
+      "properties": {
+        "signer": {
+          "type": "string",
+          "title": "signer address"
+        },
+        "params": {
+          "$ref": "#/definitions/ibc.core.connection.v1.Params",
+          "description": "params defines the connection parameters to update.\n\nNOTE: All parameters must be supplied."
+        }
+      },
+      "description": "MsgUpdateParams defines the sdk.Msg type to update the connection parameters."
+    },
+    "ibc.core.connection.v1.MsgUpdateParamsResponse": {
+      "type": "object",
+      "description": "MsgUpdateParamsResponse defines the MsgUpdateParams response type."
+    },
+    "ibc.core.connection.v1.Params": {
+      "type": "object",
+      "properties": {
+        "max_expected_time_per_block": {
+          "type": "string",
+          "format": "uint64",
+          "description": "maximum expected time per block (in nanoseconds), used to enforce block\ndelay. This parameter should reflect the largest amount of time that the\nchain might reasonably take to produce the next block under normal\noperating conditions. A safe choice is 3-5x the expected time per block."
+        }
+      },
+      "description": "Params defines the set of Connection parameters."
+    },
+    "ibc.core.connection.v1.Version": {
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "type": "string",
+          "title": "unique version identifier"
+        },
+        "features": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "list of features compatible with the specified identifier"
+        }
+      },
+      "description": "Version defines the versioning scheme used to negotiate the IBC version in\nthe connection handshake."
+    }
+  }
+}

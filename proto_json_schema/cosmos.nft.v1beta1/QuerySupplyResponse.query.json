@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QuerySupplyResponse",
+    "definitions": {
+        "QuerySupplyResponse": {
+            "properties": {
+                "amount": {
+                    "type": "string",
+                    "description": "amount is the number of all NFTs from the given class"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Supply Response",
+            "description": "QuerySupplyResponse is the response type for the Query/Supply RPC method"
+        }
+    }
+}

@@ -1,0 +1,18 @@
+syntax = "proto3";
+package dysonprotocol.crontask.v1;
+
+import "dysonprotocol/crontask/v1/crontask.proto";
+
+option go_package = "dysonprotocol.com/x/crontask/types";
+
+// GenesisState defines the crontask module's genesis state
+message GenesisState {
+  // List of tasks to initialize with
+  repeated Task tasks = 1;
+
+  // The sequence for the next task ID
+  uint64 next_task_id = 2;
+
+  // Module parameters
+  Params params = 3;
+}

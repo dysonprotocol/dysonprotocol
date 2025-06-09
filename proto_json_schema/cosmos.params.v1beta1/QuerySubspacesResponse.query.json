@@ -1,0 +1,37 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QuerySubspacesResponse",
+    "definitions": {
+        "QuerySubspacesResponse": {
+            "properties": {
+                "subspaces": {
+                    "items": {
+                        "$ref": "#/definitions/cosmos.params.v1beta1.Subspace"
+                    },
+                    "type": "array"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Subspaces Response",
+            "description": "QuerySubspacesResponse defines the response types for querying for all registered subspaces and all keys for a subspace."
+        },
+        "cosmos.params.v1beta1.Subspace": {
+            "properties": {
+                "subspace": {
+                    "type": "string"
+                },
+                "keys": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Subspace",
+            "description": "Subspace defines a parameter subspace name and all the keys that exist for the subspace."
+        }
+    }
+}

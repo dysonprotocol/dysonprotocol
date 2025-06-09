@@ -1,0 +1,17 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgAuthorizeCircuitBreakerResponse",
+    "definitions": {
+        "MsgAuthorizeCircuitBreakerResponse": {
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Authorize Circuit Breaker Response",
+            "description": "MsgAuthorizeCircuitBreakerResponse defines the Msg/AuthorizeCircuitBreaker response type."
+        }
+    }
+}

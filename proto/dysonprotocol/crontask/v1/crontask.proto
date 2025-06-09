@@ -1,0 +1,66 @@
+syntax = "proto3";
+package dysonprotocol.crontask.v1;
+
+option go_package = "dysonprotocol.com/x/crontask/types";
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/bank/v1beta1/bank.proto";
+import "amino/amino.proto";
+import "cosmos/msg/v1/msg.proto";
+import "google/protobuf/any.proto";
+
+// Task represents a scheduled task in the crontask system
+message Task {
+  // The unique identifier for the task
+  uint64 task_id = 1;
+
+  // Address of the creator of the task
+  string creator = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // Unix timestamp when the task is scheduled to execute
+  int64 scheduled_timestamp = 3;
+
+  // Unix timestamp after which the task will expire if not executed
+  int64 expiry_timestamp = 4;
+
+  // Maximum gas limit for the task execution
+  uint64 task_gas_limit = 5;
+
+  // Gas price for the task execution which is calculated automatically
+  // from task_gas_fee / task_gas_limit
+  cosmos.base.v1beta1.Coin task_gas_price = 6
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+
+  // Gas fee for the task execution
+  cosmos.base.v1beta1.Coin task_gas_fee = 7
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+
+  // Messages to execute as part of the task
+  repeated google.protobuf.Any msgs = 8;
+
+  // Results of message execution
+  repeated google.protobuf.Any msg_results = 9;
+
+  // Current status of the task: Scheduled, Done, Failed, Expired
+  string status = 10;
+
+  // Block timestamp when the task was created
+  int64 creation_time = 11;
+
+  // Error message if task execution failed
+  string error_log = 12;
+}
+
+// Params defines the parameters for the crontask module
+message Params {
+  // Maximum gas allowed for executing tasks per block
+  uint64 block_gas_limit = 1;
+
+  // Default expiry limit in seconds (24 hours)
+  int64 expiry_limit = 2;
+
+  // Maximum allowed scheduled time in seconds from task creation (24 hours)
+  int64 max_scheduled_time = 3;
+}

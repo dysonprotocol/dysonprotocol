@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryEscrowAddressResponse",
+    "definitions": {
+        "QueryEscrowAddressResponse": {
+            "properties": {
+                "escrow_address": {
+                    "type": "string",
+                    "description": "the escrow account address"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Escrow Address Response",
+            "description": "QueryEscrowAddressResponse is the response type of the EscrowAddress RPC method."
+        }
+    }
+}

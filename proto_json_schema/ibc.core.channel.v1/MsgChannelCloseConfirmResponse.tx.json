@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgChannelCloseConfirmResponse",
+    "definitions": {
+        "MsgChannelCloseConfirmResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Channel Close Confirm Response",
+            "description": "MsgChannelCloseConfirmResponse defines the Msg/ChannelCloseConfirm response type."
+        }
+    }
+}

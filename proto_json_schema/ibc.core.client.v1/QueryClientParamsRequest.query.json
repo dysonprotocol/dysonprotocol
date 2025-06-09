@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryClientParamsRequest",
+    "definitions": {
+        "QueryClientParamsRequest": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Client Params Request",
+            "description": "QueryClientParamsRequest is the request type for the Query/ClientParams RPC method."
+        }
+    }
+}

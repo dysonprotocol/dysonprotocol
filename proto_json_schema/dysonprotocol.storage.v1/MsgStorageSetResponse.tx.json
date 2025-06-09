@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgStorageSetResponse",
+    "definitions": {
+        "MsgStorageSetResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Storage Set Response",
+            "description": "MsgStorageSetResponse is the response for setting a storage entry."
+        }
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgSubmitEvidenceResponse",
+    "definitions": {
+        "MsgSubmitEvidenceResponse": {
+            "properties": {
+                "hash": {
+                    "type": "string",
+                    "description": "hash defines the hash of the evidence.",
+                    "format": "binary",
+                    "binaryEncoding": "base64"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Submit Evidence Response",
+            "description": "MsgSubmitEvidenceResponse defines the Msg/SubmitEvidence response type."
+        }
+    }
+}

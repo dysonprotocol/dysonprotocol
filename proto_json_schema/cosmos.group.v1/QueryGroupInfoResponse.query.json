@@ -1,0 +1,52 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryGroupInfoResponse",
+    "definitions": {
+        "QueryGroupInfoResponse": {
+            "properties": {
+                "info": {
+                    "$ref": "#/definitions/cosmos.group.v1.GroupInfo",
+                    "additionalProperties": true,
+                    "description": "info is the GroupInfo of the group."
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Group Info Response",
+            "description": "QueryGroupInfoResponse is the Query/GroupInfo response type."
+        },
+        "cosmos.group.v1.GroupInfo": {
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "id is the unique ID of the group."
+                },
+                "admin": {
+                    "type": "string",
+                    "description": "admin is the account address of the group's admin."
+                },
+                "metadata": {
+                    "type": "string",
+                    "description": "metadata is any arbitrary metadata to attached to the group. the recommended format of the metadata is to be found here: https://docs.cosmos.network/v0.47/modules/group#group-1"
+                },
+                "version": {
+                    "type": "string",
+                    "description": "version is used to track changes to a group's membership structure that would break existing proposals. Whenever any members weight is changed, or any member is added or removed this version is incremented and will cause proposals based on older versions of this group to fail"
+                },
+                "total_weight": {
+                    "type": "string",
+                    "description": "total_weight is the sum of the group members' weights."
+                },
+                "created_at": {
+                    "type": "string",
+                    "description": "created_at is a timestamp specifying when a group was created.",
+                    "format": "date-time"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "State",
+            "description": "State  GroupInfo represents the high-level on-chain information for a group."
+        }
+    }
+}

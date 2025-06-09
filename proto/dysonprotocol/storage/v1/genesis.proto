@@ -1,0 +1,20 @@
+// Since: cosmos-sdk 0.46
+syntax = "proto3";
+
+package dysonprotocol.storage.v1;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "dysonprotocol/storage/v1/storage.proto";
+import "amino/amino.proto";
+
+option go_package = "dysonprotocol.com/x/storage/types";
+
+// GenesisState defines the storage module's genesis state.
+message GenesisState {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // entries defines the storage entries contained in the GenesisState
+  repeated Storage entries = 1 [ (gogoproto.nullable) = false ];
+}

@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgSendResponse",
+    "definitions": {
+        "MsgSendResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Send Response",
+            "description": "MsgSendResponse defines the Msg/Send response type."
+        }
+    }
+}

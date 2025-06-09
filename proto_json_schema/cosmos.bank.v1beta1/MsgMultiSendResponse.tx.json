@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgMultiSendResponse",
+    "definitions": {
+        "MsgMultiSendResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Multi Send Response",
+            "description": "MsgMultiSendResponse defines the Msg/MultiSend response type."
+        }
+    }
+}

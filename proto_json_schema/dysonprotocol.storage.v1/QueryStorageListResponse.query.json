@@ -1,0 +1,60 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryStorageListResponse",
+    "definitions": {
+        "QueryStorageListResponse": {
+            "properties": {
+                "entries": {
+                    "items": {
+                        "$ref": "#/definitions/dysonprotocol.storage.v1.Storage"
+                    },
+                    "type": "array"
+                },
+                "pagination": {
+                    "$ref": "#/definitions/cosmos.base.query.v1beta1.PageResponse",
+                    "additionalProperties": true
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Storage List Response"
+        },
+        "cosmos.base.query.v1beta1.PageResponse": {
+            "properties": {
+                "next_key": {
+                    "type": "string",
+                    "description": "next_key is the key to be passed to PageRequest.key to query the next page most efficiently. It will be empty if there are no more results.",
+                    "format": "binary",
+                    "binaryEncoding": "base64"
+                },
+                "total": {
+                    "type": "string",
+                    "description": "total is total number of results available if PageRequest.count_total was set, its value is undefined otherwise"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Page Response",
+            "description": "PageResponse is to be embedded in gRPC response messages where the corresponding request message has used PageRequest.  message SomeResponse {          repeated Bar results = 1;          PageResponse page = 2;  }"
+        },
+        "dysonprotocol.storage.v1.Storage": {
+            "properties": {
+                "owner": {
+                    "type": "string",
+                    "description": "owner is the account address that owns this storage entry."
+                },
+                "index": {
+                    "type": "string",
+                    "description": "index is the key/index for the storage entry (within the owner's namespace)."
+                },
+                "data": {
+                    "type": "string",
+                    "description": "data is the stored string value associated with the index."
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Storage"
+        }
+    }
+}

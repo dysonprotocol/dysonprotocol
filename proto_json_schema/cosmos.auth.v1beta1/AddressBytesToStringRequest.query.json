@@ -1,0 +1,19 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/AddressBytesToStringRequest",
+    "definitions": {
+        "AddressBytesToStringRequest": {
+            "properties": {
+                "address_bytes": {
+                    "type": "string",
+                    "format": "binary",
+                    "binaryEncoding": "base64"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Address Bytes To String Request",
+            "description": "AddressBytesToStringRequest is the request type for AddressString rpc method."
+        }
+    }
+}

@@ -1,0 +1,344 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "dysonprotocol/script/v1/query.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/dysonprotocol/script/v1/decode_bytes": {
+      "get": {
+        "summary": "DecodeBytes decodes bytes to a JSON string.",
+        "operationId": "Query_DecodeBytes",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dysonprotocol.script.v1.QueryDecodeBytesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "type_url",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "bytes",
+            "description": "bytes is the encoded bytes.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "byte"
+          }
+        ],
+        "tags": [
+          "Query"
+        ]
+      }
+    },
+    "/dysonprotocol/script/v1/encode_json": {
+      "get": {
+        "summary": "EncodeJson encodes a JSON string to bytes.",
+        "operationId": "Query_EncodeJson",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dysonprotocol.script.v1.QueryEncodeJsonResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "json",
+            "description": "json is the json string to encode.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Query"
+        ]
+      }
+    },
+    "/dysonprotocol/script/v1/params": {
+      "get": {
+        "summary": "Params queries the parameters of the script module.",
+        "operationId": "Query_Params",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dysonprotocol.script.v1.QueryParamsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "tags": [
+          "Query"
+        ]
+      }
+    },
+    "/dysonprotocol/script/v1/script_info/{address}": {
+      "get": {
+        "summary": "ScriptInfo queries script info based on script address",
+        "operationId": "Query_ScriptInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dysonprotocol.script.v1.QueryScriptInfoResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "address",
+            "description": "address is the account address of the script.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Query"
+        ]
+      }
+    },
+    "/dysonprotocol/script/v1/verify_tx": {
+      "get": {
+        "summary": "VerifyTx verifies a transaction.",
+        "operationId": "Query_VerifyTx",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dysonprotocol.script.v1.QueryVerifyTxResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tx_json",
+            "description": "The transaction as a JSON string.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Query"
+        ]
+      }
+    },
+    "/dysonprotocol/script/v1/web_request": {
+      "post": {
+        "summary": "Queries the WSGI web application function of a script.",
+        "operationId": "Query_Web",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dysonprotocol.script.v1.QueryWebResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dysonprotocol.script.v1.QueryWebRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Query"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "dysonprotocol.script.v1.Params": {
+      "type": "object",
+      "properties": {
+        "max_relative_historical_blocks": {
+          "type": "string",
+          "format": "int64",
+          "description": "max_relative_historical_blocks defines the maximum number of historical\nblocks relative to the current block height that must be kept by nodes for\nscript queries. For example, if this value is 1000 and the current height\nis 5000, nodes must be able to query blocks back to height 4000."
+        },
+        "absolute_historical_block_cutoff": {
+          "type": "string",
+          "format": "int64",
+          "description": "absolute_historical_block_cutoff defines the lowest absolute block height\nthat nodes are required to have when max_relative_historical_blocks is\nenforced. This parameter is used when params are updated so that if\nMaxRelativeHistoricalBlocks is increased, nodes are not suddenly required\nto retroactively have historical blocks that predate this cutoff. When\nMaxRelativeHistoricalBlocks validation occurs, the oldest required block\nheight will be max(current_height - max_relative_historical_blocks,\nabsolute_historical_block_cutoff)."
+        }
+      },
+      "description": "Params defines the parameters for the script module."
+    },
+    "dysonprotocol.script.v1.QueryDecodeBytesResponse": {
+      "type": "object",
+      "properties": {
+        "json": {
+          "type": "string",
+          "description": "json is the decoded json string."
+        }
+      },
+      "description": "QueryDecodeBytesResponse is the Query/DecodeBytes response type."
+    },
+    "dysonprotocol.script.v1.QueryEncodeJsonResponse": {
+      "type": "object",
+      "properties": {
+        "bytes": {
+          "type": "string",
+          "format": "byte",
+          "description": "bytes is the encoded bytes."
+        }
+      },
+      "description": "QueryEncodeJsonResponse is the Query/EncodeJson response type."
+    },
+    "dysonprotocol.script.v1.QueryParamsResponse": {
+      "type": "object",
+      "properties": {
+        "params": {
+          "$ref": "#/definitions/dysonprotocol.script.v1.Params",
+          "description": "params holds all the parameters of this module."
+        }
+      },
+      "description": "QueryParamsResponse is the response type for the Query/Params RPC method."
+    },
+    "dysonprotocol.script.v1.QueryScriptInfoResponse": {
+      "type": "object",
+      "properties": {
+        "script": {
+          "$ref": "#/definitions/dysonprotocol.script.v1.Script",
+          "description": "info is the ScriptInfo of the script."
+        }
+      },
+      "description": "QueryScriptInfoResponse is the Query/ScriptInfo response type."
+    },
+    "dysonprotocol.script.v1.QueryVerifyTxResponse": {
+      "type": "object",
+      "title": "QueryVerifyTxResponse will be empty response on success, error will be raised\non failure"
+    },
+    "dysonprotocol.script.v1.QueryWebRequest": {
+      "type": "object",
+      "properties": {
+        "address_or_name": {
+          "type": "string",
+          "description": "address is the account address of the script."
+        },
+        "httprequest": {
+          "type": "string",
+          "description": "httprequest is the http request."
+        }
+      },
+      "description": "QueryWebRequest is the Query/Web request type."
+    },
+    "dysonprotocol.script.v1.QueryWebResponse": {
+      "type": "object",
+      "properties": {
+        "httpresponse": {
+          "type": "string",
+          "description": "httpresponse is the http response."
+        }
+      },
+      "description": "QueryWebResponse is the Query/Web response type."
+    },
+    "dysonprotocol.script.v1.Script": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "code": {
+          "type": "string"
+        }
+      }
+    },
+    "google.protobuf.Any": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string",
+          "description": "A URL/resource name that uniquely identifies the type of the serialized\nprotocol buffer message. This string must contain at least\none \"/\" character. The last segment of the URL's path must represent\nthe fully qualified name of the type (as in\n`path/google.protobuf.Duration`). The name should be in a canonical form\n(e.g., leading \".\" is not accepted).\n\nIn practice, teams usually precompile into the binary all types that they\nexpect it to use in the context of Any. However, for URLs which use the\nscheme `http`, `https`, or no scheme, one can optionally set up a type\nserver that maps type URLs to message definitions as follows:\n\n* If no scheme is provided, `https` is assumed.\n* An HTTP GET on the URL must yield a [google.protobuf.Type][]\n  value in binary format, or produce an error.\n* Applications are allowed to cache lookup results based on the\n  URL, or have them precompiled into a binary to avoid any\n  lookup. Therefore, binary compatibility needs to be preserved\n  on changes to types. (Use versioned type names to manage\n  breaking changes.)\n\nNote: this functionality is not currently available in the official\nprotobuf release, and it is not used for type URLs beginning with\ntype.googleapis.com. As of May 2023, there are no widely used type server\nimplementations and no plans to implement one.\n\nSchemes other than `http`, `https` (or the empty scheme) might be\nused with implementation specific semantics."
+        },
+        "value": {
+          "type": "string",
+          "format": "byte",
+          "description": "Must be a valid serialized protocol buffer of the above specified type."
+        }
+      },
+      "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n    // or ...\n    if (any.isSameTypeAs(Foo.getDefaultInstance())) {\n      foo = any.unpack(Foo.getDefaultInstance());\n    }\n\n Example 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\n Example 4: Pack and unpack a message in Go\n\n     foo := \u0026pb.Foo{...}\n     any, err := anypb.New(foo)\n     if err != nil {\n       ...\n     }\n     ...\n     foo := \u0026pb.Foo{}\n     if err := any.UnmarshalTo(foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\nJSON\n====\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }"
+    },
+    "grpc.gateway.runtime.Error": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/google.protobuf.Any"
+          }
+        }
+      }
+    }
+  }
+}

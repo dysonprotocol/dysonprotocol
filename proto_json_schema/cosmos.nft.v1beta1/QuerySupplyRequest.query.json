@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QuerySupplyRequest",
+    "definitions": {
+        "QuerySupplyRequest": {
+            "properties": {
+                "class_id": {
+                    "type": "string",
+                    "description": "class_id associated with the nft"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Supply Request",
+            "description": "QuerySupplyRequest is the request type for the Query/Supply RPC method"
+        }
+    }
+}

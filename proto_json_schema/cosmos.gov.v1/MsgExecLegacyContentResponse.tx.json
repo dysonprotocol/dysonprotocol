@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgExecLegacyContentResponse",
+    "definitions": {
+        "MsgExecLegacyContentResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Exec Legacy Content Response",
+            "description": "MsgExecLegacyContentResponse defines the Msg/ExecLegacyContent response type."
+        }
+    }
+}

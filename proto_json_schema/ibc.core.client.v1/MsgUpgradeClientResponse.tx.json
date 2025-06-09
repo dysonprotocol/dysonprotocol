@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgUpgradeClientResponse",
+    "definitions": {
+        "MsgUpgradeClientResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Upgrade Client Response",
+            "description": "MsgUpgradeClientResponse defines the Msg/UpgradeClient response type."
+        }
+    }
+}

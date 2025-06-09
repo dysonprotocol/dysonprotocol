@@ -1,0 +1,39 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryCounterpartyInfoResponse",
+    "definitions": {
+        "QueryCounterpartyInfoResponse": {
+            "properties": {
+                "counterparty_info": {
+                    "$ref": "#/definitions/ibc.core.client.v2.CounterpartyInfo",
+                    "additionalProperties": true
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Counterparty Info Response",
+            "description": "QueryCounterpartyInfoResponse is the response type for the Query/CounterpartyInfo RPC method."
+        },
+        "ibc.core.client.v2.CounterpartyInfo": {
+            "properties": {
+                "merkle_prefix": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array",
+                    "description": "merkle prefix key is the prefix that ics provable keys are stored under",
+                    "format": "binary",
+                    "binaryEncoding": "base64"
+                },
+                "client_id": {
+                    "type": "string",
+                    "description": "client identifier is the identifier used to send packet messages to our client"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Counterparty Info",
+            "description": "CounterpartyInfo defines the key that the counterparty will use to message our client"
+        }
+    }
+}

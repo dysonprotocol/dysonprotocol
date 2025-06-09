@@ -1,0 +1,20 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/QueryInterchainAccountRequest",
+    "definitions": {
+        "QueryInterchainAccountRequest": {
+            "properties": {
+                "owner": {
+                    "type": "string"
+                },
+                "connection_id": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Query Interchain Account Request",
+            "description": "QueryInterchainAccountRequest is the request type for the Query/InterchainAccount RPC method."
+        }
+    }
+}

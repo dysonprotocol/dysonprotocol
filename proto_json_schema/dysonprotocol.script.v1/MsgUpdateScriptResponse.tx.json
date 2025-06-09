@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgUpdateScriptResponse",
+    "definitions": {
+        "MsgUpdateScriptResponse": {
+            "properties": {
+                "version": {
+                    "type": "string",
+                    "description": "version is the updated script version."
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Update Script Response",
+            "description": "MsgUpdateScriptResponse is the Msg/UpdateScript response type."
+        }
+    }
+}

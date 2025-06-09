@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgSetSendEnabledResponse",
+    "definitions": {
+        "MsgSetSendEnabledResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Set Send Enabled Response",
+            "description": "MsgSetSendEnabledResponse defines the Msg/SetSendEnabled response type."
+        }
+    }
+}

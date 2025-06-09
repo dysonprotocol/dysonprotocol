@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgCommunityPoolSpendResponse",
+    "definitions": {
+        "MsgCommunityPoolSpendResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Community Pool Spend Response",
+            "description": "MsgCommunityPoolSpendResponse defines the response to executing a MsgCommunityPoolSpend message."
+        }
+    }
+}

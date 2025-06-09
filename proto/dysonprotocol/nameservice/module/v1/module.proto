@@ -1,0 +1,29 @@
+syntax = "proto3";
+package dysonprotocol.nameservice.module.v1;
+
+import "cosmos/app/v1alpha1/module.proto";
+import "gogoproto/gogo.proto";
+import "google/protobuf/duration.proto";
+import "amino/amino.proto";
+
+// Module is the config object of the nameservice module.
+option go_package = "dysonprotocol.com/x/nameservice/module/v1";
+
+message Module {
+  option (cosmos.app.v1alpha1.module) = {
+    go_import : "dysonprotocol.com/x/nameservice"
+  };
+
+  // max_name_length defines the maximum length of a name that can be registered
+  uint64 max_name_length = 1
+      [ (gogoproto.moretags) = "yaml:\"max_name_length\"" ];
+
+  // max_metadata_length defines the maximum length of metadata that can be
+  // stored
+  uint64 max_metadata_length = 2
+      [ (gogoproto.moretags) = "yaml:\"max_metadata_length\"" ];
+
+  // authority defines the custom module authority. If not set, defaults to the
+  // governance module.
+  string authority = 3;
+}
