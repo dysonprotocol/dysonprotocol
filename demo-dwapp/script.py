@@ -1,3 +1,6 @@
+"""
+This is a demo script for the Dyson Protocol.
+""" 
 import re2 as re
 
 import ast
@@ -220,28 +223,16 @@ def handle_static(environ, start_response, file_path=None):
         "index": f"static/{file_path}",
     }
     r = _query(q)
-    entry = r.get("entry")
-    if not entry:
-        data = ""
-    else:
-        data = entry.get("data", "")
 
     # Explicitly handle JavaScript files
-    if file_path and file_path.endswith(".js"):
-        ctype = "application/javascript"
-    elif file_path and file_path.endswith(".css"):
-        ctype = "text/css"
-    elif file_path and (file_path.endswith(".html") or file_path.endswith(".htm")):
-        ctype = "text/html"
-    elif file_path and file_path.endswith(".json"):
-        ctype = "application/json"
-    else:
-        ctype, _ = mimetypes.guess_type(file_path or "")
-        if not ctype:
-            ctype = "application/octet-stream"
+    ctype, encoding = mimetypes.guess_type(file_path or "")
+    if not ctype:
+        ctype = "application/octet-stream"
+    if encoding:
+        ctype += f"; charset={encoding}"
 
     start_response("200 OK", [("Content-Type", ctype)])
-    return [data.encode()]
+    return [r["entry"]["data"].encode()]
 
 
 @route(r"^/wallet$")
@@ -456,19 +447,15 @@ def wsgi(environ, start_response):
     start_response("404 Not Found", [("Content-Type", "text/plain; charset=utf-8")])
     return [b"404 Not Found"]
 
-
-def fib(n: int = 3) -> int:
-    if n <= 1:
-        return n
-    return fib(n - 1) + fib(n - 2) + 1
-
-
-def test_fib(n: int = 1):
-    fib(n)
-
+####
+# Tests for coverage report
+####
 
 def memoize(func):
-    """Decorator that caches function results to avoid redundant computations"""
+    """
+    Decorator that caches function results to avoid redundant computations
+    Used here to demo the improved performance in the coverage report.
+    """
     cache = {}
 
     def wrapper(*args, **kwargs):
@@ -482,12 +469,20 @@ def memoize(func):
     return wrapper
 
 
+def fib(n: int = 3) -> int:
+    if n <= 1:
+        return n
+    return fib(n - 1) + fib(n - 2) + 1
+
+
+def test_fib(n: int = 3):
+    fib(n)
+
 @memoize
 def fib2(n: int = 3) -> int:
     if n <= 1:
         return n
     return fib2(n - 1) + fib2(n - 2) + 1
 
-
-def test_fib2(n: int = 1):
+def test_fib2(n: int = 3):
     fib2(n)

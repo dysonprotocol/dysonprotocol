@@ -6,3 +6,4 @@ google-re2
 freezegun
 requests
 simplejson
+black==25.1.0

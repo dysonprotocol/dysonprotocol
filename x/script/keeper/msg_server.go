@@ -7,6 +7,7 @@ import (
 
 	cosmossdkerrors "cosmossdk.io/errors"
 	scriptv1 "dysonprotocol.com/api/script/types"
+	"dysonprotocol.com/dysvm"
 	"dysonprotocol.com/x/script"
 	scripttypes "dysonprotocol.com/x/script/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -36,7 +37,13 @@ func (k Keeper) UpdateScript(ctx context.Context, msg *scripttypes.MsgUpdateScri
 		}
 	}
 
-	script.Code = msg.Code
+	// Format the code with black before setting it
+	formattedCode, err := dysvm.DysFormat(msg.Code)
+	if err != nil {
+		return nil, cosmossdkerrors.Wrap(err, "failed to format code with dys_format")
+	}
+
+	script.Code = formattedCode
 	script.Version = script.Version + 1
 
 	err = k.ScriptMap.Set(ctx, msg.Address, script)
