@@ -32,7 +32,7 @@ func NewTxCmd() *cobra.Command {
 	txCmd.AddCommand(NewUpdateScriptCmd())
 	txCmd.AddCommand(NewCreateNewScriptCmd())
 	txCmd.AddCommand(NewExecScriptCmd())
-	txCmd.AddCommand(CmdGrantExecAuthorization())
+	txCmd.AddCommand(CmdGrantScriptExecAuthorization())
 
 	return txCmd
 }
@@ -318,12 +318,12 @@ Examples:
 	return cmd
 }
 
-// CmdGrantExecAuthorization returns a command to grant ExecAuthorization to a grantee.
-func CmdGrantExecAuthorization() *cobra.Command {
+// CmdGrantScriptExecAuthorization returns a command to grant ScriptExecAuthorization to a grantee.
+func CmdGrantScriptExecAuthorization() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "grant-exec [grantee-address]",
-		Short: "Grant a custom ExecAuthorization to a grantee (via authz)",
-		Long: `Creates an Authz grant of type ExecAuthorization, allowing the grantee
+		Short: "Grant a custom ScriptExecAuthorization to a grantee (via authz)",
+		Long: `Creates an Authz grant of type ScriptExecAuthorization, allowing the grantee
 to execute a specific script (and optionally specific functions within it). 
 
 Examples:
@@ -391,8 +391,8 @@ Examples:
 				return fmt.Errorf("expiration timestamp invalid: %w", err)
 			}
 
-			// 6. Construct custom ExecAuthorization
-			customAuth := &scripttypes.ExecAuthorization{
+			// 6. Construct custom ScriptExecAuthorization
+			customAuth := &scripttypes.ScriptExecAuthorization{
 				ScriptAddress: scriptAddrStr,
 				FunctionNames: fnames,
 			}

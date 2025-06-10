@@ -14,74 +14,74 @@ import (
 	sync "sync"
 )
 
-var _ protoreflect.List = (*_ExecAuthorization_2_list)(nil)
+var _ protoreflect.List = (*_ScriptExecAuthorization_2_list)(nil)
 
-type _ExecAuthorization_2_list struct {
+type _ScriptExecAuthorization_2_list struct {
 	list *[]string
 }
 
-func (x *_ExecAuthorization_2_list) Len() int {
+func (x *_ScriptExecAuthorization_2_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_ExecAuthorization_2_list) Get(i int) protoreflect.Value {
+func (x *_ScriptExecAuthorization_2_list) Get(i int) protoreflect.Value {
 	return protoreflect.ValueOfString((*x.list)[i])
 }
 
-func (x *_ExecAuthorization_2_list) Set(i int, value protoreflect.Value) {
+func (x *_ScriptExecAuthorization_2_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.String()
 	concreteValue := valueUnwrapped
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_ExecAuthorization_2_list) Append(value protoreflect.Value) {
+func (x *_ScriptExecAuthorization_2_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.String()
 	concreteValue := valueUnwrapped
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_ExecAuthorization_2_list) AppendMutable() protoreflect.Value {
-	panic(fmt.Errorf("AppendMutable can not be called on message ExecAuthorization at list field FunctionNames as it is not of Message kind"))
+func (x *_ScriptExecAuthorization_2_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message ScriptExecAuthorization at list field FunctionNames as it is not of Message kind"))
 }
 
-func (x *_ExecAuthorization_2_list) Truncate(n int) {
+func (x *_ScriptExecAuthorization_2_list) Truncate(n int) {
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_ExecAuthorization_2_list) NewElement() protoreflect.Value {
+func (x *_ScriptExecAuthorization_2_list) NewElement() protoreflect.Value {
 	v := ""
 	return protoreflect.ValueOfString(v)
 }
 
-func (x *_ExecAuthorization_2_list) IsValid() bool {
+func (x *_ScriptExecAuthorization_2_list) IsValid() bool {
 	return x.list != nil
 }
 
 var (
-	md_ExecAuthorization                protoreflect.MessageDescriptor
-	fd_ExecAuthorization_script_address protoreflect.FieldDescriptor
-	fd_ExecAuthorization_function_names protoreflect.FieldDescriptor
+	md_ScriptExecAuthorization                protoreflect.MessageDescriptor
+	fd_ScriptExecAuthorization_script_address protoreflect.FieldDescriptor
+	fd_ScriptExecAuthorization_function_names protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_dysonprotocol_script_v1_authz_proto_init()
-	md_ExecAuthorization = File_dysonprotocol_script_v1_authz_proto.Messages().ByName("ExecAuthorization")
-	fd_ExecAuthorization_script_address = md_ExecAuthorization.Fields().ByName("script_address")
-	fd_ExecAuthorization_function_names = md_ExecAuthorization.Fields().ByName("function_names")
+	md_ScriptExecAuthorization = File_dysonprotocol_script_v1_authz_proto.Messages().ByName("ScriptExecAuthorization")
+	fd_ScriptExecAuthorization_script_address = md_ScriptExecAuthorization.Fields().ByName("script_address")
+	fd_ScriptExecAuthorization_function_names = md_ScriptExecAuthorization.Fields().ByName("function_names")
 }
 
-var _ protoreflect.Message = (*fastReflection_ExecAuthorization)(nil)
+var _ protoreflect.Message = (*fastReflection_ScriptExecAuthorization)(nil)
 
-type fastReflection_ExecAuthorization ExecAuthorization
+type fastReflection_ScriptExecAuthorization ScriptExecAuthorization
 
-func (x *ExecAuthorization) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_ExecAuthorization)(x)
+func (x *ScriptExecAuthorization) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_ScriptExecAuthorization)(x)
 }
 
-func (x *ExecAuthorization) slowProtoReflect() protoreflect.Message {
+func (x *ScriptExecAuthorization) slowProtoReflect() protoreflect.Message {
 	mi := &file_dysonprotocol_script_v1_authz_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -93,43 +93,43 @@ func (x *ExecAuthorization) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_ExecAuthorization_messageType fastReflection_ExecAuthorization_messageType
-var _ protoreflect.MessageType = fastReflection_ExecAuthorization_messageType{}
+var _fastReflection_ScriptExecAuthorization_messageType fastReflection_ScriptExecAuthorization_messageType
+var _ protoreflect.MessageType = fastReflection_ScriptExecAuthorization_messageType{}
 
-type fastReflection_ExecAuthorization_messageType struct{}
+type fastReflection_ScriptExecAuthorization_messageType struct{}
 
-func (x fastReflection_ExecAuthorization_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_ExecAuthorization)(nil)
+func (x fastReflection_ScriptExecAuthorization_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_ScriptExecAuthorization)(nil)
 }
-func (x fastReflection_ExecAuthorization_messageType) New() protoreflect.Message {
-	return new(fastReflection_ExecAuthorization)
+func (x fastReflection_ScriptExecAuthorization_messageType) New() protoreflect.Message {
+	return new(fastReflection_ScriptExecAuthorization)
 }
-func (x fastReflection_ExecAuthorization_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_ExecAuthorization
+func (x fastReflection_ScriptExecAuthorization_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_ScriptExecAuthorization
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_ExecAuthorization) Descriptor() protoreflect.MessageDescriptor {
-	return md_ExecAuthorization
+func (x *fastReflection_ScriptExecAuthorization) Descriptor() protoreflect.MessageDescriptor {
+	return md_ScriptExecAuthorization
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_ExecAuthorization) Type() protoreflect.MessageType {
-	return _fastReflection_ExecAuthorization_messageType
+func (x *fastReflection_ScriptExecAuthorization) Type() protoreflect.MessageType {
+	return _fastReflection_ScriptExecAuthorization_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_ExecAuthorization) New() protoreflect.Message {
-	return new(fastReflection_ExecAuthorization)
+func (x *fastReflection_ScriptExecAuthorization) New() protoreflect.Message {
+	return new(fastReflection_ScriptExecAuthorization)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_ExecAuthorization) Interface() protoreflect.ProtoMessage {
-	return (*ExecAuthorization)(x)
+func (x *fastReflection_ScriptExecAuthorization) Interface() protoreflect.ProtoMessage {
+	return (*ScriptExecAuthorization)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -137,16 +137,16 @@ func (x *fastReflection_ExecAuthorization) Interface() protoreflect.ProtoMessage
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_ExecAuthorization) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_ScriptExecAuthorization) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.ScriptAddress != "" {
 		value := protoreflect.ValueOfString(x.ScriptAddress)
-		if !f(fd_ExecAuthorization_script_address, value) {
+		if !f(fd_ScriptExecAuthorization_script_address, value) {
 			return
 		}
 	}
 	if len(x.FunctionNames) != 0 {
-		value := protoreflect.ValueOfList(&_ExecAuthorization_2_list{list: &x.FunctionNames})
-		if !f(fd_ExecAuthorization_function_names, value) {
+		value := protoreflect.ValueOfList(&_ScriptExecAuthorization_2_list{list: &x.FunctionNames})
+		if !f(fd_ScriptExecAuthorization_function_names, value) {
 			return
 		}
 	}
@@ -163,17 +163,17 @@ func (x *fastReflection_ExecAuthorization) Range(f func(protoreflect.FieldDescri
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_ExecAuthorization) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_ScriptExecAuthorization) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "dysonprotocol.script.v1.ExecAuthorization.script_address":
+	case "dysonprotocol.script.v1.ScriptExecAuthorization.script_address":
 		return x.ScriptAddress != ""
-	case "dysonprotocol.script.v1.ExecAuthorization.function_names":
+	case "dysonprotocol.script.v1.ScriptExecAuthorization.function_names":
 		return len(x.FunctionNames) != 0
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.script.v1.ExecAuthorization"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.script.v1.ScriptExecAuthorization"))
 		}
-		panic(fmt.Errorf("message dysonprotocol.script.v1.ExecAuthorization does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message dysonprotocol.script.v1.ScriptExecAuthorization does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -183,17 +183,17 @@ func (x *fastReflection_ExecAuthorization) Has(fd protoreflect.FieldDescriptor) 
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_ExecAuthorization) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_ScriptExecAuthorization) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "dysonprotocol.script.v1.ExecAuthorization.script_address":
+	case "dysonprotocol.script.v1.ScriptExecAuthorization.script_address":
 		x.ScriptAddress = ""
-	case "dysonprotocol.script.v1.ExecAuthorization.function_names":
+	case "dysonprotocol.script.v1.ScriptExecAuthorization.function_names":
 		x.FunctionNames = nil
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.script.v1.ExecAuthorization"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.script.v1.ScriptExecAuthorization"))
 		}
-		panic(fmt.Errorf("message dysonprotocol.script.v1.ExecAuthorization does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message dysonprotocol.script.v1.ScriptExecAuthorization does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -203,22 +203,22 @@ func (x *fastReflection_ExecAuthorization) Clear(fd protoreflect.FieldDescriptor
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_ExecAuthorization) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_ScriptExecAuthorization) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "dysonprotocol.script.v1.ExecAuthorization.script_address":
+	case "dysonprotocol.script.v1.ScriptExecAuthorization.script_address":
 		value := x.ScriptAddress
 		return protoreflect.ValueOfString(value)
-	case "dysonprotocol.script.v1.ExecAuthorization.function_names":
+	case "dysonprotocol.script.v1.ScriptExecAuthorization.function_names":
 		if len(x.FunctionNames) == 0 {
-			return protoreflect.ValueOfList(&_ExecAuthorization_2_list{})
+			return protoreflect.ValueOfList(&_ScriptExecAuthorization_2_list{})
 		}
-		listValue := &_ExecAuthorization_2_list{list: &x.FunctionNames}
+		listValue := &_ScriptExecAuthorization_2_list{list: &x.FunctionNames}
 		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.script.v1.ExecAuthorization"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.script.v1.ScriptExecAuthorization"))
 		}
-		panic(fmt.Errorf("message dysonprotocol.script.v1.ExecAuthorization does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message dysonprotocol.script.v1.ScriptExecAuthorization does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -232,19 +232,19 @@ func (x *fastReflection_ExecAuthorization) Get(descriptor protoreflect.FieldDesc
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_ExecAuthorization) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_ScriptExecAuthorization) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "dysonprotocol.script.v1.ExecAuthorization.script_address":
+	case "dysonprotocol.script.v1.ScriptExecAuthorization.script_address":
 		x.ScriptAddress = value.Interface().(string)
-	case "dysonprotocol.script.v1.ExecAuthorization.function_names":
+	case "dysonprotocol.script.v1.ScriptExecAuthorization.function_names":
 		lv := value.List()
-		clv := lv.(*_ExecAuthorization_2_list)
+		clv := lv.(*_ScriptExecAuthorization_2_list)
 		x.FunctionNames = *clv.list
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.script.v1.ExecAuthorization"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.script.v1.ScriptExecAuthorization"))
 		}
-		panic(fmt.Errorf("message dysonprotocol.script.v1.ExecAuthorization does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message dysonprotocol.script.v1.ScriptExecAuthorization does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -258,49 +258,49 @@ func (x *fastReflection_ExecAuthorization) Set(fd protoreflect.FieldDescriptor, 
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_ExecAuthorization) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_ScriptExecAuthorization) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "dysonprotocol.script.v1.ExecAuthorization.function_names":
+	case "dysonprotocol.script.v1.ScriptExecAuthorization.function_names":
 		if x.FunctionNames == nil {
 			x.FunctionNames = []string{}
 		}
-		value := &_ExecAuthorization_2_list{list: &x.FunctionNames}
+		value := &_ScriptExecAuthorization_2_list{list: &x.FunctionNames}
 		return protoreflect.ValueOfList(value)
-	case "dysonprotocol.script.v1.ExecAuthorization.script_address":
-		panic(fmt.Errorf("field script_address of message dysonprotocol.script.v1.ExecAuthorization is not mutable"))
+	case "dysonprotocol.script.v1.ScriptExecAuthorization.script_address":
+		panic(fmt.Errorf("field script_address of message dysonprotocol.script.v1.ScriptExecAuthorization is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.script.v1.ExecAuthorization"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.script.v1.ScriptExecAuthorization"))
 		}
-		panic(fmt.Errorf("message dysonprotocol.script.v1.ExecAuthorization does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message dysonprotocol.script.v1.ScriptExecAuthorization does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_ExecAuthorization) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_ScriptExecAuthorization) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "dysonprotocol.script.v1.ExecAuthorization.script_address":
+	case "dysonprotocol.script.v1.ScriptExecAuthorization.script_address":
 		return protoreflect.ValueOfString("")
-	case "dysonprotocol.script.v1.ExecAuthorization.function_names":
+	case "dysonprotocol.script.v1.ScriptExecAuthorization.function_names":
 		list := []string{}
-		return protoreflect.ValueOfList(&_ExecAuthorization_2_list{list: &list})
+		return protoreflect.ValueOfList(&_ScriptExecAuthorization_2_list{list: &list})
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.script.v1.ExecAuthorization"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.script.v1.ScriptExecAuthorization"))
 		}
-		panic(fmt.Errorf("message dysonprotocol.script.v1.ExecAuthorization does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message dysonprotocol.script.v1.ScriptExecAuthorization does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_ExecAuthorization) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_ScriptExecAuthorization) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in dysonprotocol.script.v1.ExecAuthorization", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in dysonprotocol.script.v1.ScriptExecAuthorization", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -308,7 +308,7 @@ func (x *fastReflection_ExecAuthorization) WhichOneof(d protoreflect.OneofDescri
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_ExecAuthorization) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_ScriptExecAuthorization) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -319,7 +319,7 @@ func (x *fastReflection_ExecAuthorization) GetUnknown() protoreflect.RawFields {
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_ExecAuthorization) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_ScriptExecAuthorization) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -331,7 +331,7 @@ func (x *fastReflection_ExecAuthorization) SetUnknown(fields protoreflect.RawFie
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_ExecAuthorization) IsValid() bool {
+func (x *fastReflection_ScriptExecAuthorization) IsValid() bool {
 	return x != nil
 }
 
@@ -341,9 +341,9 @@ func (x *fastReflection_ExecAuthorization) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_ExecAuthorization) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_ScriptExecAuthorization) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*ExecAuthorization)
+		x := input.Message.Interface().(*ScriptExecAuthorization)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -375,7 +375,7 @@ func (x *fastReflection_ExecAuthorization) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*ExecAuthorization)
+		x := input.Message.Interface().(*ScriptExecAuthorization)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -421,7 +421,7 @@ func (x *fastReflection_ExecAuthorization) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*ExecAuthorization)
+		x := input.Message.Interface().(*ScriptExecAuthorization)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -453,10 +453,10 @@ func (x *fastReflection_ExecAuthorization) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: ExecAuthorization: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: ScriptExecAuthorization: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: ExecAuthorization: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: ScriptExecAuthorization: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -571,9 +571,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// SendAuthorization allows the grantee to spend up to spend_limit coins from
-// the granter's account.
-type ExecAuthorization struct {
+// ScriptExecAuthorization allows the grantee to execute specific scripts and
+// functions.
+type ScriptExecAuthorization struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -585,8 +585,8 @@ type ExecAuthorization struct {
 	FunctionNames []string `protobuf:"bytes,2,rep,name=function_names,json=functionNames,proto3" json:"function_names,omitempty"`
 }
 
-func (x *ExecAuthorization) Reset() {
-	*x = ExecAuthorization{}
+func (x *ScriptExecAuthorization) Reset() {
+	*x = ScriptExecAuthorization{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_dysonprotocol_script_v1_authz_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -594,25 +594,25 @@ func (x *ExecAuthorization) Reset() {
 	}
 }
 
-func (x *ExecAuthorization) String() string {
+func (x *ScriptExecAuthorization) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ExecAuthorization) ProtoMessage() {}
+func (*ScriptExecAuthorization) ProtoMessage() {}
 
-// Deprecated: Use ExecAuthorization.ProtoReflect.Descriptor instead.
-func (*ExecAuthorization) Descriptor() ([]byte, []int) {
+// Deprecated: Use ScriptExecAuthorization.ProtoReflect.Descriptor instead.
+func (*ScriptExecAuthorization) Descriptor() ([]byte, []int) {
 	return file_dysonprotocol_script_v1_authz_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ExecAuthorization) GetScriptAddress() string {
+func (x *ScriptExecAuthorization) GetScriptAddress() string {
 	if x != nil {
 		return x.ScriptAddress
 	}
 	return ""
 }
 
-func (x *ExecAuthorization) GetFunctionNames() []string {
+func (x *ScriptExecAuthorization) GetFunctionNames() []string {
 	if x != nil {
 		return x.FunctionNames
 	}
@@ -628,24 +628,24 @@ var file_dysonprotocol_script_v1_authz_proto_rawDesc = []byte{
 	0x6f, 0x63, 0x6f, 0x6c, 0x2e, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x2e, 0x76, 0x31, 0x1a, 0x11,
 	0x61, 0x6d, 0x69, 0x6e, 0x6f, 0x2f, 0x61, 0x6d, 0x69, 0x6e, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x1a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xd9, 0x01, 0x0a,
-	0x11, 0x45, 0x78, 0x65, 0x63, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x7a, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x12, 0x3f, 0x0a, 0x0e, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x5f, 0x61, 0x64, 0x64,
-	0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74,
-	0x72, 0x69, 0x6e, 0x67, 0x52, 0x0d, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x41, 0x64, 0x64, 0x72,
-	0x65, 0x73, 0x73, 0x12, 0x25, 0x0a, 0x0e, 0x66, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f,
-	0x6e, 0x61, 0x6d, 0x65, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0d, 0x66, 0x75, 0x6e,
-	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x4e, 0x61, 0x6d, 0x65, 0x73, 0x3a, 0x5c, 0xca, 0xb4, 0x2d, 0x22,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x61, 0x75, 0x74, 0x68, 0x7a, 0x2e, 0x76, 0x31, 0x62,
-	0x65, 0x74, 0x61, 0x31, 0x2e, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x7a, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0xd2, 0xb4, 0x2d, 0x11, 0x64, 0x79, 0x73, 0x6f, 0x6e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x63, 0x6f, 0x6c, 0x20, 0x32, 0x2e, 0x30, 0x8a, 0xe7, 0xb0, 0x2a, 0x1c, 0x64, 0x79, 0x73, 0x2f,
-	0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x2f, 0x45, 0x78, 0x65, 0x63, 0x41, 0x75, 0x74, 0x68, 0x6f,
-	0x72, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x22, 0x5a, 0x20, 0x64, 0x79, 0x73, 0x6f,
-	0x6e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x78, 0x2f,
-	0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xe5, 0x01, 0x0a,
+	0x17, 0x53, 0x63, 0x72, 0x69, 0x70, 0x74, 0x45, 0x78, 0x65, 0x63, 0x41, 0x75, 0x74, 0x68, 0x6f,
+	0x72, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x3f, 0x0a, 0x0e, 0x73, 0x63, 0x72, 0x69,
+	0x70, 0x74, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64,
+	0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x0d, 0x73, 0x63, 0x72, 0x69,
+	0x70, 0x74, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x25, 0x0a, 0x0e, 0x66, 0x75, 0x6e,
+	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28,
+	0x09, 0x52, 0x0d, 0x66, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x4e, 0x61, 0x6d, 0x65, 0x73,
+	0x3a, 0x62, 0xca, 0xb4, 0x2d, 0x22, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x61, 0x75, 0x74,
+	0x68, 0x7a, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x41, 0x75, 0x74, 0x68, 0x6f,
+	0x72, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0xd2, 0xb4, 0x2d, 0x11, 0x64, 0x79, 0x73, 0x6f,
+	0x6e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x20, 0x32, 0x2e, 0x30, 0x8a, 0xe7, 0xb0,
+	0x2a, 0x22, 0x64, 0x79, 0x73, 0x2f, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x2f, 0x53, 0x63, 0x72,
+	0x69, 0x70, 0x74, 0x45, 0x78, 0x65, 0x63, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x7a, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x42, 0x22, 0x5a, 0x20, 0x64, 0x79, 0x73, 0x6f, 0x6e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x78, 0x2f, 0x73, 0x63, 0x72, 0x69,
+	0x70, 0x74, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -662,7 +662,7 @@ func file_dysonprotocol_script_v1_authz_proto_rawDescGZIP() []byte {
 
 var file_dysonprotocol_script_v1_authz_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_dysonprotocol_script_v1_authz_proto_goTypes = []interface{}{
-	(*ExecAuthorization)(nil), // 0: dysonprotocol.script.v1.ExecAuthorization
+	(*ScriptExecAuthorization)(nil), // 0: dysonprotocol.script.v1.ScriptExecAuthorization
 }
 var file_dysonprotocol_script_v1_authz_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -679,7 +679,7 @@ func file_dysonprotocol_script_v1_authz_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_dysonprotocol_script_v1_authz_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ExecAuthorization); i {
+			switch v := v.(*ScriptExecAuthorization); i {
 			case 0:
 				return &v.state
 			case 1:

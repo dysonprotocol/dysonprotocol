@@ -8,10 +8,10 @@ from datetime import datetime, timedelta, timezone
 
 def test_exec_authorization_with_function_names(chainnet, generate_account, faucet):
     """
-    Test ExecAuthorization with specific function names allowed.
+    Test ScriptExecAuthorization with specific function names allowed.
     This tests:
     1. Creating a script with multiple functions
-    2. Granting ExecAuthorization for specific functions
+    2. Granting ScriptExecAuthorization for specific functions
     3. Executing allowed functions succeeds
     4. Executing disallowed functions fails
     """
@@ -74,7 +74,7 @@ def get_info():
     )
     
     assert grant_result["code"] == 0, f"Failed to grant authorization: {grant_result}"
-    print("Granted ExecAuthorization to Bob")
+    print("Granted ScriptExecAuthorization to Bob")
     
     # Verify the grant exists
     grants_result = dysond_bin("query", "authz", "grants", alice_address, bob_address)
@@ -83,23 +83,23 @@ def get_info():
     # Debug: print the grants structure
     print(f"Grants structure: {json.dumps(grants_result, indent=2)}")
     
-    # Find our ExecAuthorization grant
+    # Find our ScriptExecAuthorization grant
     exec_grant = None
     for grant in grants_result["grants"]:
-        # Check if this is our ExecAuthorization
+        # Check if this is our ScriptExecAuthorization
         auth = grant.get("authorization", {})
         # The format is type/value structure
-        if auth.get("type") == "/dysonprotocol.script.v1.ExecAuthorization":
+        if auth.get("type") == "/dysonprotocol.script.v1.ScriptExecAuthorization":
             exec_grant = grant
             break
     
-    assert exec_grant is not None, "ExecAuthorization grant not found"
+    assert exec_grant is not None, "ScriptExecAuthorization grant not found"
     
     # Extract the authorization details from the value field
     auth_value = exec_grant["authorization"]["value"]
     assert auth_value.get("script_address") == script_address
     assert auth_value.get("function_names") == ["add", "get_info"]
-    print("Verified ExecAuthorization grant exists with correct parameters")
+    print("Verified ScriptExecAuthorization grant exists with correct parameters")
     
     # Test 1: Bob executes allowed function 'add' - should succeed
     exec_msg = {
@@ -196,7 +196,7 @@ def get_info():
 
 def test_exec_authorization_empty_function_list(chainnet, generate_account, faucet):
     """
-    Test ExecAuthorization with empty function list (only direct script execution allowed).
+    Test ScriptExecAuthorization with empty function list (only direct script execution allowed).
     """
     dysond_bin = chainnet[0]
     
@@ -297,7 +297,7 @@ def some_function():
 
 def test_exec_authorization_revoke(chainnet, generate_account, faucet):
     """
-    Test revoking ExecAuthorization.
+    Test revoking ScriptExecAuthorization.
     """
     dysond_bin = chainnet[0]
     
@@ -329,7 +329,7 @@ def test_exec_authorization_revoke(chainnet, generate_account, faucet):
     
     assert script_address, "Script address not found"
     
-    # Grant ExecAuthorization
+    # Grant ScriptExecAuthorization
     expiration = (datetime.now(timezone.utc) + timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%SZ")
     
     grant_result = dysond_bin(
@@ -354,20 +354,20 @@ def test_exec_authorization_revoke(chainnet, generate_account, faucet):
     )
     
     assert revoke_result["code"] == 0, f"Failed to revoke authorization: {revoke_result}"
-    print("✓ Successfully revoked ExecAuthorization")
+    print("✓ Successfully revoked ScriptExecAuthorization")
     
     # Verify grant no longer exists
     grants_result = dysond_bin("query", "authz", "grants", alice_address, bob_address)
     
-    # Check that no ExecAuthorization exists
+    # Check that no ScriptExecAuthorization exists
     exec_grant_found = False
     for grant in grants_result.get("grants", []):
-        if grant["authorization"]["@type"] == "/dysonprotocol.script.v1.ExecAuthorization":
+        if grant["authorization"]["@type"] == "/dysonprotocol.script.v1.ScriptExecAuthorization":
             exec_grant_found = True
             break
     
-    assert not exec_grant_found, "ExecAuthorization should have been revoked"
-    print("✓ Verified ExecAuthorization was revoked")
+    assert not exec_grant_found, "ScriptExecAuthorization should have been revoked"
+    print("✓ Verified ScriptExecAuthorization was revoked")
     
     # Try to execute - should fail
     exec_msg = {
@@ -400,7 +400,7 @@ def test_exec_authorization_revoke(chainnet, generate_account, faucet):
 
 def test_exec_authorization_wrong_script_address(chainnet, generate_account, faucet):
     """
-    Test that ExecAuthorization correctly rejects execution on wrong script address.
+    Test that ScriptExecAuthorization correctly rejects execution on wrong script address.
     """
     dysond_bin = chainnet[0]
     
@@ -449,7 +449,7 @@ def test_exec_authorization_wrong_script_address(chainnet, generate_account, fau
     assert script1_address and script2_address, "Failed to create scripts"
     assert script1_address != script2_address, "Scripts should have different addresses"
     
-    # Grant ExecAuthorization for script1 only
+    # Grant ScriptExecAuthorization for script1 only
     expiration = (datetime.now(timezone.utc) + timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%SZ")
     
     grant_result = dysond_bin(
@@ -489,4 +489,4 @@ def test_exec_authorization_wrong_script_address(chainnet, generate_account, fau
     
     assert exec_result["code"] != 0, "Expected execution to fail for wrong script address"
     assert "script address mismatch" in exec_result.get("raw_log", ""), "Expected script address mismatch error"
-    print("✓ ExecAuthorization correctly rejected execution on wrong script address") 
+    print("✓ ScriptExecAuthorization correctly rejected execution on wrong script address") 

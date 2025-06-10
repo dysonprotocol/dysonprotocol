@@ -46,18 +46,18 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &scripttypes.MsgCreateNewScript{}, "dys/script/MsgCreateNewScript")
 	legacy.RegisterAminoMsg(cdc, &scripttypes.MsgUpdateParams{}, "dys/script/MsgUpdateParams")
 
-	// Register ExecAuthorization
-	cdc.RegisterConcrete(&scripttypes.ExecAuthorization{}, "dys/script/ExecAuthorization", nil)
+	// Register ScriptExecAuthorization
+	cdc.RegisterConcrete(&scripttypes.ScriptExecAuthorization{}, "dys/script/ScriptExecAuthorization", nil)
 }
 
 // RegisterInterfaces registers the interfaces types with the interface registry.
 // This is a little unique in that we MUST register ALL interface that the script module depends on so they can be
 // decoded automatically in the dyslang scripts.
 func RegisterInterfaces(registrar codectypes.InterfaceRegistry) {
-	// Register ExecAuthorization as Authorization implementation
+	// Register ScriptExecAuthorization as Authorization implementation
 	registrar.RegisterImplementations(
 		(*authz.Authorization)(nil),
-		&scripttypes.ExecAuthorization{},
+		&scripttypes.ScriptExecAuthorization{},
 	)
 
 	// Register UnpackInterfacesMessage implementations

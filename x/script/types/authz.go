@@ -8,23 +8,23 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/authz"
 )
 
-var _ authz.Authorization = &ExecAuthorization{}
+var _ authz.Authorization = &ScriptExecAuthorization{}
 
-// NewExecAuthorization creates a new ExecAuthorization object.
-func NewExecAuthorization(scriptAddress string, functionNames []string) *ExecAuthorization {
-	return &ExecAuthorization{
+// NewScriptExecAuthorization creates a new ScriptExecAuthorization object.
+func NewScriptExecAuthorization(scriptAddress string, functionNames []string) *ScriptExecAuthorization {
+	return &ScriptExecAuthorization{
 		ScriptAddress: scriptAddress,
 		FunctionNames: functionNames,
 	}
 }
 
 // MsgTypeURL implements Authorization.MsgTypeURL.
-func (a ExecAuthorization) MsgTypeURL() string {
+func (a ScriptExecAuthorization) MsgTypeURL() string {
 	return sdk.MsgTypeURL(&MsgExec{})
 }
 
 // ValidateBasic implements Authorization.ValidateBasic.
-func (a ExecAuthorization) ValidateBasic() error {
+func (a ScriptExecAuthorization) ValidateBasic() error {
 	if a.ScriptAddress == "" {
 		return sdkerrors.ErrInvalidAddress.Wrap("script address cannot be empty")
 	}
@@ -51,7 +51,7 @@ func (a ExecAuthorization) ValidateBasic() error {
 }
 
 // Accept implements Authorization.Accept.
-func (a ExecAuthorization) Accept(ctx context.Context, msg sdk.Msg) (authz.AcceptResponse, error) {
+func (a ScriptExecAuthorization) Accept(ctx context.Context, msg sdk.Msg) (authz.AcceptResponse, error) {
 	execMsg, ok := msg.(*MsgExec)
 	if !ok {
 		return authz.AcceptResponse{}, sdkerrors.ErrInvalidType.Wrap("type mismatch: expected MsgExec")
