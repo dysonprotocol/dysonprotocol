@@ -324,6 +324,38 @@ def handle_script_functions(environ, start_response):
         return [json.dumps(error_response).encode()]
 
 
+@route(r"^/storage$")
+def handle_storage(environ, start_response):
+    """Handle the storage management page"""
+    start_response("200 OK", [("Content-Type", "text/html; charset=utf-8")])
+
+    data = {}
+    storage_template = SafeTemplate(fetch_template("storage.html"))
+    main = storage_template.substitute(data)
+
+    if environ.get("HTTP_HX_REQUEST") == "true":
+        return [main.encode()]
+
+    base = SafeTemplate(fetch_template("base.html"))
+    return [base.substitute({"main": main}).encode()]
+
+
+@route(r"^/tasks$")
+def handle_tasks(environ, start_response):
+    """Handle the tasks management page"""
+    start_response("200 OK", [("Content-Type", "text/html; charset=utf-8")])
+
+    data = {}
+    tasks_template = SafeTemplate(fetch_template("tasks.html"))
+    main = tasks_template.substitute(data)
+
+    if environ.get("HTTP_HX_REQUEST") == "true":
+        return [main.encode()]
+
+    base = SafeTemplate(fetch_template("base.html"))
+    return [base.substitute({"main": main}).encode()]
+
+
 @route(r"^/$")
 def handle_messages(environ, start_response):
     start_response("200 OK", [("Content-Type", "text/html; charset=utf-8")])

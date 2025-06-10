@@ -339,21 +339,233 @@ async function submitTx({ apiUrl, txRawBytesBase64, msgTypes, mode }) {
 }
 
 /**
+ * Show modal dialog for transaction confirmation and editing
+ */
+function showTransactionModal(msgs, memo, fee, chainId, address) {
+  return new Promise((resolve, reject) => {
+    // Create modal HTML
+    const modalHtml = `
+      <div id="txModal" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        font-family: monospace;
+      ">
+        <div style="
+          background: white;
+          padding: 20px;
+          border-radius: 8px;
+          max-width: 80%;
+          max-height: 80%;
+          overflow: auto;
+          box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        ">
+          <h3 style="margin-top: 0;">Transaction Details</h3>
+
+          <div style="margin-bottom: 15px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Chain ID:</label>
+            <pre id="chainIdEditor" contenteditable="true" style="
+              border: 1px solid #ccc;
+              padding: 10px;
+              border-radius: 4px;
+              background: #f5f5f5;
+              min-height: 40px;
+              max-height: 80px;
+              overflow: auto;
+              white-space: pre-wrap;
+              font-family: 'Courier New', monospace;
+              font-size: 12px;
+            ">${chainId || ''}</pre>
+          </div>
+
+          <div style="margin-bottom: 15px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Address:</label>
+            <pre id="addressEditor" contenteditable="true" style="
+              border: 1px solid #ccc;
+              padding: 10px;
+              border-radius: 4px;
+              background: #f5f5f5;
+              min-height: 40px;
+              max-height: 80px;
+              overflow: auto;
+              white-space: pre-wrap;
+              font-family: 'Courier New', monospace;
+              font-size: 12px;
+            ">${address || ''}</pre>
+          </div>
+
+          <div style="margin-bottom: 15px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Messages:</label>
+            <pre id="msgsEditor" contenteditable="true" style="
+              border: 1px solid #ccc;
+              padding: 10px;
+              border-radius: 4px;
+              background: #f5f5f5;
+              min-height: 100px;
+              max-height: 200px;
+              overflow: auto;
+              white-space: pre-wrap;
+              font-family: 'Courier New', monospace;
+              font-size: 12px;
+            ">${JSON.stringify(msgs, null, 2)}</pre>
+          </div>
+          
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Fee:</label>
+            <pre id="feeEditor" contenteditable="true" style="
+              border: 1px solid #ccc;
+              padding: 10px;
+              border-radius: 4px;
+              background: #f5f5f5;
+              min-height: 60px;
+              max-height: 100px;
+              overflow: auto;
+              white-space: pre-wrap;
+              font-family: 'Courier New', monospace;
+              font-size: 12px;
+            ">${JSON.stringify(fee || { amount: [], gas_limit: "200000" }, null, 2)}</pre>
+          </div>
+          
+          <div style="margin-bottom: 15px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Memo:</label>
+            <pre id="memoEditor" contenteditable="true" style="
+              border: 1px solid #ccc;
+              padding: 10px;
+              border-radius: 4px;
+              background: #f5f5f5;
+              min-height: 40px;
+              max-height: 80px;
+              overflow: auto;
+              white-space: pre-wrap;
+              font-family: 'Courier New', monospace;
+              font-size: 12px;
+            ">${memo || ''}</pre>
+          </div>
+          
+          <div style="text-align: right;">
+            <button id="cancelBtn" style="
+              margin-right: 10px;
+              padding: 8px 16px;
+              border: 1px solid #ccc;
+              border-radius: 4px;
+              background: white;
+              cursor: pointer;
+            ">Cancel</button>
+            <button id="confirmBtn" style="
+              padding: 8px 16px;
+              border: none;
+              border-radius: 4px;
+              background: #007cba;
+              color: white;
+              cursor: pointer;
+            ">Confirm Transaction</button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // Add modal to DOM
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    const modal = document.getElementById('txModal');
+    
+    // Handle button clicks
+    document.getElementById('cancelBtn').onclick = () => {
+      modal.remove();
+      resolve(null); // User cancelled
+    };
+    
+    document.getElementById('confirmBtn').onclick = () => {
+      try {
+        // Parse edited content
+        const msgsText = document.getElementById('msgsEditor').textContent;
+        const memoText = document.getElementById('memoEditor').textContent;
+        const feeText = document.getElementById('feeEditor').textContent;
+        
+        const editedMsgs = JSON.parse(msgsText);
+        const editedMemo = memoText.trim();
+        const editedFee = JSON.parse(feeText);
+        
+        modal.remove();
+        resolve({
+          msgs: editedMsgs,
+          memo: editedMemo,
+          fee: editedFee
+        });
+      } catch (error) {
+        alert('Invalid JSON format. Please check your edits and try again.\n\nError: ' + error.message);
+      }
+    };
+    
+    // Close modal when clicking outside
+    modal.onclick = (e) => {
+      if (e.target === modal) {
+        modal.remove();
+        resolve(null);
+      }
+    };
+    
+    // Handle Escape key
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        modal.remove();
+        document.removeEventListener('keydown', handleEscape);
+        resolve(null);
+      }
+    };
+    document.addEventListener('keydown', handleEscape);
+  });
+}
+
+/**
  * High-level function:
  * 1) getChainInfo
  * 2) prepare Tx (with signer info)
  * 3) encode & decode => sign => get final raw bytes
- * 4) optionally simulate or broadcast => returns { kind, success, code, gasUsed, rawLog, raw }
+ * 4) show confirmation dialog
+ * 5) optionally simulate or broadcast => returns { kind, success, code, gasUsed, rawLog, raw }
  */
 export async function sendMsgs({ apiUrl, wallet, walletType, address, msgs, memo = "", fee, simulate = false }) {
+  // Show confirmation dialog before proceeding if simulate is false
+  let finalMsgs = msgs;
+  let finalMemo = memo;
+  let finalFee = fee;
+  
   const { chainId, accountNumber, sequence } = await getChainInfo({ apiUrl, address });
 
-  let transaction = prepareTx({ msgs, memo, fee });
+  if (!simulate) {
+    const userInput = await showTransactionModal(msgs, memo, fee, chainId, address)
+    
+    if (!userInput) {
+      // User cancelled
+      return {
+        kind: "broadcast",
+        success: false,
+        code: -1, // Custom code for user cancellation
+        gasUsed: "0",
+        rawLog: "Transaction cancelled by user",
+        raw: null,
+      };
+    }
+    
+    // Use the edited values
+    finalMsgs = userInput.msgs;
+    finalMemo = userInput.memo;
+    finalFee = userInput.fee;
+  }
+
+  let transaction = prepareTx({ msgs: finalMsgs, memo: finalMemo, fee: finalFee });
   const [{ pubkey }] = await wallet.getAccounts();
   transaction = addSignerInfo({ transaction, pubkey, sequence });
 
   // We'll capture each message's @type
-  const msgTypes = msgs.map((m) => m["@type"] || "");
+  const msgTypes = finalMsgs.map((m) => m["@type"] || "");
 
   const { txBytesBase64, bodyBytes, authInfoBytes } = await encodeAndDecodeTx({ apiUrl, transaction });
   const signedTxRawBytes = await signTx({

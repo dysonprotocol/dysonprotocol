@@ -250,7 +250,43 @@ document.addEventListener("alpine:init", () => {
 
     async sendMsg({ msg, gasLimit, memo = "" }) {
       const { walletInstance, address, type } = this.getWallet();
-      const fee = this.buildFee(gasLimit);
+      
+              // If gasLimit is null/undefined, estimate gas via simulation
+        let finalGasLimit = gasLimit;
+        if (gasLimit == null || gasLimit == undefined) {
+
+            // First, simulate to get gas usage
+            const simulationResult = await sendMsgs({
+              apiUrl: this.restUrl,
+              wallet: walletInstance,
+              walletType: type,
+              address,
+              msgs: [msg],
+              memo,
+              fee: this.buildFee(200000), // Use default gas for simulation
+              simulate: true,
+            });
+            
+            // Check if simulation failed
+            if (!simulationResult.success) {
+              const errorMsg = simulationResult.rawLog || simulationResult.raw?.message || 'Simulation failed';
+              
+              throw new Error(`Gas estimation failed, code: [${simulationResult.code}] ${errorMsg}`);
+            }
+            
+            // Extract gas used from simulation result
+            let gasUsed = 0;
+            if (simulationResult?.raw?.gas_info?.gas_used) {
+              gasUsed = parseInt(simulationResult.raw.gas_info.gas_used);
+            } else if (simulationResult?.gasUsed) {
+              gasUsed = parseInt(simulationResult.gasUsed);
+            }
+            
+            // Add 50% buffer to the estimated gas
+            finalGasLimit = gasUsed > 0 ? Math.ceil(gasUsed * 1.5) : 200000;
+      }
+      
+      const fee = this.buildFee(finalGasLimit);
       return sendMsgs({
         apiUrl: this.restUrl,
         wallet: walletInstance,

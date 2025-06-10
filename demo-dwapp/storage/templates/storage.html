@@ -1,0 +1,241 @@
+<section x-data="storageStore" x-init="init()">
+  <!-- Header Section -->
+  <div class="mb-8">
+    <div class="text-center mb-6">
+      <h1 class="text-3xl font-bold">Storage Management</h1>
+      <p class="text-base-content/70 mt-2">Manage your on-chain key-value storage</p>
+    </div>
+  </div>
+
+  <!-- Wallet Connection Warning -->
+  <div x-show="!$store.walletStore.activeWalletMeta" class="mb-8">
+    <div class="alert alert-warning shadow-lg">
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+      <div>
+        <h3 class="font-bold">Wallet Required</h3>
+        <div class="text-sm">Connect a wallet to manage storage entries.</div>
+      </div>
+      <a href="/wallet" class="btn btn-sm">Connect Wallet</a>
+    </div>
+  </div>
+
+  <!-- Controls Section -->
+  <div class="card bg-base-200 shadow-xl mb-6">
+    <div class="card-body">
+      <div class="flex flex-col lg:flex-row gap-4 items-center">
+        <!-- Search -->
+        <div class="form-control flex-1">
+          <div class="input-group">
+            <input 
+              type="text" 
+              placeholder="Search entries..." 
+              class="input input-bordered flex-1"
+              x-model="searchTerm"
+            />
+            <button class="btn btn-square" type="button">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Refresh Button -->
+        <button 
+          @click="loadEntries()"
+          :disabled="loading"
+          class="btn btn-outline"
+          :class="{ 'loading': loading }"
+        >
+          <svg x-show="!loading" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span x-show="!loading">Refresh</span>
+        </button>
+        
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Storage Entries -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Left Column: Storage Entries List -->
+    <div class="card bg-base-200 shadow-xl">
+      <div class="card-body">
+        <div class="mb-4">
+          <h3 class="card-title mb-4">Storage Entries</h3>
+          
+          <!-- Filters and New Entry Section -->
+          <div class="space-y-3">
+            <!-- Index Prefix Filter -->
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-sm">Index Prefix</span>
+              </label>
+              <input 
+                type="text" 
+                placeholder="Filter by prefix..." 
+                class="input input-bordered input-sm"
+                x-model="indexPrefix"
+                @input.debounce.500ms="offset = 0; loadEntries()"
+              />
+            </div>
+            
+            <!-- New Entry -->
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-sm">New Entry</span>
+              </label>
+              <div class="flex gap-2">
+                <input 
+                  type="text" 
+                  placeholder="Enter new index..." 
+                  class="input input-bordered input-sm flex-1"
+                  x-model="newEntryIndex"
+                />
+                <button 
+                  @click="createNewEntry()"
+                  :disabled="!newEntryIndex.trim() || !canDelete"
+                  class="btn btn-primary btn-sm"
+                  :class="{ 'btn-disabled': !newEntryIndex.trim() || !canDelete }"
+                >
+                  New
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Loading State -->
+        <div x-show="loading && entries.length === 0" class="text-center py-8">
+          <div class="loading loading-spinner loading-lg"></div>
+          <p class="text-base-content/70 mt-4">Loading storage entries...</p>
+        </div>
+        
+        <!-- Empty State -->
+        <div x-show="!loading && filteredEntries.length === 0" class="text-center py-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-base-content/30 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2 2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-2.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 009.586 13H7" />
+          </svg>
+          <p class="text-base-content/70" x-text="entries.length === 0 ? 'No storage entries found.' : 'No entries match your search.'"></p>
+        </div>
+        
+        <!-- Entries List -->
+        <div x-show="!loading && filteredEntries.length > 0" class="space-y-2">
+          <template x-for="entry in filteredEntries" :key="entry.index">
+            <div 
+              @click="selectEntry(entry)"
+              class="p-3 rounded-lg border cursor-pointer transition-colors"
+              :class="selectedEntry?.index === entry.index ? 'bg-primary/10 border-primary' : 'bg-base-100 border-base-300 hover:bg-base-50'"
+            >
+              <div class="flex justify-between items-start gap-2">
+                <div class="flex-1 min-w-0">
+                  <code class="text-sm font-mono break-all block" x-text="entry.index"></code>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="text-xs text-base-content/70" x-text="formatSize(entry.dataSize)"></span>
+                  </div>
+                </div>
+                <button 
+                  x-show="canDelete"
+                  @click.stop="deleteEntry(entry.index)"
+                  class="btn btn-ghost btn-xs text-error"
+                  title="Delete"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </template>
+          
+          <!-- Load More Button -->
+          <div x-show="hasMore" class="text-center mt-4">
+            <button 
+              @click="loadMore()"
+              :disabled="loading"
+              class="btn btn-outline btn-sm w-full"
+            >
+              Load More
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Content Viewer -->
+    <div class="card bg-base-200 shadow-xl">
+      <div class="card-body">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="card-title">Content</h3>
+          <div x-show="selectedEntry" class="flex gap-2">
+            <button 
+              @click="copyContent()"
+              class="btn btn-ghost btn-sm"
+              title="Copy content"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <!-- No Selection State -->
+        <div x-show="!selectedEntry" class="text-center py-12">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-base-content/30 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <p class="text-base-content/70">Select an entry to view its content</p>
+        </div>
+        
+        <!-- Content Display -->
+        <div x-show="selectedEntry" class="space-y-4">
+          <!-- Entry Info -->
+          <div class="bg-base-100 p-4 rounded-lg">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div>
+                <span class="font-medium text-base-content/70">Key:</span>
+                <code class="block mt-1 p-2 bg-base-200 rounded font-mono text-xs break-all" x-text="selectedEntry?.index"></code>
+              </div>
+              <div class="text-right">
+                <span class="font-medium text-base-content/70">Size:</span>
+                <div class="mt-1 text-base-content/70" x-text="selectedEntry ? formatSize(selectedEntry.dataSize) : ''"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Content -->
+          <div class="bg-base-100 p-4 rounded-lg">
+            <div class="font-medium text-base-content/70 mb-2">Content:</div>
+            <pre 
+              contenteditable="true"
+              @input="onContentChange($event.target.textContent)"
+              :contenteditable="canDelete"
+              class="w-full font-mono text-sm border border-base-300 rounded p-4 min-h-[375px] overflow-auto whitespace-pre-wrap"
+              :class="canDelete ? 'bg-white' : 'bg-base-50'"
+              x-text="selectedEntry?.data"
+            ></pre>
+            
+            <!-- Set Storage Button -->
+            <div x-show="selectedEntry" class="mt-4 flex justify-end">
+              <button 
+                @click="updateStorage()"
+                :disabled="!canDelete || !hasContentChanged"
+                class="btn btn-primary"
+                :class="{ 'btn-disabled': !canDelete || !hasContentChanged }"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                Set Storage
+              </button>
+            </div>
+            <!-- End of Selection -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> 

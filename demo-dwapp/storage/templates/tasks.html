@@ -1,0 +1,685 @@
+<div x-data="tasksStore" x-init="init()">
+  
+  <!-- Header Section -->
+  <div class="mb-8">
+    <div class="text-center mb-6">
+      <h1 class="text-3xl font-bold">Task Management</h1>
+      <p class="text-base-content/70 mt-2">Schedule and manage on-chain tasks with Dyson Protocol</p>
+    </div>
+    
+    <!-- Statistics Dashboard -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+      <div class="stat bg-base-200 rounded-lg">
+        <div class="stat-title text-xs">Total Tasks</div>
+        <div class="stat-value text-lg text-primary" x-text="stats.total"></div>
+      </div>
+      <div class="stat bg-base-200 rounded-lg">
+        <div class="stat-title text-xs">Pending</div>
+        <div class="stat-value text-lg text-info" x-text="stats.pending"></div>
+      </div>
+      <div class="stat bg-base-200 rounded-lg">
+        <div class="stat-title text-xs">Completed</div>
+        <div class="stat-value text-lg text-success" x-text="stats.done"></div>
+      </div>
+      <div class="stat bg-base-200 rounded-lg">
+        <div class="stat-title text-xs">Failed</div>
+        <div class="stat-value text-lg text-error" x-text="stats.failed"></div>
+      </div>
+      <div class="stat bg-base-200 rounded-lg">
+        <div class="stat-title text-xs">Expired</div>
+        <div class="stat-value text-lg text-neutral" x-text="stats.expired"></div>
+      </div>
+    </div>
+    
+    <!-- Module Parameters -->
+    <div x-show="moduleParams.block_gas_limit" class="card bg-base-200 shadow-xl mb-6">
+      <div class="card-body py-4">
+        <h3 class="card-title text-lg">Module Limits</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+          <div>
+            <span class="font-medium">Block Gas Limit:</span>
+            <span x-text="parseInt(moduleParams.block_gas_limit || 0).toLocaleString()"></span>
+          </div>
+          <div>
+            <span class="font-medium">Max Scheduled Time:</span>
+            <span x-text="parseInt(moduleParams.max_scheduled_time || 0).toLocaleString() + 's'"></span>
+          </div>
+          <div>
+            <span class="font-medium">Expiry Limit:</span>
+            <span x-text="parseInt(moduleParams.expiry_limit || 0).toLocaleString() + 's'"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wallet Connection Warning -->
+  <div x-show="!$store.walletStore.activeWalletMeta" class="mb-8">
+    <div class="alert alert-warning shadow-lg">
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+      <div>
+        <h3 class="font-bold">Wallet Required</h3>
+        <div class="text-sm">Connect a wallet to create and manage scheduled tasks.</div>
+      </div>
+      <a href="/wallet" class="btn btn-sm">Connect Wallet</a>
+    </div>
+  </div>
+
+  <!-- Controls Section -->
+  <div class="card bg-base-200 shadow-xl mb-6">
+    <div class="card-body">
+      <div class="flex flex-col lg:flex-row gap-4 items-center">
+        <!-- Search -->
+        <div class="form-control flex-1">
+          <div class="input-group">
+            <input 
+              type="text" 
+              placeholder="Search tasks..." 
+              class="input input-bordered flex-1"
+              x-model="searchTerm"
+            />
+            <button class="btn btn-square" type="button">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Create Task Button -->
+        <button 
+          @click="startCreateTask()"
+          :disabled="!$store.walletStore.activeWalletMeta"
+          class="btn btn-primary"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          New Task
+        </button>
+        
+        <!-- Refresh Button -->
+        <button 
+          @click="loadTasks()"
+          :disabled="loading"
+          class="btn btn-outline"
+          :class="{ 'loading': loading }"
+        >
+          <svg x-show="!loading" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span x-show="!loading">Refresh</span>
+        </button>
+        
+        <!-- Export Button -->
+        <button 
+          @click="exportTasks()"
+          class="btn btn-outline"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Export
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="card bg-base-200 shadow-xl mb-6">
+    <div class="card-body">
+      <div class="flex flex-col lg:flex-row gap-4 items-center">
+        <!-- Status Filters -->
+        <div class="flex-1">
+          <h4 class="font-medium mb-2">Filter by Status:</h4>
+          <div class="flex flex-wrap gap-2">
+            <template x-for="status in statusFilters" :key="status">
+              <button 
+                @click="toggleStatusFilter(status)"
+                class="btn btn-sm"
+                :class="selectedStatuses.includes(status) ? getStatusBadgeClass(status) : 'btn-outline'"
+              >
+                <span x-text="status"></span>
+                <span x-show="selectedStatuses.includes(status)" class="ml-1">✓</span>
+              </button>
+            </template>
+          </div>
+        </div>
+        
+        <!-- Sort Controls -->
+        <div class="min-w-fit">
+          <h4 class="font-medium mb-2">Sort by:</h4>
+          <div class="flex gap-2">
+            <select x-model="sortBy" class="select select-bordered select-sm">
+              <option value="scheduled_timestamp">Scheduled Time</option>
+              <option value="task_id">Task ID</option>
+              <option value="status">Status</option>
+            </select>
+            <button 
+              @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'"
+              class="btn btn-sm btn-outline"
+            >
+              <svg x-show="sortOrder === 'asc'" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
+              </svg>
+              <svg x-show="sortOrder === 'desc'" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task Templates -->
+  <div x-show="taskTemplates.length > 0" class="card bg-base-200 shadow-xl mb-6">
+    <div class="card-body">
+      <h3 class="card-title text-lg mb-4">Quick Start Templates</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <template x-for="template in taskTemplates" :key="template.name">
+          <div class="card bg-base-100 border border-base-300">
+            <div class="card-body p-4">
+              <h4 class="font-semibold" x-text="template.name"></h4>
+              <p class="text-sm text-base-content/70" x-text="template.description"></p>
+              <div class="card-actions justify-end mt-2">
+                <button 
+                  @click="startCreateTask(template)"
+                  :disabled="!$store.walletStore.activeWalletMeta"
+                  class="btn btn-sm btn-primary"
+                >
+                  Use Template
+                </button>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tasks Table -->
+  <div class="card bg-base-200 shadow-xl">
+    <div class="card-body">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="card-title">
+          Scheduled Tasks
+          <span class="text-sm font-normal text-base-content/70" x-text="'(' + filteredTasks.length + ' tasks)'"></span>
+        </h3>
+      </div>
+      
+      <!-- Loading State -->
+      <div x-show="loading && tasks.length === 0" class="text-center py-8">
+        <div class="loading loading-spinner loading-lg"></div>
+        <p class="text-base-content/70 mt-4">Loading tasks...</p>
+      </div>
+      
+      <!-- Empty State -->
+      <div x-show="!loading && filteredTasks.length === 0" class="text-center py-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-base-content/30 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <p class="text-base-content/70" x-text="tasks.length === 0 ? 'No scheduled tasks found. Create your first task!' : 'No tasks match your current filters.'"></p>
+      </div>
+      
+      <!-- Tasks Table -->
+      <div x-show="!loading && filteredTasks.length > 0" class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+          <thead>
+            <tr>
+              <th>Task ID</th>
+              <th>Status</th>
+              <th>Scheduled Time</th>
+              <th>Messages</th>
+              <th>Gas</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="task in filteredTasks" :key="task.task_id">
+              <tr>
+                <td>
+                  <code class="text-sm bg-base-300 px-2 py-1 rounded" x-text="task.task_id"></code>
+                </td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="badge" :class="getStatusBadgeClass(task.status)" x-text="task.status"></div>
+                    <span x-show="task.timeRemaining" class="text-xs text-base-content/60" x-text="'(' + task.timeRemaining + ')'"></span>
+                  </div>
+                </td>
+                <td>
+                  <div class="text-sm">
+                    <div x-text="formatTimestamp(task.scheduled_timestamp)"></div>
+                    <div x-show="task.expiry_timestamp && task.expiry_timestamp !== '0'" class="text-xs text-base-content/60">
+                      Expires: <span x-text="formatTimestamp(task.expiry_timestamp)"></span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="space-y-1">
+                    <template x-for="(msg, index) in task.parsedMessages.slice(0, 2)" :key="index">
+                      <div class="text-sm">
+                        <span class="badge badge-sm badge-outline" x-text="msg.displayType"></span>
+                        <span class="ml-2 text-base-content/70" x-text="msg.summary"></span>
+                      </div>
+                    </template>
+                    <div x-show="task.parsedMessages.length > 2" class="text-xs text-base-content/60">
+                      + <span x-text="task.parsedMessages.length - 2"></span> more message(s)
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="text-sm">
+                    <div><span x-text="formatGas(task.gas_limit)"></span> gas</div>
+                    <div x-show="task.gas_fee && task.gas_fee !== '0'" class="text-xs text-base-content/60">
+                      Fee: <span x-text="task.gas_fee"></span> dys
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="flex gap-1">
+                    <button 
+                      @click="showDetails(task)"
+                      class="btn btn-ghost btn-sm"
+                      title="View Details"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    </button>
+                    <button 
+                      @click="cloneTask(task)"
+                      :disabled="!$store.walletStore.activeWalletMeta"
+                      class="btn btn-ghost btn-sm"
+                      title="Clone Task"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                    </button>
+                    <button 
+                      x-show="task.status === 'PENDING'"
+                      @click="deleteTask(task.task_id)"
+                      :disabled="!$store.walletStore.activeWalletMeta"
+                      class="btn btn-ghost btn-sm text-error"
+                      title="Delete Task"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+        
+        <!-- Load More Button -->
+        <div x-show="hasMore" class="text-center mt-4">
+          <button 
+            @click="loadMore()"
+            :disabled="loading"
+            class="btn btn-outline"
+          >
+            Load More
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Task Modal -->
+  <div x-show="isCreatingTask" class="modal modal-open">
+    <div class="modal-box max-w-6xl">
+      <h3 class="font-bold text-lg mb-4">Create New Task</h3>
+      
+      <form @submit.prevent="createTask()" class="space-y-6">
+        <!-- Timing Configuration -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text font-medium">Scheduled Time</span>
+            </label>
+            <input 
+              type="text" 
+              x-model="newTask.scheduledTimestamp"
+              placeholder="e.g., +1h30m, 1672531200, 2024-01-01T12:00:00"
+              class="input input-bordered"
+              required
+            />
+            <label class="label">
+              <span class="label-text-alt">Unix timestamp, ISO date, or relative time (+1h30m)</span>
+            </label>
+          </div>
+          
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text font-medium">Expiry Time (Optional)</span>
+            </label>
+            <input 
+              type="text" 
+              x-model="newTask.expiryTimestamp"
+              placeholder="e.g., +2h, 1672534800"
+              class="input input-bordered"
+            />
+            <label class="label">
+              <span class="label-text-alt">Leave empty to use module default</span>
+            </label>
+          </div>
+        </div>
+        
+        <!-- Gas Configuration -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text font-medium">Gas Limit</span>
+            </label>
+            <input 
+              type="number" 
+              x-model="newTask.gasLimit"
+              min="1"
+              step="1000"
+              class="input input-bordered"
+              required
+            />
+          </div>
+          
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text font-medium">Gas Fee (dys)</span>
+            </label>
+            <input 
+              type="text" 
+              x-model="newTask.gasFee"
+              placeholder="0"
+              class="input input-bordered"
+            />
+          </div>
+        </div>
+        
+        <!-- Messages Section -->
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text font-medium">Messages</span>
+            <button type="button" @click="addMessage()" class="btn btn-sm btn-primary">Add Message</button>
+          </label>
+          
+          <!-- Message List -->
+          <div x-show="newTask.messages.length > 0" class="space-y-2 mb-4">
+            <template x-for="(message, index) in newTask.messages" :key="index">
+              <div class="card bg-base-100 border border-base-300">
+                <div class="card-body p-4">
+                  <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                      <div class="badge badge-outline mb-2" x-text="getMessageDisplayType(message['@type'])"></div>
+                      <p class="text-sm text-base-content/70" x-text="getMessageSummary(message)"></p>
+                    </div>
+                    <div class="flex gap-1">
+                      <button 
+                        x-show="index > 0"
+                        type="button" 
+                        @click="moveMessage(index, 'up')"
+                        class="btn btn-ghost btn-xs"
+                        title="Move Up"
+                      >
+                        ↑
+                      </button>
+                      <button 
+                        x-show="index < newTask.messages.length - 1"
+                        type="button" 
+                        @click="moveMessage(index, 'down')"
+                        class="btn btn-ghost btn-xs"
+                        title="Move Down"
+                      >
+                        ↓
+                      </button>
+                      <button 
+                        type="button" 
+                        @click="removeMessage(index)"
+                        class="btn btn-ghost btn-xs text-error"
+                        title="Remove"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+          
+          <div x-show="newTask.messages.length === 0" class="text-center py-8 text-base-content/50">
+            No messages added yet. Click "Add Message" to get started.
+          </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="modal-action">
+          <button type="button" @click="cancelCreateTask()" class="btn btn-outline">Cancel</button>
+          <button 
+            type="submit" 
+            :disabled="createTaskLoading || newTask.messages.length === 0 || !newTask.scheduledTimestamp.trim()"
+            class="btn btn-primary"
+            :class="{ 'loading': createTaskLoading }"
+          >
+            <span x-show="!createTaskLoading">Create Task</span>
+            <span x-show="createTaskLoading">Creating...</span>
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="modal-backdrop" @click="cancelCreateTask()"></div>
+  </div>
+
+  <!-- Add Message Modal -->
+  <div x-show="isAddingMessage" class="modal modal-open">
+    <div class="modal-box max-w-4xl">
+      <h3 class="font-bold text-lg mb-4">Add Message</h3>
+      
+      <form @submit.prevent="saveMessage()" class="space-y-4">
+        <!-- Message Type Selection -->
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text font-medium">Message Type</span>
+          </label>
+          <select x-model="currentMessageType" @change="changeMessageType(currentMessageType)" class="select select-bordered">
+            <option value="bank_send">Token Transfer</option>
+            <option value="script_exec">Script Execution</option>
+            <option value="storage_set">Storage Set</option>
+            <option value="custom">Custom JSON</option>
+          </select>
+        </div>
+        
+        <!-- Token Transfer Fields -->
+        <div x-show="currentMessageType === 'bank_send'" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">From Address</span>
+              </label>
+              <input type="text" x-model="newMessage.from_address" class="input input-bordered" />
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">To Address</span>
+              </label>
+              <input type="text" x-model="newMessage.to_address" class="input input-bordered" required />
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Amount</span>
+              </label>
+              <input type="text" x-model="newMessage.amount?.[0]?.amount" class="input input-bordered" required />
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Denomination</span>
+              </label>
+              <input type="text" x-model="newMessage.amount?.[0]?.denom" class="input input-bordered" required />
+            </div>
+          </div>
+        </div>
+        
+        <!-- Script Execution Fields -->
+        <div x-show="currentMessageType === 'script_exec'" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Script Address</span>
+              </label>
+              <input type="text" x-model="newMessage.script_address" class="input input-bordered" required />
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Function Name</span>
+              </label>
+              <input type="text" x-model="newMessage.function_name" class="input input-bordered" required />
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Arguments (JSON)</span>
+              </label>
+              <textarea x-model="newMessage.args" rows="3" class="textarea textarea-bordered" placeholder="[]"></textarea>
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Keyword Arguments (JSON)</span>
+              </label>
+              <textarea x-model="newMessage.kwargs" rows="3" class="textarea textarea-bordered" placeholder="{}"></textarea>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Storage Set Fields -->
+        <div x-show="currentMessageType === 'storage_set'" class="space-y-4">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Storage Key</span>
+            </label>
+            <input type="text" x-model="newMessage.index" class="input input-bordered" required />
+          </div>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Data</span>
+            </label>
+            <textarea x-model="newMessage.data" rows="4" class="textarea textarea-bordered" required></textarea>
+          </div>
+        </div>
+        
+        <!-- Custom JSON -->
+        <div x-show="currentMessageType === 'custom'" class="form-control">
+          <label class="label">
+            <span class="label-text">Custom Message JSON</span>
+          </label>
+          <textarea x-model="newMessageJson" rows="8" class="textarea textarea-bordered font-mono" placeholder='{"@type": "/cosmos.bank.v1beta1.MsgSend", ...}'></textarea>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="modal-action">
+          <button type="button" @click="cancelAddMessage()" class="btn btn-outline">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Message</button>
+        </div>
+      </form>
+    </div>
+    <div class="modal-backdrop" @click="cancelAddMessage()"></div>
+  </div>
+
+  <!-- Task Details Modal -->
+  <div x-show="showTaskDetails" class="modal modal-open">
+    <div class="modal-box max-w-6xl">
+      <h3 class="font-bold text-lg mb-4">
+        Task Details - <span x-text="selectedTask?.task_id"></span>
+      </h3>
+      
+      <div x-show="selectedTask" class="space-y-6">
+        <!-- Task Info -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-4">
+            <div>
+              <h4 class="font-semibold mb-2">Basic Information</h4>
+              <div class="space-y-2 text-sm">
+                <div><strong>Task ID:</strong> <code x-text="selectedTask?.task_id"></code></div>
+                <div><strong>Status:</strong> <span class="badge" :class="getStatusBadgeClass(selectedTask?.status)" x-text="selectedTask?.status"></span></div>
+                <div><strong>Creator:</strong> <code x-text="selectedTask?.creator"></code></div>
+              </div>
+            </div>
+            
+            <div>
+              <h4 class="font-semibold mb-2">Timing</h4>
+              <div class="space-y-2 text-sm">
+                <div><strong>Scheduled:</strong> <span x-text="formatTimestamp(selectedTask?.scheduled_timestamp)"></span></div>
+                <div x-show="selectedTask?.expiry_timestamp && selectedTask?.expiry_timestamp !== '0'">
+                  <strong>Expires:</strong> <span x-text="formatTimestamp(selectedTask?.expiry_timestamp)"></span>
+                </div>
+                <div x-show="selectedTask?.timeRemaining">
+                  <strong>Time Remaining:</strong> <span x-text="selectedTask?.timeRemaining"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="space-y-4">
+            <div>
+              <h4 class="font-semibold mb-2">Execution</h4>
+              <div class="space-y-2 text-sm">
+                <div><strong>Gas Limit:</strong> <span x-text="formatGas(selectedTask?.gas_limit)"></span></div>
+                <div x-show="selectedTask?.gas_fee && selectedTask?.gas_fee !== '0'">
+                  <strong>Gas Fee:</strong> <span x-text="selectedTask?.gas_fee"></span> dys
+                </div>
+                <div><strong>Messages:</strong> <span x-text="selectedTask?.parsedMessages?.length || 0"></span></div>
+              </div>
+            </div>
+            
+            <div x-show="selectedTask?.execution_result">
+              <h4 class="font-semibold mb-2">Execution Result</h4>
+              <pre class="text-xs bg-base-200 p-2 rounded max-h-32 overflow-auto" x-text="JSON.stringify(selectedTask?.execution_result, null, 2)"></pre>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Messages -->
+        <div>
+          <h4 class="font-semibold mb-4">Messages</h4>
+          <div class="space-y-4">
+            <template x-for="(message, index) in selectedTask?.parsedMessages || []" :key="index">
+              <div class="card bg-base-100 border border-base-300">
+                <div class="card-body p-4">
+                  <div class="flex justify-between items-start mb-2">
+                    <div class="badge badge-outline" x-text="message.displayType"></div>
+                    <span class="text-xs text-base-content/60" x-text="'Message ' + (index + 1)"></span>
+                  </div>
+                  <p class="text-sm mb-3" x-text="message.summary"></p>
+                  <details>
+                    <summary class="cursor-pointer text-sm font-medium">View Raw JSON</summary>
+                    <pre class="text-xs bg-base-200 p-2 rounded mt-2 overflow-auto max-h-40" x-text="JSON.stringify(message, null, 2)"></pre>
+                  </details>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Modal Actions -->
+      <div class="modal-action">
+        <button @click="hideDetails()" class="btn btn-outline">Close</button>
+        <button 
+          x-show="selectedTask?.status === 'PENDING'"
+          @click="cloneTask(selectedTask); hideDetails()"
+          :disabled="!$store.walletStore.activeWalletMeta"
+          class="btn btn-primary"
+        >
+          Clone Task
+        </button>
+      </div>
+    </div>
+    <div class="modal-backdrop" @click="hideDetails()"></div>
+  </div>
+
+</div> 
