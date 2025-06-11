@@ -9,6 +9,7 @@ import (
 	storagetypes "dysonprotocol.com/x/storage/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	"github.com/tidwall/gjson"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -22,10 +23,24 @@ func (k Keeper) StorageGet(ctx context.Context, req *storagetypes.QueryStorageGe
 		return nil, status.Errorf(codes.InvalidArgument, "invalid owner address: %v", err)
 	}
 
+	if len(req.Extract) > 100 {
+		return nil, status.Errorf(codes.InvalidArgument, "extract path too long: max 100 characters")
+	}
+
 	// Create the key directly using strings
 	pairKey := collections.Join(req.Owner, req.Index)
 	record, err := k.StorageMap.Get(ctx, pairKey)
 	if err == nil {
+		// Apply optional GJSON extract if provided
+		if req.Extract != "" {
+			res := gjson.Get(record.Data, req.Extract)
+			if res.Exists() {
+				record.Data = res.Raw
+			} else {
+				// If extraction path not found, return not found error for clarity
+				return nil, status.Errorf(codes.NotFound, "extract path '%s' not found in storage entry", req.Extract)
+			}
+		}
 		return &storagetypes.QueryStorageGetResponse{
 			Entry: &record, // single struct
 		}, nil
@@ -42,14 +57,39 @@ func (k Keeper) StorageList(ctx context.Context, req *storagetypes.QueryStorageL
 		return nil, status.Errorf(codes.InvalidArgument, "invalid owner address: %v", err)
 	}
 
+	if len(req.Filter) > 100 {
+		return nil, status.Errorf(codes.InvalidArgument, "filter path too long: max 100 characters")
+	}
+	if len(req.Extract) > 100 {
+		return nil, status.Errorf(codes.InvalidArgument, "extract path too long: max 100 characters")
+	}
+
 	// Define a predicate function to filter by index_prefix if provided
 	predicateFunc := func(key collections.Pair[string, string], val storagetypes.Storage) (bool, error) {
-		return strings.HasPrefix(val.Index, req.IndexPrefix), nil
+		// First, index prefix check
+		if !strings.HasPrefix(val.Index, req.IndexPrefix) {
+			return false, nil
+		}
+		// Then, optional GJSON filter check
+		if req.Filter != "" {
+			return gjson.Get(val.Data, req.Filter).Exists(), nil
+		}
+		return true, nil
 	}
 
 	// Transform function: we produce a pointer to match a repeated `Storage` => []*Storage
 	transformFunc := func(key collections.Pair[string, string], val storagetypes.Storage) (*storagetypes.Storage, error) {
-		return &val, nil
+		out := val
+		if req.Extract != "" {
+			res := gjson.Get(val.Data, req.Extract)
+			if res.Exists() {
+				out.Data = res.Raw
+			} else {
+				out.Data = ""
+			}
+		}
+		// create a copy to return its address safely
+		return &out, nil
 	}
 
 	// Now we do store-level filtered pagination in one pass

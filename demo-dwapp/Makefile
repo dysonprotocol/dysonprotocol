@@ -58,13 +58,13 @@ update-all:
 	@echo "Update complete!"
 
 # Generate SRI hashes and update importmap.json
-generate-sri hashes:
+generate-sri-hashes:
 	@echo "Updating integrity hashes in importmap.json..."
 	@set -e; \
-	if [ ! -f importmap.json ]; then \
+	if [ ! -f storage/static/importmap.json ]; then \
 	  echo "ERROR: importmap.json not found" >&2; exit 1; \
 	fi; \
-	jq -r '.imports | to_entries[] | "\(.key) \(.value.url)"' importmap.json | while read -r name url; do \
+	jq -r '.imports | to_entries[] | "\(.key) \(.value)"' storage/static/importmap.json | while read -r name url; do \
 	  echo "  -> $$name"; \
 	  tmp=$$(mktemp); \
 	  if ! curl -fsSL "$$url" -o "$$tmp"; then \
@@ -72,7 +72,7 @@ generate-sri hashes:
 	  fi; \
 	  hash=$$(openssl dgst -sha384 -binary "$$tmp" | openssl base64 -A); \
 	  rm -f "$$tmp"; \
-	  newjson=$$(jq --arg name "$$name" --arg hash "sha384-$$hash" '(.imports[$$name].integrity) = $$hash' importmap.json); \
-	  echo "$$newjson" > importmap.json; \
+	  newjson=$$(jq --arg url "$$url" --arg hash "sha384-$$hash" '.integrity[$$url] = $$hash' storage/static/importmap.json); \
+	  echo "$$newjson" > storage/static/importmap.json; \
 	done; \
 	echo "Integrity hashes updated successfully."

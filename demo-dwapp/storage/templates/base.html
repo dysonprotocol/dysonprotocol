@@ -6,13 +6,8 @@
     <meta name="color-scheme" content="light dark" />
     <title>DysonProtocol WalletStore Demo</title>
 
-    <!-- Shim loader for browsers without native import-map integrity support -->
-    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
-
-    <!-- External import map with SRI; generated via `make generate-sri` -->
-    <script type="importmap-shim" src="/importmap.json"
-            integrity="sha384-iKbfPc5NlXXf2755K3T3wqNxabApSNfrOugcoJUXj02R7fLAAZeReAcz3AtGA2Lf"
-            crossorigin="anonymous"></script>
+    <!--Inline import map with SRI hashes-->
+    <script type="importmap">{{ importmap_json }}</script>
 
     <!-- 
       Import order is important: AlpineJS plugins must be loaded BEFORE Alpine.js
@@ -23,12 +18,8 @@
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/morph@3.x.x/dist/cdn.min.js"></script>
     
-    <!-- Wallet store code (now an Alpine store) - before Alpine.js -->
-    <script defer type="module" src="/static/walletStore.js"></script>
-    <script defer type="module" src="/static/messageStore.js"></script>
-    <script defer type="module" src="/static/scriptStore.js"></script>
-    <script defer type="module" src="/static/storageStore.js"></script>
-    <script defer type="module" src="/static/tasksStore.js"></script>
+    <!-- Wallet/Message/etc. stores - generated dynamically -->
+    {{ static_scripts }}
 
     <!-- AlpineJS after walletStore.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -40,6 +31,9 @@
     <!-- Tailwind CSS and DaisyUI -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    
+    <!-- Custom CSS -->
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css"{{ css_integrity }} />
     
     <!-- Mark.js for code coverage highlighting -->
     <script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script>

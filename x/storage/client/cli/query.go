@@ -53,6 +53,10 @@ Examples:
 			if err != nil {
 				return err
 			}
+			extract, err := cmd.Flags().GetString("extract")
+			if err != nil {
+				return err
+			}
 
 			if index == "" {
 				return fmt.Errorf("--index flag is required")
@@ -61,8 +65,9 @@ Examples:
 			queryClient := storagetypes.NewQueryClient(clientCtx)
 
 			req := &storagetypes.QueryStorageGetRequest{
-				Owner: owner,
-				Index: index,
+				Owner:   owner,
+				Index:   index,
+				Extract: extract,
 			}
 
 			res, err := queryClient.StorageGet(context.Background(), req)
@@ -75,6 +80,7 @@ Examples:
 	}
 
 	cmd.Flags().String("index", "", "The index/key to query (required)")
+	cmd.Flags().String("extract", "", "Optional GJSON path to extract sub-field from data")
 	_ = cmd.MarkFlagRequired("index")
 
 	flags.AddQueryFlagsToCmd(cmd)
@@ -110,6 +116,14 @@ Examples:
 			if err != nil {
 				return err
 			}
+			filter, err := cmd.Flags().GetString("filter")
+			if err != nil {
+				return err
+			}
+			extract, err := cmd.Flags().GetString("extract")
+			if err != nil {
+				return err
+			}
 
 			queryClient := storagetypes.NewQueryClient(clientCtx)
 
@@ -121,6 +135,8 @@ Examples:
 			req := &storagetypes.QueryStorageListRequest{
 				Owner:       owner,
 				IndexPrefix: indexPrefix,
+				Filter:      filter,
+				Extract:     extract,
 				Pagination:  pageReq,
 			}
 
@@ -134,6 +150,8 @@ Examples:
 	}
 
 	cmd.Flags().String("index-prefix", "", "Filter entries by index prefix")
+	cmd.Flags().String("filter", "", "Optional GJSON path; entry included only if this path exists in data")
+	cmd.Flags().String("extract", "", "Optional GJSON path to extract sub-field from each entry's data")
 	flags.AddQueryFlagsToCmd(cmd)
 	flags.AddPaginationFlagsToCmd(cmd, "storage entries")
 

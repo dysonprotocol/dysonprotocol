@@ -270,4 +270,144 @@ def test_storage_binary_data(chainnet, generate_account, faucet):
     
     # Verify we can decode it back
     decoded = base64.b64decode(value)
-    assert decoded == b"Binary test data", "Binary data corrupted in storage" 
+    assert decoded == b"Binary test data", "Binary data corrupted in storage"
+
+
+def test_storage_extract_and_filter(chainnet, generate_account, faucet):
+    """Test the new --extract and --filter query flags."""
+    dysond = chainnet[0]
+
+    # Create user and fund
+    [user_name, user_addr] = generate_account('extractor')
+    faucet(user_addr)
+
+    # Prepare JSON payloads
+    json_entry_1 = {
+        "title": "First Post",
+        "category": "blog",
+        "meta": {"views": 10}
+    }
+    json_entry_2 = {
+        "title": "Second Post",
+        "category": "blog",
+        "meta": {"views": 20}
+    }
+    json_entry_3 = {
+        "title": "Draft Note",
+        "meta": {"views": 0}
+    }
+
+    # Helper to set entry
+    def set_json(index: str, data: dict):
+        dysond(
+            "tx",
+            "storage",
+            "set",
+            "--from",
+            user_name,
+            "--index",
+            index,
+            "--data",
+            json.dumps(data),
+        )
+
+    prefix = "posts/"
+    set_json(prefix + "1", json_entry_1)
+    set_json(prefix + "2", json_entry_2)
+    set_json(prefix + "draft", json_entry_3)
+
+    # Test --extract on single get
+    get_res = dysond(
+        "query",
+        "storage",
+        "get",
+        user_addr,
+        "--index",
+        prefix + "1",
+        "--extract",
+        "title",
+    )
+    # entry.data should now be the string "First Post" (with quotes)
+    extracted = get_res["entry"]["data"]
+    # Remove surrounding quotes if present
+    if extracted.startswith("\"") and extracted.endswith("\""):
+        extracted = json.loads(extracted)
+    assert extracted == "First Post", f"extract failed: {extracted}"
+
+    # Test --filter when listing
+    list_res = dysond(
+        "query",
+        "storage",
+        "list",
+        user_addr,
+        "--index-prefix",
+        prefix,
+        "--filter",
+        "category",
+        "-o",
+        "json",
+    )
+    entries = list_res.get("entries", [])
+    # Should contain only 2 items (those with category)
+    assert len(entries) == 2, f"filter expected 2 entries, got {len(entries)}"
+
+    # Validate extract works in list too
+    list_extract = dysond(
+        "query",
+        "storage",
+        "list",
+        user_addr,
+        "--index-prefix",
+        prefix,
+        "--filter",
+        "category",
+        "--extract",
+        "meta.views",
+        "-o",
+        "json",
+    )
+    entries_views = list_extract.get("entries", [])
+    views_values = [json.loads(e["data"]) if isinstance(e["data"], str) and e["data"].startswith("\"") else int(e["data"]) for e in entries_views]
+    assert set(views_values) == {10, 20}, f"extract in list failed, got {views_values}"
+
+
+def test_storage_invalid_extract_and_filter(chainnet, generate_account, faucet):
+    """Ensure invalid extract path raises error and unmatched filter returns empty list."""
+    dysond = chainnet[0]
+
+    [u_name, u_addr] = generate_account('neg')
+    faucet(u_addr)
+
+    entry = {"foo": {"bar": 1}}
+    dysond("tx", "storage", "set", "--from", u_name, "--index", "neg/1", "--data", json.dumps(entry))
+
+    # Attempt to extract missing path -> expect string error (gRPC NotFound propagated to CLI)
+    res = dysond("query", "storage", "get", u_addr, "--index", "neg/1", "--extract", "foo.baz")
+    assert isinstance(res, str), "Expected error string when extract path missing"
+    assert "not found" in res.lower(), f"Unexpected error message: {res}"
+
+    # Filter that matches nothing should return 0 entries
+    list_res = dysond(
+        "query", "storage", "list", u_addr, "--index-prefix", "neg/", "--filter", "nonexistent", "-o", "json"
+    )
+    entries = list_res.get("entries", [])
+    assert entries == [] or len(entries) == 0, f"Expected empty list, got {entries}"
+
+
+def test_storage_extract_filter_too_long(chainnet, generate_account, faucet):
+    dysond = chainnet[0]
+    [name, addr] = generate_account('toolong')
+    faucet(addr)
+
+    long_path = 'a' * 101
+    dysond("tx", "storage", "set", "--from", name, "--index", "toolong/1", "--data", "{}")
+
+    res = dysond("query", "storage", "get", addr, "--index", "toolong/1", "--extract", long_path)
+    assert isinstance(res, str) and "too long" in res.lower(), f"Expected length error, got {res}"
+
+    list_res = dysond("query", "storage", "list", addr, "--index-prefix", "toolong/", "--filter", long_path, "-o", "json")
+    # For list, CLI likely surfaces error string instead of json when InvalidArgument
+    if isinstance(list_res, dict):
+        assert False, "Expected error string for too long filter"
+    else:
+        assert "too long" in list_res.lower(), f"Expected length error, got {list_res}" 

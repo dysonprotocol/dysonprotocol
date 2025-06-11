@@ -5,14 +5,25 @@
         "QueryStorageListRequest": {
             "properties": {
                 "owner": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "The address of the owner of the storage entry."
                 },
                 "index_prefix": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "The index prefix of the storage entry to filter by."
+                },
+                "filter": {
+                    "type": "string",
+                    "description": "The optional gjson filter to filter the storage entry. For example, Given data like {\"user\": {\"age\": 18}}, the filter \"user.age \u003e 18\" will return true."
+                },
+                "extract": {
+                    "type": "string",
+                    "description": "The optional gjson path to extract from the storage entry. For example, Given data like {\"user\": {\"name\": \"jeff\"}}, the extract \"user.name\" will return \"jeff\"."
                 },
                 "pagination": {
                     "$ref": "#/definitions/cosmos.base.query.v1beta1.PageRequest",
-                    "additionalProperties": true
+                    "additionalProperties": true,
+                    "description": "The pagination request."
                 }
             },
             "additionalProperties": true,

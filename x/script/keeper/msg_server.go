@@ -20,6 +20,7 @@ var _ scripttypes.MsgServer = Keeper{}
 
 func (k Keeper) UpdateScript(ctx context.Context, msg *scripttypes.MsgUpdateScript) (*scripttypes.MsgUpdateScriptResponse, error) {
 	var script scripttypes.Script
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	exists, err := k.ScriptMap.Has(ctx, msg.Address)
 	if err != nil {
 		return nil, cosmossdkerrors.Wrap(err, "failed to check if script exists")
@@ -40,7 +41,8 @@ func (k Keeper) UpdateScript(ctx context.Context, msg *scripttypes.MsgUpdateScri
 	// Format the code with black before setting it
 	formattedCode, err := dysvm.DysFormat(msg.Code)
 	if err != nil {
-		return nil, cosmossdkerrors.Wrap(err, "failed to format code with dys_format")
+		k.Logger(sdkCtx).Error("failed to format code with dys_format", "error", err)
+		formattedCode = msg.Code
 	}
 
 	script.Code = formattedCode
@@ -52,7 +54,6 @@ func (k Keeper) UpdateScript(ctx context.Context, msg *scripttypes.MsgUpdateScri
 	}
 
 	// Get event manager from context
-	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	err = sdkCtx.EventManager().EmitTypedEvent(
 		&scriptv1.EventUpdateScript{
 			Version: script.Version,

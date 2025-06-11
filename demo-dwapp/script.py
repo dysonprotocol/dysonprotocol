@@ -246,8 +246,7 @@ def handle_wallet(environ, start_response):
     if environ.get("HTTP_HX_REQUEST") == "true":
         return [main.encode()]
 
-    base = SafeTemplate(fetch_template("base.html"))
-    return [base.substitute({"main": main}).encode()]
+    return [_render_base(main)]
 
 
 @route(r"^/script$")
@@ -288,8 +287,7 @@ def handle_script(environ, start_response):
     if environ.get("HTTP_HX_REQUEST") == "true":
         return [main.encode()]
 
-    base = SafeTemplate(fetch_template("base.html"))
-    return [base.substitute({"main": main}).encode()]
+    return [_render_base(main)]
 
 
 @route(r"^/script/functions$")
@@ -336,8 +334,7 @@ def handle_storage(environ, start_response):
     if environ.get("HTTP_HX_REQUEST") == "true":
         return [main.encode()]
 
-    base = SafeTemplate(fetch_template("base.html"))
-    return [base.substitute({"main": main}).encode()]
+    return [_render_base(main)]
 
 
 @route(r"^/tasks$")
@@ -352,8 +349,7 @@ def handle_tasks(environ, start_response):
     if environ.get("HTTP_HX_REQUEST") == "true":
         return [main.encode()]
 
-    base = SafeTemplate(fetch_template("base.html"))
-    return [base.substitute({"main": main}).encode()]
+    return [_render_base(main)]
 
 
 @route(r"^/$")
@@ -367,8 +363,7 @@ def handle_messages(environ, start_response):
     if environ.get("HTTP_HX_REQUEST") == "true":
         return [main.encode()]
 
-    base = SafeTemplate(fetch_template("base.html"))
-    return [base.substitute({"main": main}).encode()]
+    return [_render_base(main)]
 
 
 def extract_functions(
@@ -518,3 +513,63 @@ def fib2(n: int = 3) -> int:
 
 def test_fib2(n: int = 3):
     fib2(n)
+
+# Legacy functions removed - now using render_script_tags() instead
+
+
+def _render_base(main: str) -> bytes:
+    """Render base.html with integrity context and supplied main HTML."""
+    base_tpl = SafeTemplate(fetch_template("base.html"))
+    
+    # Load importmap.json content
+    importmap_res = _query({
+        "@type": "/dysonprotocol.storage.v1.QueryStorageGetRequest",
+        "owner": get_script_address(),
+        "index": "static/importmap.json",
+    })
+    importmap_content = importmap_res["entry"]["data"]
+
+    ctx = {
+        "main": SafeString(main), 
+        "static_scripts": render_script_tags(),
+        "importmap_json": SafeString(importmap_content),
+        "css_integrity": get_css_integrity(),
+    }
+    return base_tpl.substitute(ctx).encode()
+
+
+def render_script_tags() -> SafeString:
+    """List all scripts in static/js directory and output script tags with proper integrity hash."""
+    # Query all storage entries with prefix "static/js/"
+    storage_list = _query({
+        "@type": "/dysonprotocol.storage.v1.QueryStorageListRequest",
+        "owner": get_script_address(),
+        "index_prefix": "static/js/",
+        "extract": "false", # don't extract the data, just list the entries
+    })
+    
+    tags = []
+    for entry in storage_list["entries"]:
+        index = entry["index"]
+        hash_value = entry["hash"]
+        tags.append(f'<script defer type="module" src="/{index}" integrity="{hash_value}"></script>')
+    
+    # Join with newline and indentation for readability
+    return SafeString("\n    ".join(tags))
+
+
+def get_css_integrity() -> SafeString:
+    """Get integrity attribute for style.css file."""
+    try:
+        css_res = _query({
+            "@type": "/dysonprotocol.storage.v1.QueryStorageGetRequest",
+            "owner": get_script_address(),
+            "index": "static/css/style.css",
+        })
+        hash_value = css_res["entry"]["hash"]
+        if isinstance(hash_value, str) and hash_value.startswith("sha256-"):
+            return SafeString(f' integrity="{hash_value}"')
+    except Exception:
+        pass  # No hash available, return empty
+    return SafeString("")
+    

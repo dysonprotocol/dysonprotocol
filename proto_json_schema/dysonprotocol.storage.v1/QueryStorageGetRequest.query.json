@@ -5,10 +5,16 @@
         "QueryStorageGetRequest": {
             "properties": {
                 "owner": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "The address of the owner of the storage entry."
                 },
                 "index": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "The index of the storage entry."
+                },
+                "extract": {
+                    "type": "string",
+                    "description": "The gjson path to extract from the storage entry."
                 }
             },
             "additionalProperties": true,

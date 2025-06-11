@@ -32,12 +32,21 @@
         "parameters": [
           {
             "name": "owner",
+            "description": "The address of the owner of the storage entry.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "index",
+            "description": "The index of the storage entry.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "extract",
+            "description": "The gjson path to extract from the storage entry.",
             "in": "query",
             "required": false,
             "type": "string"
@@ -50,7 +59,7 @@
     },
     "/dysonprotocol/storage/v1/storage_list": {
       "get": {
-        "summary": "Lists all storage entries for the owner under a given index prefix.\nIf index_only=true, only keys are returned (values may be empty); supports\npagination.",
+        "summary": "Lists all storage entries for the owner under a given index prefix. Use\nfilter and extract to filter and extract the data and iterate over the data\nefficiently.",
         "operationId": "Query_StorageList",
         "responses": {
           "200": {
@@ -69,12 +78,28 @@
         "parameters": [
           {
             "name": "owner",
+            "description": "The address of the owner of the storage entry.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "index_prefix",
+            "description": "The index prefix of the storage entry to filter by.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filter",
+            "description": "The optional gjson filter to filter the storage entry. For example, Given\ndata like {\"user\": {\"age\": 18}}, the filter \"user.age \u003e 18\" will return\ntrue.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "extract",
+            "description": "The optional gjson path to extract from the storage entry. For example,\nGiven data like {\"user\": {\"name\": \"jeff\"}}, the extract \"user.name\" will\nreturn \"jeff\".",
             "in": "query",
             "required": false,
             "type": "string"

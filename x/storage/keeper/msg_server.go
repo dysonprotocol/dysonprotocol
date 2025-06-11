@@ -3,7 +3,8 @@ package keeper
 import (
 	"context"
 	"crypto/sha256"
-	"encoding/hex"
+	"encoding/base64"
+	"fmt"
 	"time"
 
 	"cosmossdk.io/collections"
@@ -28,13 +29,14 @@ func (k Keeper) StorageSet(ctx context.Context, msg *storagetypes.MsgStorageSet)
 	blockHeight := uint64(sdk.UnwrapSDKContext(ctx).BlockHeight())
 	blockTime := sdk.UnwrapSDKContext(ctx).BlockTime()
 	hashBytes := sha256.Sum256([]byte(msg.Data))
+	hashB64 := base64.StdEncoding.EncodeToString(hashBytes[:])
 	entry := storagetypes.Storage{
 		Owner:            msg.Owner,
 		Data:             msg.Data,
 		Index:            msg.Index,
 		UpdatedHeight:    blockHeight,
 		UpdatedTimestamp: blockTime.UTC().Format(time.RFC3339),
-		Hash:             hex.EncodeToString(hashBytes[:]),
+		Hash:             fmt.Sprintf("sha256-%s", hashB64),
 	}
 
 	if err := k.StorageMap.Set(ctx, key, entry); err != nil {

@@ -29,9 +29,9 @@ const (
 type QueryClient interface {
 	// Gets the stored data for the given owner and index.
 	StorageGet(ctx context.Context, in *QueryStorageGetRequest, opts ...grpc.CallOption) (*QueryStorageGetResponse, error)
-	// Lists all storage entries for the owner under a given index prefix.
-	// If index_only=true, only keys are returned (values may be empty); supports
-	// pagination.
+	// Lists all storage entries for the owner under a given index prefix. Use
+	// filter and extract to filter and extract the data and iterate over the data
+	// efficiently.
 	StorageList(ctx context.Context, in *QueryStorageListRequest, opts ...grpc.CallOption) (*QueryStorageListResponse, error)
 }
 
@@ -69,9 +69,9 @@ func (c *queryClient) StorageList(ctx context.Context, in *QueryStorageListReque
 type QueryServer interface {
 	// Gets the stored data for the given owner and index.
 	StorageGet(context.Context, *QueryStorageGetRequest) (*QueryStorageGetResponse, error)
-	// Lists all storage entries for the owner under a given index prefix.
-	// If index_only=true, only keys are returned (values may be empty); supports
-	// pagination.
+	// Lists all storage entries for the owner under a given index prefix. Use
+	// filter and extract to filter and extract the data and iterate over the data
+	// efficiently.
 	StorageList(context.Context, *QueryStorageListRequest) (*QueryStorageListResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
