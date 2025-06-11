@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-4xl font-bold text-center mb-8">Welcome to Dyson Protocol Demo</h1>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Script Module -->
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title">Script Module</h2>
+                <p>Deploy and manage Python scripts on the blockchain</p>
+                <div class="card-actions justify-end">
+                    <a href="/script" class="btn btn-primary">Open Script</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Crontask Module -->
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title">Crontask Module</h2>
+                <p>Schedule tasks to run automatically on the blockchain</p>
+                <div class="card-actions justify-end">
+                    <a href="/tasks" class="btn btn-primary">View Tasks</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Storage Module -->
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title">Storage Module</h2>
+                <p>Store and retrieve data on the blockchain</p>
+                <div class="card-actions justify-end">
+                    <a href="/storage" class="btn btn-primary">Browse Storage</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Wallet -->
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title">Wallet</h2>
+                <p>Connect and manage your blockchain wallet</p>
+                <div class="card-actions justify-end">
+                    <a href="/wallet" class="btn btn-primary">Open Wallet</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Messages -->
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title">Messages</h2>
+                <p>Send custom blockchain messages</p>
+                <div class="card-actions justify-end">
+                    <a href="/messages" class="btn btn-primary">Send Messages</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -2,17 +2,20 @@ package keeper
 
 import (
 	"context"
+	"encoding/binary"
 	"errors"
 	"fmt"
 
 	"cosmossdk.io/collections"
-	"cosmossdk.io/collections/indexes"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
-	"dysonprotocol.com/x/crontask"
-	crontasktypes "dysonprotocol.com/x/crontask/types"
+	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/runtime"
+
+	"dysonprotocol.com/x/crontask"
+	crontasktypes "dysonprotocol.com/x/crontask/types"
 )
 
 var (
@@ -29,61 +32,12 @@ var (
 	TasksByAddressPrefix         = collections.NewPrefix(3)
 	TasksByStatusTimestampPrefix = collections.NewPrefix(4)
 	TasksByStatusGasPricePrefix  = collections.NewPrefix(5)
+
+	// Manual raw KV index prefixes (single-byte for simplicity)
+	indexAddrPrefix      = []byte{0xA1}
+	indexStatusTsPrefix  = []byte{0xA2}
+	indexStatusGasPrefix = []byte{0xA3}
 )
-
-// TaskIndexes defines the indexes for tasks
-type TaskIndexes struct {
-	// ByAddress indexes tasks by creator address
-	ByAddress *indexes.Multi[string, uint64, crontasktypes.Task]
-
-	// ByStatusTimestamp indexes tasks by status and scheduled timestamp
-	ByStatusTimestamp *indexes.Multi[collections.Pair[string, int64], uint64, crontasktypes.Task]
-
-	// ByStatusGasPrice indexes tasks by status and gas price
-	ByStatusGasPrice *indexes.Multi[collections.Pair[string, int64], uint64, crontasktypes.Task]
-}
-
-// NewTaskIndexes creates new indexes for tasks
-func NewTaskIndexes(sb *collections.SchemaBuilder, tasks collections.Map[uint64, crontasktypes.Task], cdc codec.Codec) TaskIndexes {
-	return TaskIndexes{
-		// ByAddress indexes tasks by creator address
-		ByAddress: indexes.NewMulti(
-			sb,
-			TasksByAddressPrefix,
-			"tasks_by_address",
-			collections.StringKey,
-			collections.Uint64Key,
-			func(_ uint64, task crontasktypes.Task) (string, error) {
-				return task.Creator, nil
-			},
-		),
-
-		// Index by status and timestamp
-		ByStatusTimestamp: indexes.NewMulti(
-			sb,
-			TasksByStatusTimestampPrefix,
-			"tasks_by_status_timestamp",
-			collections.PairKeyCodec(collections.StringKey, collections.Int64Key),
-			collections.Uint64Key,
-			func(_ uint64, task crontasktypes.Task) (collections.Pair[string, int64], error) {
-				return collections.Join(task.Status, task.ScheduledTimestamp), nil
-			},
-		),
-
-		// ByStatusGasPrice indexes tasks by status and gas price
-		ByStatusGasPrice: indexes.NewMulti(
-			sb,
-			TasksByStatusGasPricePrefix,
-			"tasks_by_status_gas_price",
-			collections.PairKeyCodec(collections.StringKey, collections.Int64Key),
-			collections.Uint64Key,
-			func(_ uint64, task crontasktypes.Task) (collections.Pair[string, int64], error) {
-				// Convert gas price to Int64 for indexing
-				return collections.Join(task.Status, task.TaskGasPrice.Amount.Int64()), nil
-			},
-		),
-	}
-}
 
 type Keeper struct {
 	cdc           codec.Codec
@@ -99,10 +53,7 @@ type Keeper struct {
 	Schema collections.Schema
 
 	// Tasks is the primary collection for tasks
-	Tasks *collections.IndexedMap[uint64, crontasktypes.Task, TaskIndexes]
-
-	// Indexes provides efficient queries over the Tasks collection
-	Indexes TaskIndexes
+	Tasks collections.Map[uint64, crontasktypes.Task]
 
 	// NextTaskID is a sequence for task IDs
 	NextTaskID collections.Sequence
@@ -126,54 +77,13 @@ func NewKeeper(
 
 	sb := collections.NewSchemaBuilder(storeService)
 
-	// Create the task indexes
-	taskIndexes := TaskIndexes{
-		// ByAddress indexes tasks by creator address
-		ByAddress: indexes.NewMulti(
-			sb,
-			TasksByAddressPrefix,
-			"tasks_by_address",
-			collections.StringKey,
-			collections.Uint64Key,
-			func(taskId uint64, task crontasktypes.Task) (string, error) {
-				return task.Creator, nil
-			},
-		),
-
-		// Index by status and timestamp
-		ByStatusTimestamp: indexes.NewMulti(
-			sb,
-			TasksByStatusTimestampPrefix,
-			"tasks_by_status_timestamp",
-			collections.PairKeyCodec(collections.StringKey, collections.Int64Key),
-			collections.Uint64Key,
-			func(taskId uint64, task crontasktypes.Task) (collections.Pair[string, int64], error) {
-				return collections.Join(task.Status, task.ScheduledTimestamp), nil
-			},
-		),
-
-		// ByStatusGasPrice indexes tasks by status and gas price
-		ByStatusGasPrice: indexes.NewMulti(
-			sb,
-			TasksByStatusGasPricePrefix,
-			"tasks_by_status_gas_price",
-			collections.PairKeyCodec(collections.StringKey, collections.Int64Key),
-			collections.Uint64Key,
-			func(taskId uint64, task crontasktypes.Task) (collections.Pair[string, int64], error) {
-				// Convert gas price to Int64 for indexing
-				return collections.Join(task.Status, task.TaskGasPrice.Amount.Int64()), nil
-			},
-		),
-	}
-
-	// Create indexed map with the indexes
-	tasks := collections.NewIndexedMap(
+	// plain tasks map
+	tasks := collections.NewMap(
 		sb,
 		TasksKey,
 		"tasks",
 		collections.Uint64Key,
 		codec.CollValue[crontasktypes.Task](cdc),
-		taskIndexes,
 	)
 
 	nextTaskID := collections.NewSequence(
@@ -202,7 +112,6 @@ func NewKeeper(
 		accountKeeper:    accountKeeper,
 		config:           config,
 		Tasks:            tasks,
-		Indexes:          taskIndexes,
 		NextTaskID:       nextTaskID,
 		Params:           params,
 		Schema:           schema,
@@ -274,43 +183,6 @@ func (k Keeper) GetParams(ctx context.Context) (crontasktypes.Params, error) {
 	return params, nil
 }
 
-// GetExpiredTasks returns tasks with the EXPIRED status
-func (k Keeper) GetExpiredTasks(ctx context.Context, limit int) ([]crontasktypes.Task, error) {
-	status := crontasktypes.TaskStatus_EXPIRED
-
-	// Iterate through tasks with EXPIRED status
-	iter, err := k.Indexes.ByStatusTimestamp.Iterate(ctx,
-		collections.NewPrefixedPairRange[collections.Pair[string, int64], uint64](
-			collections.PairPrefix[string, int64](status)))
-	if err != nil {
-		return nil, fmt.Errorf("failed to iterate expired tasks: %w", err)
-	}
-	defer iter.Close()
-
-	tasks := make([]crontasktypes.Task, 0, limit)
-	count := 0
-
-	// Collect expired tasks up to the limit
-	for ; iter.Valid() && count < limit; iter.Next() {
-		taskId, err := iter.PrimaryKey()
-		if err != nil {
-			k.Logger.Error("failed to get task ID", "error", err)
-			continue
-		}
-
-		task, err := k.GetTask(ctx, taskId)
-		if err != nil {
-			k.Logger.Error("failed to get task", "task_id", taskId, "error", err)
-			continue
-		}
-
-		tasks = append(tasks, task)
-		count++
-	}
-
-	return tasks, nil
-}
-
 // GetModuleParams returns the current module parameters
 func (k Keeper) GetModuleParams(ctx context.Context) crontasktypes.Params {
 	return crontasktypes.Params{
@@ -318,4 +190,82 @@ func (k Keeper) GetModuleParams(ctx context.Context) crontasktypes.Params {
 		ExpiryLimit:      k.config.ExpiryLimit,
 		MaxScheduledTime: k.config.MaxScheduledTime,
 	}
+}
+
+// bigEndian encodes uint64 big-endian
+func bigEndian(u uint64) []byte {
+	var b [8]byte
+	binary.BigEndian.PutUint64(b[:], u)
+	return b[:]
+}
+
+// addIndexes writes secondary-index entries for a task
+func (k Keeper) addIndexes(ctx context.Context, t crontasktypes.Task) {
+	store := k.storeService.OpenKVStore(ctx)
+
+	// address index: prefix | creator | id
+	keyAddr := append(append(indexAddrPrefix, []byte(t.Creator)...), bigEndian(t.TaskId)...)
+	_ = store.Set(keyAddr, []byte{})
+
+	// status+timestamp index
+	tsKey := append(indexStatusTsPrefix, []byte(t.Status)...)
+	tsKey = append(tsKey, bigEndian(uint64(t.ScheduledTimestamp))...)
+	tsKey = append(tsKey, bigEndian(t.TaskId)...)
+	_ = store.Set(tsKey, []byte{})
+
+	// status+gasPrice index
+	gpKey := append(indexStatusGasPrefix, []byte(t.Status)...)
+	gpKey = append(gpKey, bigEndian(uint64(t.TaskGasPrice.Amount.Int64()))...)
+	gpKey = append(gpKey, bigEndian(t.TaskId)...)
+	_ = store.Set(gpKey, []byte{})
+}
+
+// removeIndexes deletes secondary-index entries for a task
+func (k Keeper) removeIndexes(ctx context.Context, t crontasktypes.Task) {
+	store := k.storeService.OpenKVStore(ctx)
+
+	keyAddr := append(append(indexAddrPrefix, []byte(t.Creator)...), bigEndian(t.TaskId)...)
+	_ = store.Delete(keyAddr)
+
+	tsKey := append(indexStatusTsPrefix, []byte(t.Status)...)
+	tsKey = append(tsKey, bigEndian(uint64(t.ScheduledTimestamp))...)
+	tsKey = append(tsKey, bigEndian(t.TaskId)...)
+	_ = store.Delete(tsKey)
+
+	gpKey := append(indexStatusGasPrefix, []byte(t.Status)...)
+	gpKey = append(gpKey, bigEndian(uint64(t.TaskGasPrice.Amount.Int64()))...)
+	gpKey = append(gpKey, bigEndian(t.TaskId)...)
+	_ = store.Delete(gpKey)
+}
+
+// kvStore returns module store adapter for iterator utils
+func (k Keeper) kvStore(ctx context.Context) storetypes.KVStore {
+	return runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+}
+
+// iterateStatusTimestamp returns iterator over keys for given status, ordered asc/desc
+func (k Keeper) iterateStatusTimestamp(ctx context.Context, status string, reverse bool) storetypes.Iterator {
+	store := k.kvStore(ctx)
+	prefix := append(indexStatusTsPrefix, []byte(status)...)
+	if reverse {
+		return storetypes.KVStoreReversePrefixIterator(store, prefix)
+	}
+	return storetypes.KVStorePrefixIterator(store, prefix)
+}
+
+// iterateStatusGas returns iterator over status+gasPrice index
+func (k Keeper) iterateStatusGas(ctx context.Context, status string, reverse bool) storetypes.Iterator {
+	store := k.kvStore(ctx)
+	prefix := append(indexStatusGasPrefix, []byte(status)...)
+	if reverse {
+		return storetypes.KVStoreReversePrefixIterator(store, prefix)
+	}
+	return storetypes.KVStorePrefixIterator(store, prefix)
+}
+
+// iterateAddress returns iterator over address index
+func (k Keeper) iterateAddress(ctx context.Context, addr string) storetypes.Iterator {
+	store := k.kvStore(ctx)
+	prefix := append(indexAddrPrefix, []byte(addr)...)
+	return storetypes.KVStorePrefixIterator(store, prefix)
 }

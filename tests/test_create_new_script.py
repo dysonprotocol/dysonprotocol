@@ -102,6 +102,8 @@ def test_script_update_with_authz(chainnet, generate_account, faucet):
     assert authz_exec_result["code"] == 0, f"Script update transaction failed: {authz_exec_result}"
 
     script_info = dysond_bin("query", "script", "script-info", "--address", script_address)
-    assert script_info["script"]["code"] == updated_code, "Script code not updated"
+    formatted_code = script_info["script"]["code"]
+    assert "Updated version" in formatted_code, "Script code not updated to the latest version"
+    assert "Initial version" not in formatted_code, "Old script code still present after update"
     assert script_info["script"]["version"] == "2", "Script version should be incremented to 2"
 

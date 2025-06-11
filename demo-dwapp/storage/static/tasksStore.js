@@ -15,62 +15,32 @@ document.addEventListener("alpine:init", () => {
     hasMore: false,
     totalTasks: 0,
     
-    // Filters and sorting
+    // Filters
     statusFilters: Alpine.$persist(["PENDING", "DONE", "FAILED", "EXPIRED"]),
     selectedStatuses: Alpine.$persist(["PENDING", "DONE"]),
-    sortBy: Alpine.$persist("scheduled_timestamp"),
-    sortOrder: Alpine.$persist("asc"),
-    searchTerm: "",
     
     // Task creation
-    isCreatingTask: false,
     createTaskLoading: false,
     newTask: {
-      scheduledTimestamp: "",
+      scheduledTimestamp: "+1s",
       expiryTimestamp: "",
       gasLimit: 200000,
-      gasFee: "0",
-      messages: []
-    },
-    
-    // Message builder
-    isAddingMessage: false,
-    currentMessageType: "bank_send",
-    newMessage: {
-      "@type": "/cosmos.bank.v1beta1.MsgSend",
-      "from_address": "",
-      "to_address": "",
-      "amount": [{"denom": "dys", "amount": "1000"}]
-    },
-    newMessageJson: "",
-    
-    // Task templates
-    taskTemplates: Alpine.$persist([
-      {
-        name: "Token Transfer",
-        description: "Schedule a token transfer",
-        messages: [{
-          "@type": "/cosmos.bank.v1beta1.MsgSend",
-          "from_address": "",
-          "to_address": "",
-          "amount": [{"denom": "dys", "amount": "1000"}]
-        }]
-      },
-      {
-        name: "Script Execution",
-        description: "Schedule a script function call",
-        messages: [{
+      gasFee: "1",
+      messages: [
+        {
           "@type": "/dysonprotocol.script.v1.MsgExec",
           "executor_address": "",
           "script_address": "",
+          "extra_code": "",
           "function_name": "",
           "args": "[]",
           "kwargs": "{}",
-          "extra_code": "",
           "attached_messages": []
-        }]
-      }
-    ]),
+        }
+      ]
+    },
+    
+
     
     // Task details
     selectedTask: null,
@@ -92,15 +62,6 @@ document.addEventListener("alpine:init", () => {
       // Watch for filter changes
       this.$watch('selectedStatuses', () => {
         this.filterTasks();
-      });
-      this.$watch('searchTerm', () => {
-        this.filterTasks();
-      });
-      this.$watch('sortBy', () => {
-        this.sortTasks();
-      });
-      this.$watch('sortOrder', () => {
-        this.sortTasks();
       });
     },
     
@@ -160,10 +121,16 @@ document.addEventListener("alpine:init", () => {
             // Parse timestamps
             scheduledTime: new Date(parseInt(task.scheduled_timestamp) * 1000),
             expiryTime: task.expiry_timestamp ? new Date(parseInt(task.expiry_timestamp) * 1000) : null,
-            // Parse messages
-            parsedMessages: this.parseMessages(task.messages),
+            // Parse messages (try both field names)
+            parsedMessages: this.parseMessages(task.msgs || task.messages),
+            // Parse message results
+            parsedMsgResults: this.parseMsgResults(task.msg_results),
             // Calculate time remaining for pending tasks
-            timeRemaining: this.calculateTimeRemaining(task)
+            timeRemaining: this.calculateTimeRemaining(task),
+            // Extract failure information if task failed
+            failure_reason: this.extractFailureReason(task),
+            error_log: this.extractErrorLog(task),
+            failed_at: task.status === 'FAILED' && task.execution_time ? task.execution_time : null
           }));
           
           if (append) {
@@ -192,59 +159,53 @@ document.addEventListener("alpine:init", () => {
 
     // Parse messages for display
     parseMessages(messages) {
+      if (!messages || !Array.isArray(messages)) {
+        return [];
+      }
+      
       return messages.map(msg => {
         try {
-          const parsed = typeof msg === 'string' ? JSON.parse(msg) : msg;
-          return {
-            ...parsed,
-            displayType: this.getMessageDisplayType(parsed["@type"]),
-            summary: this.getMessageSummary(parsed)
-          };
+          return typeof msg === 'string' ? JSON.parse(msg) : msg;
         } catch (error) {
-          return {
-            raw: msg,
-            displayType: "Unknown",
-            summary: "Invalid message format"
-          };
+          return { raw: msg };
         }
       });
     },
 
-    // Get human-readable message type
-    getMessageDisplayType(type) {
-      const typeMap = {
-        "/cosmos.bank.v1beta1.MsgSend": "Token Transfer",
-        "/dysonprotocol.script.v1.MsgExec": "Script Execution",
-        "/dysonprotocol.storage.v1.MsgStorageSet": "Storage Set",
-        "/dysonprotocol.storage.v1.MsgStorageDelete": "Storage Delete",
-        "/dysonprotocol.crontask.v1.MsgCreateTask": "Create Task",
-        "/dysonprotocol.crontask.v1.MsgDeleteTask": "Delete Task"
-      };
-      return typeMap[type] || type.replace(/^.*\./, "");
+    // Parse message results for display
+    parseMsgResults(msgResults) {
+      if (!msgResults || !Array.isArray(msgResults)) {
+        return [];
+      }
+      
+      return msgResults.map(result => this.recursiveJsonParse(result));
     },
 
-    // Get message summary for display
-    getMessageSummary(message) {
-      const type = message["@type"];
-      
-      switch (type) {
-        case "/cosmos.bank.v1beta1.MsgSend":
-          const amount = message.amount?.[0];
-          return `Send ${amount?.amount || "?"} ${amount?.denom || "?"} to ${this.truncateAddress(message.to_address)}`;
-        
-        case "/dysonprotocol.script.v1.MsgExec":
-          return `Call ${message.function_name || "function"}() on ${this.truncateAddress(message.script_address)}`;
-        
-        case "/dysonprotocol.storage.v1.MsgStorageSet":
-          return `Set storage key: ${this.truncateString(message.index, 30)}`;
-        
-        case "/dysonprotocol.storage.v1.MsgStorageDelete":
-          const indexes = message.indexes || [];
-          return `Delete ${indexes.length} storage key(s)`;
-        
-        default:
-          return `${this.getMessageDisplayType(type)} message`;
+    // Recursively parse JSON strings in an object
+    recursiveJsonParse(obj) {
+      if (typeof obj === 'string') {
+        try {
+          // Try to parse the string as JSON
+          const parsed = JSON.parse(obj);
+          // Recursively parse the result
+          return this.recursiveJsonParse(parsed);
+        } catch (e) {
+          // If it's not valid JSON, return the original string
+          return obj;
+        }
+      } else if (Array.isArray(obj)) {
+        // Recursively parse arrays
+        return obj.map(item => this.recursiveJsonParse(item));
+      } else if (obj !== null && typeof obj === 'object') {
+        // Recursively parse objects
+        const result = {};
+        for (const [key, value] of Object.entries(obj)) {
+          result[key] = this.recursiveJsonParse(value);
+        }
+        return result;
       }
+      // Return primitive values as-is
+      return obj;
     },
 
     // Calculate time remaining for pending tasks
@@ -264,6 +225,49 @@ document.addEventListener("alpine:init", () => {
       if (days > 0) return `${days}d ${hours}h`;
       if (hours > 0) return `${hours}h ${minutes}m`;
       return `${minutes}m`;
+    },
+
+    // Extract failure reason from task execution result
+    extractFailureReason(task) {
+      if (task.status !== 'FAILED') return null;
+      
+      // Check for generic error fields
+      if (task.error) return task.error;
+      if (task.failure_reason) return task.failure_reason;
+      if (task.error_message) return task.error_message;
+      
+      return "Task execution failed";
+    },
+
+    // Extract message types from parsed messages
+    getMessageTypes(messages) {
+      if (!messages || !Array.isArray(messages)) {
+        return [];
+      }
+      
+      return messages.map((msg, index) => {
+        if (msg['@type']) {
+          // Extract just the message type name from the full type path
+          const typeParts = msg['@type'].split('.');
+          return typeParts[typeParts.length - 1] || msg['@type'];
+        }
+        if (msg.raw) {
+          return 'Raw Message';
+        }
+        return `Message ${index + 1}`;
+      });
+    },
+
+    // Extract detailed error log from task
+    extractErrorLog(task) {
+      if (task.status !== 'FAILED') return null;
+      
+      // Check for generic error log fields
+      if (task.raw_log) return task.raw_log;
+      if (task.error_log) return task.error_log;
+      if (task.log) return task.log;
+      
+      return null;
     },
 
     // Update statistics
@@ -286,52 +290,7 @@ document.addEventListener("alpine:init", () => {
         filtered = filtered.filter(task => this.selectedStatuses.includes(task.status));
       }
       
-      // Filter by search term
-      if (this.searchTerm.trim()) {
-        const searchLower = this.searchTerm.toLowerCase();
-        filtered = filtered.filter(task => 
-          task.task_id.toLowerCase().includes(searchLower) ||
-          task.status.toLowerCase().includes(searchLower) ||
-          task.parsedMessages.some(msg => 
-            msg.summary.toLowerCase().includes(searchLower)
-          )
-        );
-      }
-      
       this.filteredTasks = filtered;
-      this.sortTasks();
-    },
-
-    // Sort tasks
-    sortTasks() {
-      const sortField = this.sortBy;
-      const ascending = this.sortOrder === "asc";
-      
-      this.filteredTasks.sort((a, b) => {
-        let aVal, bVal;
-        
-        switch (sortField) {
-          case "scheduled_timestamp":
-            aVal = parseInt(a.scheduled_timestamp);
-            bVal = parseInt(b.scheduled_timestamp);
-            break;
-          case "task_id":
-            aVal = a.task_id;
-            bVal = b.task_id;
-            break;
-          case "status":
-            aVal = a.status;
-            bVal = b.status;
-            break;
-          default:
-            aVal = a[sortField] || "";
-            bVal = b[sortField] || "";
-        }
-        
-        if (aVal < bVal) return ascending ? -1 : 1;
-        if (aVal > bVal) return ascending ? 1 : -1;
-        return 0;
-      });
     },
 
     // Toggle status filter
@@ -344,190 +303,58 @@ document.addEventListener("alpine:init", () => {
       }
     },
 
-    // Start creating new task
-    startCreateTask(template = null) {
-      this.isCreatingTask = true;
-      
-      if (template) {
-        this.newTask = {
-          scheduledTimestamp: "",
-          expiryTimestamp: "",
-          gasLimit: 200000,
-          gasFee: "0",
-          messages: JSON.parse(JSON.stringify(template.messages))
-        };
-        this.populateAddressesInMessages();
-      } else {
-        this.newTask = {
-          scheduledTimestamp: "",
-          expiryTimestamp: "",
-          gasLimit: 200000,
-          gasFee: "0",
-          messages: []
-        };
-      }
-    },
-
-    // Populate addresses in message templates
-    populateAddressesInMessages() {
-      const walletStore = Alpine.store('walletStore');
-      const userAddress = walletStore?.activeWalletMeta?.address;
-      const scriptAddress = this.getScriptAddress();
-      
-      if (!userAddress) return;
-      
-      this.newTask.messages.forEach(msg => {
-        if (msg["@type"] === "/cosmos.bank.v1beta1.MsgSend") {
-          msg.from_address = userAddress;
-        } else if (msg["@type"] === "/dysonprotocol.script.v1.MsgExec") {
-          msg.executor_address = userAddress;
-          msg.script_address = scriptAddress;
-        }
-      });
-    },
-
-    // Cancel task creation
-    cancelCreateTask() {
-      this.isCreatingTask = false;
+    // Reset new task form
+    resetNewTask() {
       this.newTask = {
-        scheduledTimestamp: "",
+        scheduledTimestamp: "+1s",
         expiryTimestamp: "",
         gasLimit: 200000,
-        gasFee: "0",
-        messages: []
-      };
-    },
-
-    // Add message to new task
-    addMessage() {
-      this.isAddingMessage = true;
-      this.currentMessageType = "bank_send";
-      this.newMessage = this.getMessageTemplate(this.currentMessageType);
-    },
-
-    // Get message template
-    getMessageTemplate(type) {
-      const walletStore = Alpine.store('walletStore');
-      const userAddress = walletStore?.activeWalletMeta?.address || "";
-      const scriptAddress = this.getScriptAddress();
-      
-      const templates = {
-        bank_send: {
-          "@type": "/cosmos.bank.v1beta1.MsgSend",
-          "from_address": userAddress,
-          "to_address": "",
-          "amount": [{"denom": "dys", "amount": "1000"}]
-        },
-        script_exec: {
-          "@type": "/dysonprotocol.script.v1.MsgExec",
-          "executor_address": userAddress,
-          "script_address": scriptAddress,
-          "function_name": "",
-          "args": "[]",
-          "kwargs": "{}",
-          "extra_code": "",
-          "attached_messages": []
-        },
-        storage_set: {
-          "@type": "/dysonprotocol.storage.v1.MsgStorageSet",
-          "owner": scriptAddress,
-          "index": "",
-          "data": ""
-        },
-        custom: {}
+        gasFee: "1",
+        messages: [
+          {
+            "@type": "/dysonprotocol.script.v1.MsgExec",
+            "executor_address": "",
+            "script_address": "",
+            "extra_code": "",
+            "function_name": "",
+            "args": "[]",
+            "kwargs": "{}",
+            "attached_messages": []
+          }
+        ]
       };
       
-      return JSON.parse(JSON.stringify(templates[type] || templates.custom));
+      // Update the editor content
+      this.updateMessagesEditor();
     },
 
-    // Change message type
-    changeMessageType(type) {
-      this.currentMessageType = type;
-      this.newMessage = this.getMessageTemplate(type);
-    },
-
-    // Save new message
-    saveMessage() {
-      if (this.currentMessageType === "custom") {
-        try {
-          this.newMessage = JSON.parse(this.newMessageJson || "{}");
-        } catch (error) {
-          alert("Invalid JSON format");
-          return;
-        }
-      }
-      
-      this.newTask.messages.push(JSON.parse(JSON.stringify(this.newMessage)));
-      this.cancelAddMessage();
-    },
-
-    // Cancel adding message
-    cancelAddMessage() {
-      this.isAddingMessage = false;
-      this.newMessage = this.getMessageTemplate("bank_send");
-      this.newMessageJson = "";
-    },
-
-    // Remove message from new task
-    removeMessage(index) {
-      this.newTask.messages.splice(index, 1);
-    },
-
-    // Move message up/down
-    moveMessage(index, direction) {
-      const newIndex = direction === "up" ? index - 1 : index + 1;
-      if (newIndex < 0 || newIndex >= this.newTask.messages.length) return;
-      
-      const messages = [...this.newTask.messages];
-      [messages[index], messages[newIndex]] = [messages[newIndex], messages[index]];
-      this.newTask.messages = messages;
-    },
-
-    // Parse time input (supports both Unix timestamp and relative time)
-    parseTimeInput(input) {
-      if (!input.trim()) return null;
-      
-      // If it's a number, treat as Unix timestamp
-      if (/^\d+$/.test(input)) {
-        return parseInt(input);
-      }
-      
-      // If it starts with +, treat as relative time
-      if (input.startsWith('+')) {
-        const now = Math.floor(Date.now() / 1000);
-        const relativeSeconds = this.parseRelativeTime(input.substring(1));
-        return relativeSeconds ? now + relativeSeconds : null;
-      }
-      
-      // Try to parse as ISO date
+    // Update messages from JSON editor
+    updateMessagesFromJson(jsonText) {
       try {
-        const date = new Date(input);
-        return Math.floor(date.getTime() / 1000);
-      } catch {
-        return null;
+        const parsed = JSON.parse(jsonText);
+        if (Array.isArray(parsed)) {
+          this.newTask.messages = parsed;
+        } else {
+          console.error("Messages must be an array");
+        }
+      } catch (error) {
+        console.error("Invalid JSON:", error);
+        // Don't update the messages if JSON is invalid
       }
     },
 
-    // Parse relative time (e.g., "1h30m", "2d", "45m")
-    parseRelativeTime(input) {
-      const regex = /(\d+)([dhms])/g;
-      let totalSeconds = 0;
-      let match;
-      
-      while ((match = regex.exec(input)) !== null) {
-        const value = parseInt(match[1]);
-        const unit = match[2];
-        
-        switch (unit) {
-          case 'd': totalSeconds += value * 24 * 60 * 60; break;
-          case 'h': totalSeconds += value * 60 * 60; break;
-          case 'm': totalSeconds += value * 60; break;
-          case 's': totalSeconds += value; break;
+    // Update the messages editor content (without affecting cursor)
+    updateMessagesEditor() {
+      // Use setTimeout to ensure this runs after Alpine has processed
+      setTimeout(() => {
+        const editor = this.$refs?.messagesEditor;
+        if (editor) {
+          editor.textContent = JSON.stringify(this.newTask.messages, null, 2);
         }
-      }
-      
-      return totalSeconds;
+      }, 0);
     },
+
+
 
     // Create task
     async createTask() {
@@ -539,19 +366,13 @@ document.addEventListener("alpine:init", () => {
           throw new Error('Wallet not connected');
         }
         
-        // Parse timestamps
-        const scheduledTimestamp = this.parseTimeInput(this.newTask.scheduledTimestamp);
+        // Use timestamps directly - server will parse them
+        const scheduledTimestamp = this.newTask.scheduledTimestamp.trim();
         if (!scheduledTimestamp) {
-          throw new Error('Invalid scheduled timestamp');
+          throw new Error('Scheduled timestamp is required');
         }
         
-        let expiryTimestamp = null;
-        if (this.newTask.expiryTimestamp.trim()) {
-          expiryTimestamp = this.parseTimeInput(this.newTask.expiryTimestamp);
-          if (!expiryTimestamp) {
-            throw new Error('Invalid expiry timestamp');
-          }
-        }
+        const expiryTimestamp = this.newTask.expiryTimestamp.trim()
         
         // Validate messages
         if (this.newTask.messages.length === 0) {
@@ -562,11 +383,14 @@ document.addEventListener("alpine:init", () => {
         const taskMsg = {
           "@type": "/dysonprotocol.crontask.v1.MsgCreateTask",
           "creator": walletStore.activeWalletMeta.address,
-          "scheduled_timestamp": scheduledTimestamp.toString(),
-          "expiry_timestamp": expiryTimestamp ? expiryTimestamp.toString() : "0",
-          "gas_limit": this.newTask.gasLimit.toString(),
-          "gas_fee": this.newTask.gasFee,
-          "messages": this.newTask.messages
+          "scheduled_timestamp": scheduledTimestamp,
+          "expiry_timestamp": expiryTimestamp,
+          "task_gas_limit": this.newTask.gasLimit.toString(),
+          "task_gas_fee": {
+            "denom": "dys",
+            "amount": this.newTask.gasFee || "1"
+          },
+          "msgs": this.newTask.messages
         };
         
         const result = await walletStore.sendMsg({
@@ -576,7 +400,7 @@ document.addEventListener("alpine:init", () => {
         });
         
         if (result.success) {
-          this.cancelCreateTask();
+          this.resetNewTask();
           await this.loadTasks();
         } else {
           console.error("Task creation failed:", result);
@@ -630,16 +454,12 @@ document.addEventListener("alpine:init", () => {
 
     // Clone task
     cloneTask(task) {
-      this.startCreateTask();
       this.newTask = {
-        scheduledTimestamp: "",
+        scheduledTimestamp: "+1s",
         expiryTimestamp: "",
         gasLimit: parseInt(task.gas_limit),
         gasFee: task.gas_fee,
-        messages: JSON.parse(JSON.stringify(task.parsedMessages.map(msg => {
-          const { displayType, summary, ...cleanMsg } = msg;
-          return cleanMsg;
-        })))
+        messages: JSON.parse(JSON.stringify(task.parsedMessages))
       };
     },
 
@@ -695,32 +515,6 @@ document.addEventListener("alpine:init", () => {
       this.loadTasks(true);
     },
 
-    // Export tasks
-    exportTasks() {
-      const exportData = {
-        exported_at: new Date().toISOString(),
-        creator: this.getScriptAddress(),
-        tasks: this.filteredTasks.map(task => ({
-          task_id: task.task_id,
-          status: task.status,
-          scheduled_timestamp: task.scheduled_timestamp,
-          expiry_timestamp: task.expiry_timestamp,
-          gas_limit: task.gas_limit,
-          gas_fee: task.gas_fee,
-          messages: task.parsedMessages.map(msg => {
-            const { displayType, summary, ...cleanMsg } = msg;
-            return cleanMsg;
-          })
-        }))
-      };
-      
-      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `dyson-tasks-${Date.now()}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-    }
+
   }));
 }); 

@@ -360,7 +360,6 @@ document.addEventListener("alpine:init", () => {
         // Send the transaction
         const result = await walletStore.sendMsg({
           msg: updateMessage,
-          gasLimit: 500000, // Higher gas limit for script updates
           memo: 'Script update via dashboard'
         });
         

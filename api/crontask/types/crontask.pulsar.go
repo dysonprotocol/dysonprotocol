@@ -135,6 +135,8 @@ var (
 	fd_Task_status              protoreflect.FieldDescriptor
 	fd_Task_creation_time       protoreflect.FieldDescriptor
 	fd_Task_error_log           protoreflect.FieldDescriptor
+	fd_Task_task_gas_consumed   protoreflect.FieldDescriptor
+	fd_Task_execution_timestamp protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -152,6 +154,8 @@ func init() {
 	fd_Task_status = md_Task.Fields().ByName("status")
 	fd_Task_creation_time = md_Task.Fields().ByName("creation_time")
 	fd_Task_error_log = md_Task.Fields().ByName("error_log")
+	fd_Task_task_gas_consumed = md_Task.Fields().ByName("task_gas_consumed")
+	fd_Task_execution_timestamp = md_Task.Fields().ByName("execution_timestamp")
 }
 
 var _ protoreflect.Message = (*fastReflection_Task)(nil)
@@ -291,6 +295,18 @@ func (x *fastReflection_Task) Range(f func(protoreflect.FieldDescriptor, protore
 			return
 		}
 	}
+	if x.TaskGasConsumed != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.TaskGasConsumed)
+		if !f(fd_Task_task_gas_consumed, value) {
+			return
+		}
+	}
+	if x.ExecutionTimestamp != int64(0) {
+		value := protoreflect.ValueOfInt64(x.ExecutionTimestamp)
+		if !f(fd_Task_execution_timestamp, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -330,6 +346,10 @@ func (x *fastReflection_Task) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.CreationTime != int64(0)
 	case "dysonprotocol.crontask.v1.Task.error_log":
 		return x.ErrorLog != ""
+	case "dysonprotocol.crontask.v1.Task.task_gas_consumed":
+		return x.TaskGasConsumed != uint64(0)
+	case "dysonprotocol.crontask.v1.Task.execution_timestamp":
+		return x.ExecutionTimestamp != int64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.crontask.v1.Task"))
@@ -370,6 +390,10 @@ func (x *fastReflection_Task) Clear(fd protoreflect.FieldDescriptor) {
 		x.CreationTime = int64(0)
 	case "dysonprotocol.crontask.v1.Task.error_log":
 		x.ErrorLog = ""
+	case "dysonprotocol.crontask.v1.Task.task_gas_consumed":
+		x.TaskGasConsumed = uint64(0)
+	case "dysonprotocol.crontask.v1.Task.execution_timestamp":
+		x.ExecutionTimestamp = int64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.crontask.v1.Task"))
@@ -428,6 +452,12 @@ func (x *fastReflection_Task) Get(descriptor protoreflect.FieldDescriptor) proto
 	case "dysonprotocol.crontask.v1.Task.error_log":
 		value := x.ErrorLog
 		return protoreflect.ValueOfString(value)
+	case "dysonprotocol.crontask.v1.Task.task_gas_consumed":
+		value := x.TaskGasConsumed
+		return protoreflect.ValueOfUint64(value)
+	case "dysonprotocol.crontask.v1.Task.execution_timestamp":
+		value := x.ExecutionTimestamp
+		return protoreflect.ValueOfInt64(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.crontask.v1.Task"))
@@ -476,6 +506,10 @@ func (x *fastReflection_Task) Set(fd protoreflect.FieldDescriptor, value protore
 		x.CreationTime = value.Int()
 	case "dysonprotocol.crontask.v1.Task.error_log":
 		x.ErrorLog = value.Interface().(string)
+	case "dysonprotocol.crontask.v1.Task.task_gas_consumed":
+		x.TaskGasConsumed = value.Uint()
+	case "dysonprotocol.crontask.v1.Task.execution_timestamp":
+		x.ExecutionTimestamp = value.Int()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.crontask.v1.Task"))
@@ -534,6 +568,10 @@ func (x *fastReflection_Task) Mutable(fd protoreflect.FieldDescriptor) protorefl
 		panic(fmt.Errorf("field creation_time of message dysonprotocol.crontask.v1.Task is not mutable"))
 	case "dysonprotocol.crontask.v1.Task.error_log":
 		panic(fmt.Errorf("field error_log of message dysonprotocol.crontask.v1.Task is not mutable"))
+	case "dysonprotocol.crontask.v1.Task.task_gas_consumed":
+		panic(fmt.Errorf("field task_gas_consumed of message dysonprotocol.crontask.v1.Task is not mutable"))
+	case "dysonprotocol.crontask.v1.Task.execution_timestamp":
+		panic(fmt.Errorf("field execution_timestamp of message dysonprotocol.crontask.v1.Task is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.crontask.v1.Task"))
@@ -575,6 +613,10 @@ func (x *fastReflection_Task) NewField(fd protoreflect.FieldDescriptor) protoref
 		return protoreflect.ValueOfInt64(int64(0))
 	case "dysonprotocol.crontask.v1.Task.error_log":
 		return protoreflect.ValueOfString("")
+	case "dysonprotocol.crontask.v1.Task.task_gas_consumed":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "dysonprotocol.crontask.v1.Task.execution_timestamp":
+		return protoreflect.ValueOfInt64(int64(0))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.crontask.v1.Task"))
@@ -691,6 +733,12 @@ func (x *fastReflection_Task) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		if x.TaskGasConsumed != 0 {
+			n += 1 + runtime.Sov(uint64(x.TaskGasConsumed))
+		}
+		if x.ExecutionTimestamp != 0 {
+			n += 1 + runtime.Sov(uint64(x.ExecutionTimestamp))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -719,6 +767,16 @@ func (x *fastReflection_Task) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.ExecutionTimestamp != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.ExecutionTimestamp))
+			i--
+			dAtA[i] = 0x70
+		}
+		if x.TaskGasConsumed != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.TaskGasConsumed))
+			i--
+			dAtA[i] = 0x68
 		}
 		if len(x.ErrorLog) > 0 {
 			i -= len(x.ErrorLog)
@@ -1206,6 +1264,44 @@ func (x *fastReflection_Task) ProtoMethods() *protoiface.Methods {
 				}
 				x.ErrorLog = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
+			case 13:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TaskGasConsumed", wireType)
+				}
+				x.TaskGasConsumed = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.TaskGasConsumed |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 14:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ExecutionTimestamp", wireType)
+				}
+				x.ExecutionTimestamp = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.ExecutionTimestamp |= int64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -1779,12 +1875,16 @@ type Task struct {
 	Msgs []*anypb.Any `protobuf:"bytes,8,rep,name=msgs,proto3" json:"msgs,omitempty"`
 	// Results of message execution
 	MsgResults []*anypb.Any `protobuf:"bytes,9,rep,name=msg_results,json=msgResults,proto3" json:"msg_results,omitempty"`
-	// Current status of the task: Scheduled, Done, Failed, Expired
+	// Current status of the task: Scheduled, Pending, Done, Failed, Expired
 	Status string `protobuf:"bytes,10,opt,name=status,proto3" json:"status,omitempty"`
 	// Block timestamp when the task was created
 	CreationTime int64 `protobuf:"varint,11,opt,name=creation_time,json=creationTime,proto3" json:"creation_time,omitempty"`
 	// Error message if task execution failed
 	ErrorLog string `protobuf:"bytes,12,opt,name=error_log,json=errorLog,proto3" json:"error_log,omitempty"`
+	// Actual gas consumed during task execution
+	TaskGasConsumed uint64 `protobuf:"varint,13,opt,name=task_gas_consumed,json=taskGasConsumed,proto3" json:"task_gas_consumed,omitempty"`
+	// Block timestamp when the task was executed (only for DONE / FAILED)
+	ExecutionTimestamp int64 `protobuf:"varint,14,opt,name=execution_timestamp,json=executionTimestamp,proto3" json:"execution_timestamp,omitempty"`
 }
 
 func (x *Task) Reset() {
@@ -1891,6 +1991,20 @@ func (x *Task) GetErrorLog() string {
 	return ""
 }
 
+func (x *Task) GetTaskGasConsumed() uint64 {
+	if x != nil {
+		return x.TaskGasConsumed
+	}
+	return 0
+}
+
+func (x *Task) GetExecutionTimestamp() int64 {
+	if x != nil {
+		return x.ExecutionTimestamp
+	}
+	return 0
+}
+
 // Params defines the parameters for the crontask module
 type Params struct {
 	state         protoimpl.MessageState
@@ -1964,7 +2078,7 @@ var file_dysonprotocol_crontask_v1_crontask_proto_rawDesc = []byte{
 	0x69, 0x6e, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x17, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
 	0x73, 0x2f, 0x6d, 0x73, 0x67, 0x2f, 0x76, 0x31, 0x2f, 0x6d, 0x73, 0x67, 0x2e, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x1a, 0x19, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x62, 0x75, 0x66, 0x2f, 0x61, 0x6e, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xa4, 0x04,
+	0x62, 0x75, 0x66, 0x2f, 0x61, 0x6e, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x81, 0x05,
 	0x0a, 0x04, 0x54, 0x61, 0x73, 0x6b, 0x12, 0x17, 0x0a, 0x07, 0x74, 0x61, 0x73, 0x6b, 0x5f, 0x69,
 	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x74, 0x61, 0x73, 0x6b, 0x49, 0x64, 0x12,
 	0x32, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
@@ -1999,18 +2113,24 @@ var file_dysonprotocol_crontask_v1_crontask_proto_rawDesc = []byte{
 	0x69, 0x6d, 0x65, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0c, 0x63, 0x72, 0x65, 0x61, 0x74,
 	0x69, 0x6f, 0x6e, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x1b, 0x0a, 0x09, 0x65, 0x72, 0x72, 0x6f, 0x72,
 	0x5f, 0x6c, 0x6f, 0x67, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x65, 0x72, 0x72, 0x6f,
-	0x72, 0x4c, 0x6f, 0x67, 0x22, 0x81, 0x01, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12,
-	0x26, 0x0a, 0x0f, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x5f, 0x67, 0x61, 0x73, 0x5f, 0x6c, 0x69, 0x6d,
-	0x69, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0d, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x47,
-	0x61, 0x73, 0x4c, 0x69, 0x6d, 0x69, 0x74, 0x12, 0x21, 0x0a, 0x0c, 0x65, 0x78, 0x70, 0x69, 0x72,
-	0x79, 0x5f, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0b, 0x65,
-	0x78, 0x70, 0x69, 0x72, 0x79, 0x4c, 0x69, 0x6d, 0x69, 0x74, 0x12, 0x2c, 0x0a, 0x12, 0x6d, 0x61,
-	0x78, 0x5f, 0x73, 0x63, 0x68, 0x65, 0x64, 0x75, 0x6c, 0x65, 0x64, 0x5f, 0x74, 0x69, 0x6d, 0x65,
-	0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x10, 0x6d, 0x61, 0x78, 0x53, 0x63, 0x68, 0x65, 0x64,
-	0x75, 0x6c, 0x65, 0x64, 0x54, 0x69, 0x6d, 0x65, 0x42, 0x24, 0x5a, 0x22, 0x64, 0x79, 0x73, 0x6f,
-	0x6e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x78, 0x2f,
-	0x63, 0x72, 0x6f, 0x6e, 0x74, 0x61, 0x73, 0x6b, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x72, 0x4c, 0x6f, 0x67, 0x12, 0x2a, 0x0a, 0x11, 0x74, 0x61, 0x73, 0x6b, 0x5f, 0x67, 0x61, 0x73,
+	0x5f, 0x63, 0x6f, 0x6e, 0x73, 0x75, 0x6d, 0x65, 0x64, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x04, 0x52,
+	0x0f, 0x74, 0x61, 0x73, 0x6b, 0x47, 0x61, 0x73, 0x43, 0x6f, 0x6e, 0x73, 0x75, 0x6d, 0x65, 0x64,
+	0x12, 0x2f, 0x0a, 0x13, 0x65, 0x78, 0x65, 0x63, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x74, 0x69,
+	0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x03, 0x52, 0x12, 0x65,
+	0x78, 0x65, 0x63, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d,
+	0x70, 0x22, 0x81, 0x01, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x26, 0x0a, 0x0f,
+	0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x5f, 0x67, 0x61, 0x73, 0x5f, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0d, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x47, 0x61, 0x73, 0x4c,
+	0x69, 0x6d, 0x69, 0x74, 0x12, 0x21, 0x0a, 0x0c, 0x65, 0x78, 0x70, 0x69, 0x72, 0x79, 0x5f, 0x6c,
+	0x69, 0x6d, 0x69, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0b, 0x65, 0x78, 0x70, 0x69,
+	0x72, 0x79, 0x4c, 0x69, 0x6d, 0x69, 0x74, 0x12, 0x2c, 0x0a, 0x12, 0x6d, 0x61, 0x78, 0x5f, 0x73,
+	0x63, 0x68, 0x65, 0x64, 0x75, 0x6c, 0x65, 0x64, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x03, 0x52, 0x10, 0x6d, 0x61, 0x78, 0x53, 0x63, 0x68, 0x65, 0x64, 0x75, 0x6c, 0x65,
+	0x64, 0x54, 0x69, 0x6d, 0x65, 0x42, 0x24, 0x5a, 0x22, 0x64, 0x79, 0x73, 0x6f, 0x6e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x78, 0x2f, 0x63, 0x72, 0x6f,
+	0x6e, 0x74, 0x61, 0x73, 0x6b, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x33,
 }
 
 var (

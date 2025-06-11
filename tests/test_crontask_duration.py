@@ -46,7 +46,9 @@ def test_absolute_timestamp_format(chainnet, generate_account, faucet):
     result = dysond_bin("query", "crontask", "task-by-id", "--task-id", str(task_id))
     task = result["task"]
     
-    assert task["status"] in ["PENDING", "DONE", "FAILED", "EXPIRED"], f"Task has invalid status: {task['status']}"
+    assert task["status"] in ["SCHEDULED", "PENDING", "DONE", "FAILED", "EXPIRED"], (
+        f"Task has invalid status: {task['status']}"
+    )
     
     # Verify timestamps match what we set
     stored_scheduled_time = int(task["scheduled_timestamp"])
@@ -83,7 +85,9 @@ def test_scheduled_duration_format(chainnet, generate_account, faucet):
     result = dysond_bin("query", "crontask", "task-by-id", "--task-id", str(task_id))
     task = result["task"]
     
-    assert task["status"] in ["PENDING", "DONE", "FAILED", "EXPIRED"], f"Task has invalid status: {task['status']}"
+    assert task["status"] in ["SCHEDULED", "PENDING", "DONE", "FAILED", "EXPIRED"], (
+        f"Task has invalid status: {task['status']}"
+    )
     
     # Verify duration was converted to a timestamp correctly
     stored_scheduled_time = int(task["scheduled_timestamp"])
@@ -118,7 +122,9 @@ def test_both_durations_format(chainnet, generate_account, faucet):
     result = dysond_bin("query", "crontask", "task-by-id", "--task-id", str(task_id))
     task = result["task"]
     
-    assert task["status"] in ["PENDING", "DONE", "FAILED", "EXPIRED"], f"Task has invalid status: {task['status']}"
+    assert task["status"] in ["SCHEDULED", "PENDING", "DONE", "FAILED", "EXPIRED"], (
+        f"Task has invalid status: {task['status']}"
+    )
     
     # Verify durations were converted to timestamps correctly
     stored_scheduled_time = int(task["scheduled_timestamp"])
@@ -221,21 +227,23 @@ def test_task_status_change(chainnet, generate_account, faucet):
     result = dysond_bin("query", "crontask", "task-by-id", "--task-id", str(task_id))
     task = result["task"]
     
-    # Verify the task starts in SCHEDULED status
-    assert task["status"] == "PENDING", f"Task should start in PENDING status, found {task['status']}"
+    # Verify the task starts in SCHEDULED status (prior to being picked up by the scheduler)
+    assert task["status"] == "SCHEDULED", (
+        f"Task should start in SCHEDULED status, found {task['status']}"
+    )
     
     # Wait for the task to change status from SCHEDULED
     def check_task_status_changed():
         result = dysond_bin("query", "crontask", "task-by-id", "--task-id", str(task_id))
         task = result["task"]
-        return task["status"] != "PENDING"
+        return task["status"] != "SCHEDULED"
     
     # Wait for status to change with polling
     poll_until_condition(
         check_func=check_task_status_changed,
         timeout=10,  # Maximum 10 seconds to wait
         poll_interval=0.2,  # Check every 200ms
-        error_message=f"Task {task_id} status didn't change from PENDING"
+        error_message=f"Task {task_id} status didn't change from SCHEDULED"
     )
     
     # Get final task state
@@ -243,7 +251,9 @@ def test_task_status_change(chainnet, generate_account, faucet):
     task = result["task"]
     
     # Verify status changed to one of the valid terminal states
-    assert task["status"] in ["DONE", "FAILED", "EXPIRED"], f"Task status should be DONE, FAILED, or EXPIRED, found {task['status']}"
+    assert task["status"] in ["DONE", "FAILED", "EXPIRED"], (
+        f"Task status should be DONE, FAILED, or EXPIRED, found {task['status']}"
+    )
     
     # For DONE status, verify there are results
     assert task["status"] != "DONE" or len(task["msg_results"]) > 0, "Task in DONE status must have execution results"

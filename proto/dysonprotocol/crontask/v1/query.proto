@@ -43,6 +43,36 @@ service Query {
     };
   }
 
+  // TasksAll returns all tasks ordered by ID
+  rpc TasksAll(QueryAllTasksRequest) returns (QueryTasksResponse) {
+    option (google.api.http) = {
+      get : "/dysonprotocol/crontask/v1/tasks/all"
+    };
+  }
+
+  // TasksScheduled returns tasks with SCHEDULED status ordered by timestamp
+  // ascending
+  rpc TasksScheduled(QueryScheduledTasksRequest) returns (QueryTasksResponse) {
+    option (google.api.http) = {
+      get : "/dysonprotocol/crontask/v1/tasks/scheduled"
+    };
+  }
+
+  // TasksPending returns tasks with PENDING status ordered by gas price
+  // descending
+  rpc TasksPending(QueryPendingTasksRequest) returns (QueryTasksResponse) {
+    option (google.api.http) = {
+      get : "/dysonprotocol/crontask/v1/tasks/pending"
+    };
+  }
+
+  // TasksDone returns tasks with DONE status ordered by execution timestamp
+  rpc TasksDone(QueryDoneTasksRequest) returns (QueryTasksResponse) {
+    option (google.api.http) = {
+      get : "/dysonprotocol/crontask/v1/tasks/done"
+    };
+  }
+
   // Params returns the module parameters
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http) = {
@@ -92,3 +122,24 @@ message QueryParamsRequest {}
 
 // QueryParamsResponse is the response type for the Query/Params RPC method
 message QueryParamsResponse { Params params = 1; }
+
+// Request messages for new query endpoints
+
+message QueryAllTasksRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryScheduledTasksRequest {
+  bool ascending = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryPendingTasksRequest {
+  bool ascending = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryDoneTasksRequest {
+  bool ascending = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}

@@ -6,10 +6,11 @@ import (
 
 // TaskStatus constants define the possible states of a task
 const (
-	TaskStatus_PENDING = "PENDING"
-	TaskStatus_DONE    = "DONE"
-	TaskStatus_FAILED  = "FAILED"
-	TaskStatus_EXPIRED = "EXPIRED"
+	TaskStatus_SCHEDULED = "SCHEDULED"
+	TaskStatus_PENDING   = "PENDING"
+	TaskStatus_DONE      = "DONE"
+	TaskStatus_FAILED    = "FAILED"
+	TaskStatus_EXPIRED   = "EXPIRED"
 )
 
 // NewGenesisState creates a new GenesisState object
@@ -25,9 +26,9 @@ func NewGenesisState() *GenesisState {
 // DefaultParams returns default parameters for the crontask module.
 func DefaultParams() Params {
 	return Params{
-		BlockGasLimit:    500000, // 500k gas limit per block for tasks
-		ExpiryLimit:      86400,  // 24 hours in seconds
-		MaxScheduledTime: 86400,  // 24 hours in seconds
+		BlockGasLimit:    10000000, // 10M gas limit per block for tasks
+		ExpiryLimit:      86400,    // 24 hours in seconds
+		MaxScheduledTime: 86400,    // 24 hours in seconds
 	}
 }
 

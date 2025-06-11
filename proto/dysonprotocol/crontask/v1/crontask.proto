@@ -43,7 +43,7 @@ message Task {
   // Results of message execution
   repeated google.protobuf.Any msg_results = 9;
 
-  // Current status of the task: Scheduled, Done, Failed, Expired
+  // Current status of the task: Scheduled, Pending, Done, Failed, Expired
   string status = 10;
 
   // Block timestamp when the task was created
@@ -51,6 +51,12 @@ message Task {
 
   // Error message if task execution failed
   string error_log = 12;
+
+  // Actual gas consumed during task execution
+  uint64 task_gas_consumed = 13;
+
+  // Block timestamp when the task was executed (only for DONE / FAILED)
+  int64 execution_timestamp = 14;
 }
 
 // Params defines the parameters for the crontask module

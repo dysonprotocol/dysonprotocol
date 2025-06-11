@@ -116,22 +116,26 @@ func (k Keeper) CreateTask(ctx context.Context, msg *crontasktypes.MsgCreateTask
 	}
 
 	// Validate gas limit is reasonable
-	if msg.TaskGasLimit == 0 || msg.TaskGasLimit > params.BlockGasLimit {
+	if msg.TaskGasLimit == 0 {
+		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "Crontask gas limit must be positive")
+	}
+	if msg.TaskGasLimit > params.BlockGasLimit {
 		return nil, errorsmod.Wrapf(
 			sdkerrors.ErrInvalidRequest,
-			"gas limit must be > 0 and <= %d",
+			"gas limit must be between 0 and %d, got %d",
 			params.BlockGasLimit,
+			msg.TaskGasLimit,
 		)
 	}
 
 	// Validate gas fee and calculate gas price
 	if !msg.TaskGasFee.IsPositive() {
-		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "gas fee must be positive")
+		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "gas fee must be greater than 0")
 	}
 	if msg.TaskGasFee.Denom != "dys" {
 		return nil, errorsmod.Wrapf(
 			sdkerrors.ErrInvalidRequest,
-			"invalid gas fee denom: %s, only 'dys' is accepted",
+			"invalid gas fee denom: [%s], only 'dys' is accepted",
 			msg.TaskGasFee.Denom,
 		)
 	}
@@ -153,7 +157,7 @@ func (k Keeper) CreateTask(ctx context.Context, msg *crontasktypes.MsgCreateTask
 		return nil, errorsmod.Wrap(err, "failed to get next task ID")
 	}
 
-	// Create the task
+	// Create the task with initial status SCHEDULED
 	task := crontasktypes.Task{
 		TaskId:             taskId,
 		Creator:            msg.Creator,
@@ -163,7 +167,7 @@ func (k Keeper) CreateTask(ctx context.Context, msg *crontasktypes.MsgCreateTask
 		TaskGasPrice:       gasPrice,
 		TaskGasFee:         msg.TaskGasFee,
 		Msgs:               msg.Msgs,
-		Status:             crontasktypes.TaskStatus_PENDING,
+		Status:             crontasktypes.TaskStatus_SCHEDULED,
 		CreationTime:       sdkCtx.BlockTime().Unix(),
 	}
 
@@ -172,6 +176,9 @@ func (k Keeper) CreateTask(ctx context.Context, msg *crontasktypes.MsgCreateTask
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "failed to save task")
 	}
+
+	// index the task
+	k.addIndexes(ctx, task)
 
 	// Emit event for task creation
 	if err := sdkCtx.EventManager().EmitTypedEvent(

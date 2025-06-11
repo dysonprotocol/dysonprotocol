@@ -17,8 +17,8 @@ type Config struct {
 // DefaultConfig returns the default configuration for the crontask module.
 func DefaultConfig() *Config {
 	return &Config{
-		BlockGasLimit:    500000, // 500k gas limit per block for tasks
-		ExpiryLimit:      86400,  // 24 hours in seconds
-		MaxScheduledTime: 86400,  // 24 hours in seconds
+		BlockGasLimit:    100000000, // 100M gas limit per block for tasks
+		ExpiryLimit:      86400,     // 24 hours in seconds
+		MaxScheduledTime: 86400,     // 24 hours in seconds
 	}
 }

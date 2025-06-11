@@ -2,10 +2,10 @@ package keeper
 
 import (
 	"context"
+	"encoding/binary"
 	"fmt"
 	"runtime/debug"
 
-	"cosmossdk.io/collections"
 	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -18,80 +18,74 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) error {
 	currentTime := ctx.BlockTime().Unix()
 	k.Logger.Info("Current block time", "unix_time", currentTime)
 
-	// First check for any scheduled tasks that have expired and mark them as expired
+	// Get module parameters to access BlockGasLimit
+	params, err := k.GetParams(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to get module params: %w", err)
+	}
+
+	// Track total gas consumed in this block
+	var totalGasConsumed uint64 = 0
+
+	// 1. expire overdue SCHEDULED tasks
 	k.checkExpiredTasks(ctx, currentTime)
 
-	// Process tasks with status SCHEDULED
-	status := crontasktypes.TaskStatus_PENDING
+	// 2. move due SCHEDULED tasks to PENDING
+	k.moveDueTasks(ctx, currentTime)
 
-	// Get tasks that are scheduled and due for execution
-	iter, err := k.Indexes.ByStatusTimestamp.Iterate(ctx,
-		collections.NewPrefixedPairRange[collections.Pair[string, int64], uint64](
-			collections.PairPrefix[string, int64](status)))
-	if err != nil {
-		return fmt.Errorf("failed to iterate tasks: %w", err)
-	}
+	// 3. process PENDING tasks ordered by gas price (desc)
+	iter := k.iterateStatusGas(ctx, crontasktypes.TaskStatus_PENDING, true)
 	defer iter.Close()
 
-	// Process each due task
+	var pendingIDs []uint64
 	for ; iter.Valid(); iter.Next() {
-		taskId, err := iter.PrimaryKey()
-		if err != nil {
-			k.Logger.Error("failed to get task ID", "error", err)
-			continue
-		}
+		key := iter.Key()
+		id := binary.BigEndian.Uint64(key[len(key)-8:])
+		pendingIDs = append(pendingIDs, id)
+	}
 
-		// Get the timestamp from the full key
-		fullKey, err := iter.FullKey()
-		if err != nil {
-			k.Logger.Error("failed to get task full key", "task_id", taskId, "error", err)
-			continue
-		}
-
-		// Get the task
+	// Execute each pending task respecting block gas limit
+	for _, taskId := range pendingIDs {
 		task, err := k.GetTask(ctx, taskId)
 		if err != nil {
-			k.Logger.Error("failed to get task", "task_id", taskId, "error", err)
+			k.Logger.Error("failed to get pending task", "task_id", taskId, "error", err)
 			continue
 		}
 
-		// Skip tasks that aren't due yet
-		scheduledTime := fullKey.K1().K2()
-		if scheduledTime > currentTime {
-			continue
+		// Check gas limit
+		if totalGasConsumed+task.TaskGasLimit > params.BlockGasLimit {
+			k.Logger.Info("Stopping task execution - would exceed block gas limit",
+				"total_gas_consumed", totalGasConsumed,
+				"task_gas_limit", task.TaskGasLimit,
+				"block_gas_limit", params.BlockGasLimit,
+				"task_id", taskId)
+			break
 		}
 
-		// Calculate the total gas fee
+		// Collect fee
 		gasFee := sdk.NewCoins(task.TaskGasFee)
-
-		// Get creator address
 		creatorAddr, err := sdk.AccAddressFromBech32(task.Creator)
 		if err != nil {
-			k.Logger.Error("failed to parse creator address", "task_id", taskId, "creator", task.Creator, "error", err)
 			task.Status = crontasktypes.TaskStatus_FAILED
-			task.ErrorLog = fmt.Sprintf("failed to parse creator address: %s", err.Error())
-			if err := k.SetTask(ctx, task); err != nil {
-				k.Logger.Error("failed to update task status", "task_id", taskId, "error", err)
-			}
+			task.ErrorLog = fmt.Sprintf("invalid creator address: %s", err)
+			_ = k.SetTask(ctx, task)
 			continue
 		}
 
-		// Deduct the gas fee and send it to the fee collector
-		err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, creatorAddr, "fee_collector", gasFee)
-		if err != nil {
-			k.Logger.Error("failed to deduct gas fee", "task_id", taskId, "creator", task.Creator, "gas_fee", gasFee, "error", err)
+		if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, creatorAddr, "fee_collector", gasFee); err != nil {
 			task.Status = crontasktypes.TaskStatus_FAILED
-			task.ErrorLog = fmt.Sprintf("failed to deduct gas fee: %s", err.Error())
-			if err := k.SetTask(ctx, task); err != nil {
-				k.Logger.Error("failed to update task status", "task_id", taskId, "error", err)
-			}
+			task.ErrorLog = fmt.Sprintf("fee deduction failed: %s", err)
+			_ = k.SetTask(ctx, task)
 			continue
 		}
 
-		// Execute the task
+		// Execute
 		if err := k.executeTask(ctx, &task); err != nil {
-			k.Logger.Error("failed to execute task", "task_id", taskId, "error", err)
+			k.Logger.Error("execution error", "task_id", taskId, "error", err)
 		}
+
+		totalGasConsumed += task.TaskGasConsumed
+		k.Logger.Info("Task executed", "task_id", taskId, "gas_used", task.TaskGasConsumed)
 	}
 
 	return nil
@@ -99,51 +93,67 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) error {
 
 // checkExpiredTasks finds and marks expired tasks that haven't been executed yet
 func (k Keeper) checkExpiredTasks(ctx context.Context, currentTime int64) {
-	status := crontasktypes.TaskStatus_PENDING
-
-	// Get all scheduled tasks
-	iter, err := k.Indexes.ByStatusTimestamp.Iterate(ctx,
-		collections.NewPrefixedPairRange[collections.Pair[string, int64], uint64](
-			collections.PairPrefix[string, int64](status)))
-	if err != nil {
-		k.Logger.Error("failed to iterate tasks for expiry check", "error", err)
-		return
-	}
+	iter := k.iterateStatusTimestamp(ctx, crontasktypes.TaskStatus_SCHEDULED, false)
 	defer iter.Close()
 
-	// Check each scheduled task for expiry
+	statusPrefix := append(indexStatusTsPrefix, []byte(crontasktypes.TaskStatus_SCHEDULED)...)
+
 	for ; iter.Valid(); iter.Next() {
-		taskId, err := iter.PrimaryKey()
+		key := iter.Key()
+		if len(key) < len(statusPrefix)+8+8 {
+			continue
+		}
+		expTimestamp := int64(binary.BigEndian.Uint64(key[len(statusPrefix) : len(statusPrefix)+8]))
+		if expTimestamp > currentTime {
+			// further tasks are scheduled in future
+			break
+		}
+		id := binary.BigEndian.Uint64(key[len(key)-8:])
+
+		task, err := k.GetTask(ctx, id)
 		if err != nil {
-			k.Logger.Error("failed to get task ID during expiry check", "error", err)
+			k.Logger.Error("failed to load task", "id", id, "err", err)
 			continue
 		}
 
-		// Get the task
-		task, err := k.GetTask(ctx, taskId)
-		if err != nil {
-			k.Logger.Error("failed to get task during expiry check", "task_id", taskId, "error", err)
-			continue
-		}
-
-		// Check if the task is expired
 		if task.ExpiryTimestamp <= currentTime {
-			// Mark task as expired
 			task.Status = crontasktypes.TaskStatus_EXPIRED
 			task.ErrorLog = "Task expired before execution"
-
-			// Save the expired task
-			if err := k.SetTask(ctx, task); err != nil {
-				k.Logger.Error("failed to update task status to expired", "task_id", taskId, "error", err)
-				continue
-			}
-
-			k.Logger.Info("Task marked as expired",
-				"task_id", taskId,
-				"scheduled_time", task.ScheduledTimestamp,
-				"expiry_time", task.ExpiryTimestamp,
-				"current_time", currentTime)
+			k.removeIndexes(ctx, task)
+			k.addIndexes(ctx, task)
+			_ = k.SetTask(ctx, task)
 		}
+	}
+}
+
+// moveDueTasks moves tasks from SCHEDULED to PENDING when their scheduled time has arrived
+func (k Keeper) moveDueTasks(ctx context.Context, currentTime int64) {
+	iter := k.iterateStatusTimestamp(ctx, crontasktypes.TaskStatus_SCHEDULED, false)
+	defer iter.Close()
+
+	statusPrefix := append(indexStatusTsPrefix, []byte(crontasktypes.TaskStatus_SCHEDULED)...)
+
+	for ; iter.Valid(); iter.Next() {
+		key := iter.Key()
+		if len(key) < len(statusPrefix)+8+8 {
+			continue
+		}
+		scheduledTime := int64(binary.BigEndian.Uint64(key[len(statusPrefix) : len(statusPrefix)+8]))
+		if scheduledTime > currentTime {
+			break
+		}
+		id := binary.BigEndian.Uint64(key[len(key)-8:])
+
+		task, err := k.GetTask(ctx, id)
+		if err != nil {
+			k.Logger.Error("failed to load task", "id", id, "err", err)
+			continue
+		}
+
+		k.removeIndexes(ctx, task)
+		task.Status = crontasktypes.TaskStatus_PENDING
+		k.addIndexes(ctx, task)
+		_ = k.SetTask(ctx, task)
 	}
 }
 
@@ -165,12 +175,16 @@ func (k Keeper) executeTask(ctx context.Context, task *crontasktypes.Task) error
 	// Execute messages
 	err := k.executeMsgs(sdk.WrapSDKContext(cacheCtx), task)
 
-	// Calculate gas used
+	// Calculate gas used and store it in the task
 	gasUsed := cacheCtx.GasMeter().GasConsumed()
+	task.TaskGasConsumed = gasUsed
 
 	if err != nil {
 		// Update task status to failed
 		task.Status = crontasktypes.TaskStatus_FAILED
+		task.ExecutionTimestamp = sdk.UnwrapSDKContext(ctx).BlockTime().Unix()
+		k.removeIndexes(ctx, *task)
+		k.addIndexes(ctx, *task)
 
 		// Log the failure details
 		k.Logger.Info("Task execution failed",
@@ -181,7 +195,10 @@ func (k Keeper) executeTask(ctx context.Context, task *crontasktypes.Task) error
 	} else {
 		// Update task status to done and write changes
 		task.Status = crontasktypes.TaskStatus_DONE
+		task.ExecutionTimestamp = sdk.UnwrapSDKContext(ctx).BlockTime().Unix()
 		write() // Write changes to parent context
+		k.removeIndexes(ctx, *task)
+		k.addIndexes(ctx, *task)
 
 		// Get result count for logging
 		resultCount := len(task.MsgResults)
@@ -242,6 +259,7 @@ func (k Keeper) executeMsgs(ctx context.Context, task *crontasktypes.Task) error
 		task.MsgResults = nil
 	}
 
+	// Only log success if we get here without errors
 	k.Logger.Info("All messages executed successfully",
 		"task_id", task.TaskId,
 		"result_count", len(results))
@@ -250,22 +268,32 @@ func (k Keeper) executeMsgs(ctx context.Context, task *crontasktypes.Task) error
 }
 
 // safeInvokeMsg safely executes a message, catching any panics that might occur
-func (k Keeper) safeInvokeMsg(ctx context.Context, msg sdk.Msg) (sdk.Msg, error) {
-	var result sdk.Msg
-	var err error
-
+func (k Keeper) safeInvokeMsg(ctx context.Context, msg sdk.Msg) (result sdk.Msg, err error) {
 	// Use defer-recover pattern to catch panics
 	defer func() {
 		if r := recover(); r != nil {
 			stack := string(debug.Stack())
 
-			// Log the full error with stack trace
-			k.Logger.Error("Message execution panicked",
-				"msg_type", sdk.MsgTypeURL(msg),
-				"panic", r,
-				"stack", stack)
-
-			err = fmt.Errorf("message execution panicked: %v", r)
+			// Check for specific gas-related panics from Cosmos SDK
+			switch p := r.(type) {
+			case storetypes.ErrorOutOfGas:
+				err = fmt.Errorf("out of gas: %s", p.Descriptor)
+				k.Logger.Error("Message execution ran out of gas",
+					"msg_type", sdk.MsgTypeURL(msg),
+					"descriptor", p.Descriptor)
+			case storetypes.ErrorGasOverflow:
+				err = fmt.Errorf("gas overflow: %s", p.Descriptor)
+				k.Logger.Error("Message execution caused gas overflow",
+					"msg_type", sdk.MsgTypeURL(msg),
+					"descriptor", p.Descriptor)
+			default:
+				// Log the full error with stack trace for other panics
+				k.Logger.Error("Message execution panicked",
+					"msg_type", sdk.MsgTypeURL(msg),
+					"panic", r,
+					"stack", stack)
+				err = fmt.Errorf("message execution panicked: %v", r)
+			}
 		}
 	}()
 

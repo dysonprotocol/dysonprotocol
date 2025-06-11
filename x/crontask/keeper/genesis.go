@@ -75,7 +75,6 @@ func (k Keeper) ExportGenesis(ctx context.Context) (*crontasktypes.GenesisState,
 }
 
 // DefaultGenesis returns default genesis state as raw bytes for the crontask module.
-// DefaultGenesis returns default genesis state as raw bytes for the nameservice module
 func DefaultGenesis() *crontasktypes.GenesisState {
 	return &crontasktypes.GenesisState{
 		Params: &crontasktypes.Params{

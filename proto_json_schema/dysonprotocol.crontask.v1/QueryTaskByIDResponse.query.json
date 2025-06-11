@@ -106,7 +106,7 @@
                 },
                 "status": {
                     "type": "string",
-                    "description": "Current status of the task: Scheduled, Done, Failed, Expired"
+                    "description": "Current status of the task: Scheduled, Pending, Done, Failed, Expired"
                 },
                 "creation_time": {
                     "type": "string",
@@ -115,6 +115,14 @@
                 "error_log": {
                     "type": "string",
                     "description": "Error message if task execution failed"
+                },
+                "task_gas_consumed": {
+                    "type": "string",
+                    "description": "Actual gas consumed during task execution"
+                },
+                "execution_timestamp": {
+                    "type": "string",
+                    "description": "Block timestamp when the task was executed (only for DONE / FAILED)"
                 }
             },
             "additionalProperties": true,
