@@ -22,4 +22,14 @@ message Storage {
 
   // data is the stored string value associated with the index.
   string data = 3;
+
+  // updated_height is block height of last modification.
+  uint64 updated_height = 4;
+
+  // updated_timestamp is the block time in UTC (RFC3339 e.g.
+  // "2025-06-11T15:23:00Z") when entry was modified.
+  string updated_timestamp = 5;
+
+  // hash is SHA-256 hex of data field.
+  string hash = 6;
 }

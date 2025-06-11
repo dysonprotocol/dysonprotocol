@@ -17,4 +17,5 @@ This document lists all tasks associated with PBI 1.
 | 1-6 | [Remove Multi indexes, use raw KV prefixes](./1-6.md) | Proposed | Delete indexes.Multi usage and rewrite queries/ABCI to manual prefixes |
 | 1-7 | [CLI tests – happy paths](./1-7.md) | Done | Cover tasks-all, scheduled, pending, done endpoints |
 | 1-8 | [CLI tests – pagination](./1-8.md) | Review | Verify offset/limit on all new endpoints |
-| 1-9 | [CLI tests – edge & error cases](./1-9.md) | Proposed | Non-existent IDs, empty address results, invalid status | 
+| 1-9 | [CLI tests – edge & error cases](./1-9.md) | Proposed | Non-existent IDs, empty address results, invalid status |
+| 1-10 | [Fix orphaned index entries on task deletion](./1-10.md) | Done | Ensure Keeper.RemoveTask also removes secondary index keys | 

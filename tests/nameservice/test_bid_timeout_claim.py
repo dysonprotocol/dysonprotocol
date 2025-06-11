@@ -85,6 +85,7 @@ def set_bid_timeout_via_gov(dysond_bin, proposer_name, bid_timeout_value: str):
     }
     with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=True) as f:
         json.dump(proposal, f)
+        f.flush()
         proposal_file = f.name
         # Submit proposal using Alice (who now has voting power)
         tx_result = dysond_bin("tx", "gov", "submit-proposal", proposal_file, "--from", "alice", "--keyring-backend", "test", "--yes")
@@ -156,6 +157,7 @@ def test_update_nameservice_params_via_gov(chainnet, generate_account, faucet):
     }
     with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=True) as f:
         json.dump(proposal, f)
+        f.flush()
         proposal_file = f.name
         tx_result = dysond_bin("tx", "gov", "submit-proposal", proposal_file, "--from", alice_name, "--keyring-backend", "test", "--yes")
     print(f"Submit proposal result: {tx_result}")

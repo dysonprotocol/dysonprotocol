@@ -145,6 +145,18 @@ func (k Keeper) GetTask(ctx context.Context, id uint64) (crontasktypes.Task, err
 
 // DeleteTask deletes a task from the store
 func (k Keeper) RemoveTask(ctx context.Context, id uint64) error {
+	// Load the task first so we can clean up its secondary indexes. If the task
+	// does not exist we simply propagate the original collections.ErrNotFound
+	// so the caller can decide how to handle it.
+	task, err := k.Tasks.Get(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	// Delete secondary-index keys (address, status+timestamp, status+gasPrice)
+	k.removeIndexes(ctx, task)
+
+	// Finally remove the primary record from the `Tasks` map.
 	return k.Tasks.Remove(ctx, id)
 }
 

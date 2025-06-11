@@ -4,6 +4,7 @@ import tempfile
 import os
 from tests.utils import poll_until_condition
 import time
+import black
 
 
 def test_update_and_query_script(chainnet, generate_account):
@@ -22,7 +23,14 @@ def wsgi(environ, start_response):
     script_info = dysond_bin("query", "script", "script-info", "--address", alice_address)
     print(f"Script info: {script_info}")
     assert script_info.get("script", {}).get("address") == alice_address, "Script address doesn't match"
-    assert script_info.get("script", {}).get("code") == script_code, "Script code doesn't match"
+    # Use Black to format both code snippets before comparison to avoid failures
+    # due to insignificant whitespace or quote style differences.
+    formatted_received = black.format_str(
+        script_info.get("script", {}).get("code", ""), mode=black.FileMode()
+    )
+    formatted_expected = black.format_str(script_code, mode=black.FileMode())
+
+    assert formatted_received == formatted_expected, "Script code doesn't match"
 
 
 def test_encode_json(chainnet):

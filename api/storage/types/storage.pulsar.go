@@ -20,10 +20,13 @@ import (
 )
 
 var (
-	md_Storage       protoreflect.MessageDescriptor
-	fd_Storage_owner protoreflect.FieldDescriptor
-	fd_Storage_index protoreflect.FieldDescriptor
-	fd_Storage_data  protoreflect.FieldDescriptor
+	md_Storage                   protoreflect.MessageDescriptor
+	fd_Storage_owner             protoreflect.FieldDescriptor
+	fd_Storage_index             protoreflect.FieldDescriptor
+	fd_Storage_data              protoreflect.FieldDescriptor
+	fd_Storage_updated_height    protoreflect.FieldDescriptor
+	fd_Storage_updated_timestamp protoreflect.FieldDescriptor
+	fd_Storage_hash              protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -32,6 +35,9 @@ func init() {
 	fd_Storage_owner = md_Storage.Fields().ByName("owner")
 	fd_Storage_index = md_Storage.Fields().ByName("index")
 	fd_Storage_data = md_Storage.Fields().ByName("data")
+	fd_Storage_updated_height = md_Storage.Fields().ByName("updated_height")
+	fd_Storage_updated_timestamp = md_Storage.Fields().ByName("updated_timestamp")
+	fd_Storage_hash = md_Storage.Fields().ByName("hash")
 }
 
 var _ protoreflect.Message = (*fastReflection_Storage)(nil)
@@ -117,6 +123,24 @@ func (x *fastReflection_Storage) Range(f func(protoreflect.FieldDescriptor, prot
 			return
 		}
 	}
+	if x.UpdatedHeight != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.UpdatedHeight)
+		if !f(fd_Storage_updated_height, value) {
+			return
+		}
+	}
+	if x.UpdatedTimestamp != "" {
+		value := protoreflect.ValueOfString(x.UpdatedTimestamp)
+		if !f(fd_Storage_updated_timestamp, value) {
+			return
+		}
+	}
+	if x.Hash != "" {
+		value := protoreflect.ValueOfString(x.Hash)
+		if !f(fd_Storage_hash, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -138,6 +162,12 @@ func (x *fastReflection_Storage) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.Index != ""
 	case "dysonprotocol.storage.v1.Storage.data":
 		return x.Data != ""
+	case "dysonprotocol.storage.v1.Storage.updated_height":
+		return x.UpdatedHeight != uint64(0)
+	case "dysonprotocol.storage.v1.Storage.updated_timestamp":
+		return x.UpdatedTimestamp != ""
+	case "dysonprotocol.storage.v1.Storage.hash":
+		return x.Hash != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.storage.v1.Storage"))
@@ -160,6 +190,12 @@ func (x *fastReflection_Storage) Clear(fd protoreflect.FieldDescriptor) {
 		x.Index = ""
 	case "dysonprotocol.storage.v1.Storage.data":
 		x.Data = ""
+	case "dysonprotocol.storage.v1.Storage.updated_height":
+		x.UpdatedHeight = uint64(0)
+	case "dysonprotocol.storage.v1.Storage.updated_timestamp":
+		x.UpdatedTimestamp = ""
+	case "dysonprotocol.storage.v1.Storage.hash":
+		x.Hash = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.storage.v1.Storage"))
@@ -184,6 +220,15 @@ func (x *fastReflection_Storage) Get(descriptor protoreflect.FieldDescriptor) pr
 		return protoreflect.ValueOfString(value)
 	case "dysonprotocol.storage.v1.Storage.data":
 		value := x.Data
+		return protoreflect.ValueOfString(value)
+	case "dysonprotocol.storage.v1.Storage.updated_height":
+		value := x.UpdatedHeight
+		return protoreflect.ValueOfUint64(value)
+	case "dysonprotocol.storage.v1.Storage.updated_timestamp":
+		value := x.UpdatedTimestamp
+		return protoreflect.ValueOfString(value)
+	case "dysonprotocol.storage.v1.Storage.hash":
+		value := x.Hash
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
@@ -211,6 +256,12 @@ func (x *fastReflection_Storage) Set(fd protoreflect.FieldDescriptor, value prot
 		x.Index = value.Interface().(string)
 	case "dysonprotocol.storage.v1.Storage.data":
 		x.Data = value.Interface().(string)
+	case "dysonprotocol.storage.v1.Storage.updated_height":
+		x.UpdatedHeight = value.Uint()
+	case "dysonprotocol.storage.v1.Storage.updated_timestamp":
+		x.UpdatedTimestamp = value.Interface().(string)
+	case "dysonprotocol.storage.v1.Storage.hash":
+		x.Hash = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.storage.v1.Storage"))
@@ -237,6 +288,12 @@ func (x *fastReflection_Storage) Mutable(fd protoreflect.FieldDescriptor) protor
 		panic(fmt.Errorf("field index of message dysonprotocol.storage.v1.Storage is not mutable"))
 	case "dysonprotocol.storage.v1.Storage.data":
 		panic(fmt.Errorf("field data of message dysonprotocol.storage.v1.Storage is not mutable"))
+	case "dysonprotocol.storage.v1.Storage.updated_height":
+		panic(fmt.Errorf("field updated_height of message dysonprotocol.storage.v1.Storage is not mutable"))
+	case "dysonprotocol.storage.v1.Storage.updated_timestamp":
+		panic(fmt.Errorf("field updated_timestamp of message dysonprotocol.storage.v1.Storage is not mutable"))
+	case "dysonprotocol.storage.v1.Storage.hash":
+		panic(fmt.Errorf("field hash of message dysonprotocol.storage.v1.Storage is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.storage.v1.Storage"))
@@ -255,6 +312,12 @@ func (x *fastReflection_Storage) NewField(fd protoreflect.FieldDescriptor) proto
 	case "dysonprotocol.storage.v1.Storage.index":
 		return protoreflect.ValueOfString("")
 	case "dysonprotocol.storage.v1.Storage.data":
+		return protoreflect.ValueOfString("")
+	case "dysonprotocol.storage.v1.Storage.updated_height":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "dysonprotocol.storage.v1.Storage.updated_timestamp":
+		return protoreflect.ValueOfString("")
+	case "dysonprotocol.storage.v1.Storage.hash":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
@@ -337,6 +400,17 @@ func (x *fastReflection_Storage) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		if x.UpdatedHeight != 0 {
+			n += 1 + runtime.Sov(uint64(x.UpdatedHeight))
+		}
+		l = len(x.UpdatedTimestamp)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Hash)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -365,6 +439,25 @@ func (x *fastReflection_Storage) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Hash) > 0 {
+			i -= len(x.Hash)
+			copy(dAtA[i:], x.Hash)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Hash)))
+			i--
+			dAtA[i] = 0x32
+		}
+		if len(x.UpdatedTimestamp) > 0 {
+			i -= len(x.UpdatedTimestamp)
+			copy(dAtA[i:], x.UpdatedTimestamp)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.UpdatedTimestamp)))
+			i--
+			dAtA[i] = 0x2a
+		}
+		if x.UpdatedHeight != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.UpdatedHeight))
+			i--
+			dAtA[i] = 0x20
 		}
 		if len(x.Data) > 0 {
 			i -= len(x.Data)
@@ -532,6 +625,89 @@ func (x *fastReflection_Storage) ProtoMethods() *protoiface.Methods {
 				}
 				x.Data = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
+			case 4:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field UpdatedHeight", wireType)
+				}
+				x.UpdatedHeight = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.UpdatedHeight |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field UpdatedTimestamp", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.UpdatedTimestamp = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 6:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Hash", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Hash = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -592,6 +768,13 @@ type Storage struct {
 	Index string `protobuf:"bytes,2,opt,name=index,proto3" json:"index,omitempty"`
 	// data is the stored string value associated with the index.
 	Data string `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
+	// updated_height is block height of last modification.
+	UpdatedHeight uint64 `protobuf:"varint,4,opt,name=updated_height,json=updatedHeight,proto3" json:"updated_height,omitempty"`
+	// updated_timestamp is the block time in UTC (RFC3339 e.g.
+	// "2025-06-11T15:23:00Z") when entry was modified.
+	UpdatedTimestamp string `protobuf:"bytes,5,opt,name=updated_timestamp,json=updatedTimestamp,proto3" json:"updated_timestamp,omitempty"`
+	// hash is SHA-256 hex of data field.
+	Hash string `protobuf:"bytes,6,opt,name=hash,proto3" json:"hash,omitempty"`
 }
 
 func (x *Storage) Reset() {
@@ -635,6 +818,27 @@ func (x *Storage) GetData() string {
 	return ""
 }
 
+func (x *Storage) GetUpdatedHeight() uint64 {
+	if x != nil {
+		return x.UpdatedHeight
+	}
+	return 0
+}
+
+func (x *Storage) GetUpdatedTimestamp() string {
+	if x != nil {
+		return x.UpdatedTimestamp
+	}
+	return ""
+}
+
+func (x *Storage) GetHash() string {
+	if x != nil {
+		return x.Hash
+	}
+	return ""
+}
+
 var File_dysonprotocol_storage_v1_storage_proto protoreflect.FileDescriptor
 
 var file_dysonprotocol_storage_v1_storage_proto_rawDesc = []byte{
@@ -655,16 +859,22 @@ var file_dysonprotocol_storage_v1_storage_proto_rawDesc = []byte{
 	0x66, 0x2f, 0x74, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x2e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x1a, 0x1e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x62, 0x61, 0x73, 0x65, 0x2f, 0x76,
 	0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2f, 0x63, 0x6f, 0x69, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x22, 0x63, 0x0a, 0x07, 0x53, 0x74, 0x6f, 0x72, 0x61, 0x67, 0x65, 0x12, 0x2e, 0x0a, 0x05,
-	0x6f, 0x77, 0x6e, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d,
-	0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53,
-	0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x05, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x12, 0x14, 0x0a, 0x05,
-	0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x69, 0x6e, 0x64,
-	0x65, 0x78, 0x12, 0x12, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x42, 0x23, 0x5a, 0x21, 0x64, 0x79, 0x73, 0x6f, 0x6e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x78, 0x2f, 0x73, 0x74,
-	0x6f, 0x72, 0x61, 0x67, 0x65, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x6f, 0x22, 0xcb, 0x01, 0x0a, 0x07, 0x53, 0x74, 0x6f, 0x72, 0x61, 0x67, 0x65, 0x12, 0x2e, 0x0a,
+	0x05, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4,
+	0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
+	0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x05, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x12, 0x14, 0x0a,
+	0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x69, 0x6e,
+	0x64, 0x65, 0x78, 0x12, 0x12, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x12, 0x25, 0x0a, 0x0e, 0x75, 0x70, 0x64, 0x61, 0x74,
+	0x65, 0x64, 0x5f, 0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x04, 0x52,
+	0x0d, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x64, 0x48, 0x65, 0x69, 0x67, 0x68, 0x74, 0x12, 0x2b,
+	0x0a, 0x11, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x64, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x73, 0x74,
+	0x61, 0x6d, 0x70, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x10, 0x75, 0x70, 0x64, 0x61, 0x74,
+	0x65, 0x64, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x12, 0x12, 0x0a, 0x04, 0x68,
+	0x61, 0x73, 0x68, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x68, 0x61, 0x73, 0x68, 0x42,
+	0x23, 0x5a, 0x21, 0x64, 0x79, 0x73, 0x6f, 0x6e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c,
+	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x78, 0x2f, 0x73, 0x74, 0x6f, 0x72, 0x61, 0x67, 0x65, 0x2f, 0x74,
+	0x79, 0x70, 0x65, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (

@@ -55,7 +55,7 @@ def execute_notebook(notebook_path, dyson_home):
             "--to", "notebook",
             "--execute",
             "--inplace",
-            "--ExecutePreprocessor.timeout=300",  # 5 minute timeout per cell
+            "--ExecutePreprocessor.timeout=5",  # DO NOT CHANGE THIS, INSTEAD FIX YOUR TESTS!!!!
             "--ExecutePreprocessor.kernel_name=python3",
             str(notebook_path)
         ]

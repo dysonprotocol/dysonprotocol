@@ -2,7 +2,9 @@ package keeper
 
 import (
 	"context"
-	"fmt"
+	"crypto/sha256"
+	"encoding/hex"
+	"time"
 
 	"cosmossdk.io/collections"
 	errorsmod "cosmossdk.io/errors"
@@ -23,10 +25,16 @@ func (k Keeper) StorageSet(ctx context.Context, msg *storagetypes.MsgStorageSet)
 	// Create the key directly using strings
 	key := collections.Join(msg.Owner, msg.Index)
 
+	blockHeight := uint64(sdk.UnwrapSDKContext(ctx).BlockHeight())
+	blockTime := sdk.UnwrapSDKContext(ctx).BlockTime()
+	hashBytes := sha256.Sum256([]byte(msg.Data))
 	entry := storagetypes.Storage{
-		Owner: msg.Owner,
-		Data:  msg.Data,
-		Index: msg.Index,
+		Owner:            msg.Owner,
+		Data:             msg.Data,
+		Index:            msg.Index,
+		UpdatedHeight:    blockHeight,
+		UpdatedTimestamp: blockTime.UTC().Format(time.RFC3339),
+		Hash:             hex.EncodeToString(hashBytes[:]),
 	}
 
 	if err := k.StorageMap.Set(ctx, key, entry); err != nil {
@@ -39,7 +47,6 @@ func (k Keeper) StorageSet(ctx context.Context, msg *storagetypes.MsgStorageSet)
 		Address: msg.Owner,
 		Index:   msg.Index,
 	}
-	fmt.Println("StorageSet event", event)
 	if err := sdkCtx.EventManager().EmitTypedEvent(&event); err != nil {
 		return nil, err
 	}

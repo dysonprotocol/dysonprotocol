@@ -50,6 +50,18 @@
                 "data": {
                     "type": "string",
                     "description": "data is the stored string value associated with the index."
+                },
+                "updated_height": {
+                    "type": "string",
+                    "description": "updated_height is block height of last modification."
+                },
+                "updated_timestamp": {
+                    "type": "string",
+                    "description": "updated_timestamp is the block time in UTC (RFC3339 e.g. \"2025-06-11T15:23:00Z\") when entry was modified."
+                },
+                "hash": {
+                    "type": "string",
+                    "description": "hash is SHA-256 hex of data field."
                 }
             },
             "additionalProperties": true,

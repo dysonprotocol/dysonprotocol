@@ -66,19 +66,17 @@ def deployed_demo_script(chainnet, api_address):
 
     print(f"Deploy result: {deploy_result}")
     assert deploy_result["code"] == 0, f"Script deployment failed: {deploy_result}"
-
     # Upload storage files
     base_path = Path(__file__).parent.parent / "demo-dwapp/storage"
-    storage_files = [
-        (base_path / "templates/base.html", "templates/base.html"),
-        (base_path / "templates/index.html", "templates/index.html"), 
-        (base_path / "templates/messages.html", "templates/messages.html"),
-        (base_path / "templates/wallet.html", "templates/wallet.html"),
-        (base_path / "static/style.css", "static/style.css"),
-        (base_path / "static/walletStore.js", "static/walletStore.js"),
-        (base_path / "static/messageStore.js", "static/messageStore.js"),
-        (base_path / "static/dysonTxUtils.js", "static/dysonTxUtils.js")
-    ]
+    storage_files = []
+    
+    # Recursively find all files in the storage directory
+    for root, dirs, files in os.walk(base_path):
+        for file in files:
+            local_path = Path(root) / file
+            # Calculate relative path from base_path for storage key
+            storage_key = str(local_path.relative_to(base_path))
+            storage_files.append((local_path, storage_key))
     
     for local_path, storage_key in storage_files:
         # Calculate gas limit based on file size
@@ -89,7 +87,9 @@ def deployed_demo_script(chainnet, api_address):
             "tx", "storage", "set",
             "--index", storage_key,
             "--data-path", str(local_path),
-            "--gas", str(gas_limit),
+            "--gas", "auto",
+            "--gas-adjustment", "1.3",
+            "--gas-prices", "0dys",
             "--from", account_name,
             "--chain-id", chain_id
         )
@@ -138,7 +138,7 @@ def test_homepage_loads(page: Page, demo_url):
     # navigation to complete because the local dev node may take a moment to
     # serve the demo after deployment.
     page.set_default_timeout(5000)            # 5 s element operations
-    page.set_default_navigation_timeout(5000) # 5 s navigation
+    page.set_default_navigation_timeout(10000) # 10 s navigation
 
     page.goto(demo_url)
     

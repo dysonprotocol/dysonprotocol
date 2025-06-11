@@ -6,18 +6,14 @@
     <meta name="color-scheme" content="light dark" />
     <title>DysonProtocol WalletStore Demo</title>
 
-    <!-- Import map for external modules (cosmjs, etc.) -->
-    <script type="importmap">
-      {
-        "imports": {
-          "@cosmjs/proto-signing": "https://esm.sh/@cosmjs/proto-signing@0.33.0",
-          "@cosmjs/encoding": "https://esm.sh/@cosmjs/encoding@0.28.0/es2022/encoding.mjs",
-          "cosmjs-types/cosmos/tx/v1beta1/tx.js": "https://esm.sh/cosmjs-types@0.9.0/cosmos/tx/v1beta1/tx.js",
-          "cosmjs-types/google/protobuf/any.js": "https://esm.sh/cosmjs-types@0.9.0/google/protobuf/any.js",
-          "cosmjs-types/cosmos/tx/signing/v1beta1/signing.js": "https://esm.sh/cosmjs-types@0.9.0/cosmos/tx/signing/v1beta1/signing.js"
-        }
-      }
-    </script>
+    <!-- Shim loader for browsers without native import-map integrity support -->
+    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+
+    <!-- External import map with SRI; generated via `make generate-sri` -->
+    <script type="importmap-shim" src="/importmap.json"
+            integrity="sha384-iKbfPc5NlXXf2755K3T3wqNxabApSNfrOugcoJUXj02R7fLAAZeReAcz3AtGA2Lf"
+            crossorigin="anonymous"></script>
+
     <!-- 
       Import order is important: AlpineJS plugins must be loaded BEFORE Alpine.js
       and before walletStore.js. HTMX must be loaded AFTER everything else.

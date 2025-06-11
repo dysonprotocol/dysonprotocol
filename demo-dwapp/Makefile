@@ -3,7 +3,7 @@
 # Default to Alice's address if none is set in the environment
 ADDRESS ?= $(shell dysond keys show alice --output json | jq -r .address)
 
-.PHONY: watch handle-change update-script upload-file create-script update
+.PHONY: watch handle-change update-script upload-file create-script update generate-sri hashes
 
 watch:
 	@find script.py storage -type f | \
@@ -56,3 +56,23 @@ update-all:
 		$(MAKE) upload-file FILE="$$file"; \
 	done
 	@echo "Update complete!"
+
+# Generate SRI hashes and update importmap.json
+generate-sri hashes:
+	@echo "Updating integrity hashes in importmap.json..."
+	@set -e; \
+	if [ ! -f importmap.json ]; then \
+	  echo "ERROR: importmap.json not found" >&2; exit 1; \
+	fi; \
+	jq -r '.imports | to_entries[] | "\(.key) \(.value.url)"' importmap.json | while read -r name url; do \
+	  echo "  -> $$name"; \
+	  tmp=$$(mktemp); \
+	  if ! curl -fsSL "$$url" -o "$$tmp"; then \
+	    echo "Failed to download $$url" >&2; rm -f "$$tmp"; exit 1; \
+	  fi; \
+	  hash=$$(openssl dgst -sha384 -binary "$$tmp" | openssl base64 -A); \
+	  rm -f "$$tmp"; \
+	  newjson=$$(jq --arg name "$$name" --arg hash "sha384-$$hash" '(.imports[$$name].integrity) = $$hash' importmap.json); \
+	  echo "$$newjson" > importmap.json; \
+	done; \
+	echo "Integrity hashes updated successfully."
