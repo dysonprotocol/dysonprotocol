@@ -29,6 +29,7 @@ func DefaultParams() Params {
 		BlockGasLimit:    10000000, // 10M gas limit per block for tasks
 		ExpiryLimit:      86400,    // 24 hours in seconds
 		MaxScheduledTime: 86400,    // 24 hours in seconds
+		CleanUpTime:      86400,    // 24 hours in seconds
 	}
 }
 
@@ -44,6 +45,10 @@ func (p Params) Validate() error {
 
 	if p.MaxScheduledTime <= 0 {
 		return fmt.Errorf("max scheduled time must be positive: %d", p.MaxScheduledTime)
+	}
+
+	if p.CleanUpTime < 0 {
+		return fmt.Errorf("clean up time cannot be negative: %d", p.CleanUpTime)
 	}
 
 	return nil

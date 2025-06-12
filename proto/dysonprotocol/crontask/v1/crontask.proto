@@ -69,4 +69,7 @@ message Params {
 
   // Maximum allowed scheduled time in seconds from task creation (24 hours)
   int64 max_scheduled_time = 3;
+
+  // Retention period for completed/failed/expired tasks (seconds)
+  int64 clean_up_time = 4;
 }

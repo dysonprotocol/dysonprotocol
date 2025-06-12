@@ -6,6 +6,8 @@ import { DirectSecp256k1HdWallet, makeSignDoc } from "@cosmjs/proto-signing";
 import { Any } from "cosmjs-types/google/protobuf/any.js";
 import { SignMode } from "cosmjs-types/cosmos/tx/signing/v1beta1/signing.js";
 
+const DISABLE_CHECK_LEADING_ZERO_AMOUNTS = false;
+
 /** Fetch chain info for address. */
 export async function getChainInfo({ apiUrl, address }) {
   const nodeInfoResp = await fetch(`${apiUrl}/cosmos/base/tendermint/v1beta1/node_info`);
@@ -536,7 +538,27 @@ export async function sendMsgs({ apiUrl, wallet, walletType, address, msgs, memo
   let finalMsgs = msgs;
   let finalMemo = memo;
   let finalFee = fee;
-  
+
+  // Check for leading "0"s in amounts recursively
+  // if the check is disabled, just continue
+  const leadingZeroAmounts = collectLeadingZeroAmounts(msgs);
+  if (leadingZeroAmounts.length > 0) {
+    console.warn(`dysonTxUtils.sendMsgs() warning: leading zero amounts are interpreted by the chain as hex not int and this is rarely what you want: ${leadingZeroAmounts.map(l => `${l.path}: ${l.amount}`).join(", ")}`);
+    if (DISABLE_CHECK_LEADING_ZERO_AMOUNTS === "true") {
+      console.warn("Use dysonTxUtils.setDisableCheckLeadingZeroAmounts(false) to raise an error...");
+    } else {
+      console.error("Use dysonTxUtils.setDisableCheckLeadingZeroAmounts(true) to not raise an error...");
+      return {
+        kind: "broadcast",
+        success: false,
+        code: -1,
+        gasUsed: "0",
+        rawLog: `dysonTxUtils.sendMsgs() Error: leading zero amounts are interpreted by the chain as hex not int and this is rarely what you want: ${leadingZeroAmounts.map(l => `${l.path}: ${l.amount}`).join(", ")}`,
+        raw: null,
+      };
+    }
+  }
+
   const { chainId, accountNumber, sequence } = await getChainInfo({ apiUrl, address });
 
   if (!simulate) {
@@ -759,3 +781,63 @@ export function decodeTxRaw(tx) {
     signatures: txRaw.signatures.map(toBase64),
   };
 } 
+
+
+
+/**
+ * Collect every `"amount"` whose string form starts with "0".
+ * Also returns the *path* to each value.
+ *
+ * Path format:
+ *   - Object keys → dot-separated (`invoice.items[0].amount`)
+ *   - Array indices → bracket notation
+ *
+ * @param {*} data  JSON-compatible value (objects, arrays, primitives, or
+ *                  JSON-encoded strings).
+ * @returns {Array<{path: string, amount: any}>}
+ */
+export function collectLeadingZeroAmounts(data) {
+  const results = [];
+
+  /** @param {*} node   current value
+      @param {string} p current path */
+  function walk(node, p) {
+    // Arrays
+    if (Array.isArray(node)) {
+      node.forEach((item, i) => walk(item, `${p}[${i}]`));
+      return;
+    }
+
+    // Objects
+    if (node && typeof node === 'object') {
+      for (const [k, v] of Object.entries(node)) {
+        const path = p ? `${p}.${k}` : k;
+        if (
+          k === 'amount' &&
+          String(v).trim().startsWith('0')
+        ) {
+          results.push({ path, amount: v });
+        }
+        walk(v, path);
+      }
+      return;
+    }
+
+    // Strings → always try to parse as JSON
+    if (typeof node === 'string') {
+      try {
+        const parsed = JSON.parse(node);
+        walk(parsed, p);
+      } catch {
+        /* ignore non-JSON strings */
+      }
+    }
+  }
+
+  walk(data, '');
+  return results;
+}
+
+export function setDisableCheckLeadingZeroAmounts(disable) {
+  DISABLE_CHECK_LEADING_ZERO_AMOUNTS = disable;
+}

@@ -135,7 +135,28 @@ func (k Keeper) GetNextTaskID(ctx context.Context) (uint64, error) {
 
 // SetTask sets a task in the store
 func (k Keeper) SetTask(ctx context.Context, task crontasktypes.Task) error {
-	return k.Tasks.Set(ctx, task.TaskId, task)
+	// If an existing task with the same ID is present, remove its current index
+	// entries before writing the updated task. This guarantees that secondary
+	// indexes are always in sync with the primary record and mirrors the cleanup
+	// logic performed in RemoveTask.
+
+	// Attempt to fetch the previous version of the task. We purposefully ignore
+	// a collections.ErrNotFound error because that simply means this is a brand
+	// new task.
+	if prev, err := k.Tasks.Get(ctx, task.TaskId); err == nil {
+		k.removeIndexes(ctx, prev)
+	} else if !errors.Is(err, collections.ErrNotFound) {
+		// Any other error (e.g. I/O problems) should be reported upstream.
+		return err
+	}
+
+	// Write the new / updated task and create its secondary-index keys.
+	if err := k.Tasks.Set(ctx, task.TaskId, task); err != nil {
+		return err
+	}
+
+	k.addIndexes(ctx, task)
+	return nil
 }
 
 // GetTask gets a task by ID

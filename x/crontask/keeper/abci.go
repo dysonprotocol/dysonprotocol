@@ -86,6 +86,16 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) error {
 
 		totalGasConsumed += task.TaskGasConsumed
 		k.Logger.Info("Task executed", "task_id", taskId, "gas_used", task.TaskGasConsumed)
+
+		// Set the task data
+		if err := k.SetTask(ctx, task); err != nil {
+			k.Logger.Error("failed to set task", "task_id", taskId, "error", err)
+		}
+	}
+
+	// 4. clean up old tasks beyond retention window
+	if err := k.removeOldTasks(ctx, currentTime); err != nil {
+		k.Logger.Error("failed to clean up old tasks", "error", err)
 	}
 
 	return nil
@@ -119,9 +129,9 @@ func (k Keeper) checkExpiredTasks(ctx context.Context, currentTime int64) {
 		if task.ExpiryTimestamp <= currentTime {
 			task.Status = crontasktypes.TaskStatus_EXPIRED
 			task.ErrorLog = "Task expired before execution"
-			k.removeIndexes(ctx, task)
-			k.addIndexes(ctx, task)
-			_ = k.SetTask(ctx, task)
+			if err := k.SetTask(ctx, task); err != nil {
+				k.Logger.Error("failed to set task expired", "task_id", task.TaskId, "error", err)
+			}
 		}
 	}
 }
@@ -150,9 +160,7 @@ func (k Keeper) moveDueTasks(ctx context.Context, currentTime int64) {
 			continue
 		}
 
-		k.removeIndexes(ctx, task)
 		task.Status = crontasktypes.TaskStatus_PENDING
-		k.addIndexes(ctx, task)
 		_ = k.SetTask(ctx, task)
 	}
 }
@@ -173,7 +181,7 @@ func (k Keeper) executeTask(ctx context.Context, task *crontasktypes.Task) error
 		"msg_count", len(task.Msgs))
 
 	// Execute messages
-	err := k.executeMsgs(sdk.WrapSDKContext(cacheCtx), task)
+	err := k.executeMsgs(cacheCtx, task)
 
 	// Calculate gas used and store it in the task
 	gasUsed := cacheCtx.GasMeter().GasConsumed()
@@ -183,8 +191,6 @@ func (k Keeper) executeTask(ctx context.Context, task *crontasktypes.Task) error
 		// Update task status to failed
 		task.Status = crontasktypes.TaskStatus_FAILED
 		task.ExecutionTimestamp = sdk.UnwrapSDKContext(ctx).BlockTime().Unix()
-		k.removeIndexes(ctx, *task)
-		k.addIndexes(ctx, *task)
 
 		// Log the failure details
 		k.Logger.Info("Task execution failed",
@@ -197,8 +203,6 @@ func (k Keeper) executeTask(ctx context.Context, task *crontasktypes.Task) error
 		task.Status = crontasktypes.TaskStatus_DONE
 		task.ExecutionTimestamp = sdk.UnwrapSDKContext(ctx).BlockTime().Unix()
 		write() // Write changes to parent context
-		k.removeIndexes(ctx, *task)
-		k.addIndexes(ctx, *task)
 
 		// Get result count for logging
 		resultCount := len(task.MsgResults)
@@ -323,4 +327,58 @@ func (k Keeper) safeInvokeMsg(ctx context.Context, msg sdk.Msg) (result sdk.Msg,
 	}
 
 	return result, nil
+}
+
+// removeOldTasks deletes terminal-state tasks (DONE, FAILED, EXPIRED) whose
+// execution/expiry timestamps are older than the configured CleanUpTime.
+func (k Keeper) removeOldTasks(ctx context.Context, currentTime int64) error {
+	params, err := k.GetParams(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to get params: %w", err)
+	}
+
+	// If CleanUpTime is zero, feature disabled.
+	if params.CleanUpTime == 0 {
+		return nil
+	}
+
+	cutoff := currentTime - params.CleanUpTime
+
+	// Terminal statuses
+	statuses := []string{
+		crontasktypes.TaskStatus_DONE,
+		crontasktypes.TaskStatus_FAILED,
+		crontasktypes.TaskStatus_EXPIRED,
+	}
+
+	for _, status := range statuses {
+		iter := k.iterateStatusTimestamp(ctx, status, false) // oldest → newest
+		var deleteIDs []uint64
+		statusPrefix := append(indexStatusTsPrefix, []byte(status)...)
+
+		for ; iter.Valid(); iter.Next() {
+			key := iter.Key()
+			if len(key) < len(statusPrefix)+8+8 {
+				continue
+			}
+			ts := int64(binary.BigEndian.Uint64(key[len(statusPrefix) : len(statusPrefix)+8]))
+			if ts > cutoff {
+				// newer tasks; stop scanning further for this status
+				break
+			}
+			id := binary.BigEndian.Uint64(key[len(key)-8:])
+			deleteIDs = append(deleteIDs, id)
+		}
+		iter.Close()
+
+		for _, id := range deleteIDs {
+			if err := k.RemoveTask(ctx, id); err != nil {
+				k.Logger.Error("failed to remove old task", "task_id", id, "error", err)
+			} else {
+				k.Logger.Info("old task deleted", "task_id", id, "status", status)
+			}
+		}
+	}
+
+	return nil
 }

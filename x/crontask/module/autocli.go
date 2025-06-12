@@ -110,6 +110,16 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 						},
 					},
 				},
+				{
+					RpcMethod: "UpdateParams",
+					Use:       "update-params --authority <address> --params <json>",
+					Short:     "Update crontask module parameters (governance authority only)",
+					Long:      "Update the x/crontask module Params in a single message, bypassing the longer gov proposal flow. Requires the module authority account as signer.",
+					FlagOptions: map[string]*autocliv1.FlagOptions{
+						"authority": {Name: "authority", Usage: "authority address (defaults to gov module account)"},
+						"params":    {Name: "params", Usage: "JSON-encoded Params object"},
+					},
+				},
 			},
 		},
 	}

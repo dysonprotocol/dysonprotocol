@@ -412,6 +412,48 @@ def _patch_crontask_notebook():
             print(f"[Notebook patch] Failed to write patched notebook: {exc}")
 
 
+# -----------------------------------------------------------------------------
+# Session-level fixture: ensure crontask.clean_up_time param is <=2 seconds so
+# tests that rely on quick task cleanup don't need to replicate governance logic.
+# -----------------------------------------------------------------------------
+
+
+@pytest.fixture(scope="session")
+def update_crontask_params(chainnet):
+    """Ensure clean_up_time is 2 s using MsgUpdateParams (fast, single-tx)."""
+
+    dysond = chainnet[0]
+
+    current = dysond("query", "crontask", "params")["params"]
+    print(f"Current crontask params: {current}")
+    # Build new params JSON – keep everything else unchanged
+    new_params = dict(current)
+    new_params["clean_up_time"] = "2"
+
+    # Resolve alice bech32 address for authority field
+    alice_info = dysond("keys", "show", "alice")
+    alice_address = alice_info["address"]
+
+    tx = dysond(
+        "tx", "crontask", "update-params",
+        "--authority", alice_address,
+        "--params", json.dumps(new_params),
+        "--from", "alice", "--keyring-backend", "test", "--yes",
+    )
+
+    assert tx.get("code", 1) == 0, f"update-params failed: {tx}"
+
+    def _updated():
+        val = dysond("query", "crontask", "params")["params"]
+        if int(val["clean_up_time"]) == 2:
+            print(f"New crontask params: {val}")
+            return True
+        return False
+
+    poll_until_condition(_updated, timeout=10, poll_interval=0.5,
+                        error_message="clean_up_time did not update to 2s in time")
+
+
 
 
 

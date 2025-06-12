@@ -10,7 +10,7 @@ This document lists all tasks associated with PBI 1.
 | :------ | :--------------------------------------- | :------- | :--------------------------------- |
 | 1-1 | [Update protobuf & Go constants](./1-1.md) | Agreed | Add SCHEDULED status and execution_timestamp field |
 | 1-2 | [Keeper state-machine changes](./1-2.md) | Proposed | Create-task starts SCHEDULED; BeginBlocker moves to PENDING |
-| 1-3 | [Manual KV secondary indexes](./1-3.md) | Review | Implement i_addr, i_stat_ts, i_stat_gas maintenance |
+| 1-3 | [Manual KV secondary indexes](./1-3.md) | InProgress | Implement i_addr, i_stat_ts, i_stat_gas maintenance |
 | 1-4 | [gRPC query handlers & proto routes](./1-4.md) | Review | Implement /all, /address, /scheduled, /pending, /done |
 | 1-5 | [Tests](./1-5.md) | Proposed | Unit + integration tests |
 | 1-E2E | [E2E CoS Test](./1-E2E.md) | Proposed | Overall acceptance test |
@@ -18,4 +18,5 @@ This document lists all tasks associated with PBI 1.
 | 1-7 | [CLI tests – happy paths](./1-7.md) | Done | Cover tasks-all, scheduled, pending, done endpoints |
 | 1-8 | [CLI tests – pagination](./1-8.md) | Review | Verify offset/limit on all new endpoints |
 | 1-9 | [CLI tests – edge & error cases](./1-9.md) | Proposed | Non-existent IDs, empty address results, invalid status |
-| 1-10 | [Fix orphaned index entries on task deletion](./1-10.md) | Done | Ensure Keeper.RemoveTask also removes secondary index keys | 
+| 1-10 | [Fix orphaned index entries on task deletion](./1-10.md) | Done | Ensure Keeper.RemoveTask also removes secondary index keys |
+| 1-11 | [Clean up old crontasks](./1-11.md) | InProgress | Add CleanUpTime param & removeOldTasks cleanup logic | 

@@ -632,6 +632,11 @@
           "type": "string",
           "format": "int64",
           "title": "Maximum allowed scheduled time in seconds from task creation (24 hours)"
+        },
+        "clean_up_time": {
+          "type": "string",
+          "format": "int64",
+          "title": "Retention period for completed/failed/expired tasks (seconds)"
         }
       },
       "title": "Params defines the parameters for the crontask module"

@@ -27,6 +27,11 @@ def test_crontask_params(chainnet):
     assert isinstance(int(params["block_gas_limit"]), int), "block_gas_limit should be an integer"
     assert isinstance(int(params["expiry_limit"]), int), "expiry_limit should be an integer"
     assert isinstance(int(params["max_scheduled_time"]), int), "max_scheduled_time should be an integer"
+
+    dysond_bin = chainnet[0]
+    # ensure the param exists in the response for basic sanity; the actual
+    # governance update is performed in `test_crontask_governance_update_cleanup_param`.
+    assert "clean_up_time" in params, "Missing 'clean_up_time' in params"
     print(f"Crontask params: {params}")
 
 
@@ -701,4 +706,66 @@ def test_tasks_done_pagination(chainnet, generate_account, faucet):
         "2",
     )
 
-    _assert_pages_non_overlapping(page0, page1) 
+    _assert_pages_non_overlapping(page0, page1)
+
+# ------------------------------------------------------------------
+# Test that DONE tasks are automatically cleaned up after the short retention.
+# ------------------------------------------------------------------
+
+def test_done_tasks_are_cleaned_up(chainnet, generate_account, faucet, update_crontask_params):
+    """Test that DONE tasks are automatically cleaned up after the short retention."""
+    _ = update_crontask_params
+    dysond_bin = chainnet[0]
+
+    [alice_name, alice_address] = generate_account("alice")
+    faucet(alice_address, amount=100)
+
+    msg_obj = {
+        "@type": "/cosmos.bank.v1beta1.MsgSend",
+        "from_address": alice_address,
+        "to_address": alice_address,
+        "amount": [{"denom": "dys", "amount": "1"}]
+    }
+
+    create_result = dysond_bin(
+        "tx", "crontask", "create-task",
+        "--scheduled-timestamp", "+1s",
+        "--expiry-timestamp", "+10s",
+        "--task-gas-limit", str(GAS_LIMIT),
+        "--task-gas-fee", f"{GAS_FEE}dys",
+        "--msgs", json.dumps(msg_obj),
+        "--from", alice_name, "--keyring-backend", "test"
+    )
+
+    task_id = None
+    for event in create_result.get("events", []):
+        if event.get("type") == "dysonprotocol.crontask.v1.EventTaskCreated":
+            for attr in event.get("attributes", []):
+                if attr.get("key") == "task_id":
+                    task_id = json.loads(attr.get("value"))
+                    break
+    assert task_id is not None, "Failed to extract task ID"
+
+    def _task_done():
+        t = dysond_bin("query", "crontask", "task-by-id", "--task-id", str(task_id))["task"]
+        if t["status"] == "DONE":
+            print(f"Task {task_id} reached DONE: {t}")
+            return True
+        else:
+            print(f"Task {task_id} not DONE: {t}")
+            return False
+            
+    print("Waiting for task to reach DONE...")
+    poll_until_condition(_task_done, timeout=10, poll_interval=0.2,
+                         error_message="Task did not reach DONE state in time")
+
+    # Now poll for deletion instead of fixed sleep
+    def _task_deleted():
+        out = dysond_bin("query", "crontask", "task-by-id", "--task-id", str(task_id))
+        if "key not found" in out:
+            return True
+        print(f"Task {task_id} still exists: {out}")
+            
+    print("Polling until task is deleted by cleanup logic…")
+    poll_until_condition(_task_deleted, timeout=10, poll_interval=0.5,
+                         error_message="Task was not cleaned up within expected time window") 

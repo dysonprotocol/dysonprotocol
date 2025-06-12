@@ -76,6 +76,39 @@
           "Msg"
         ]
       }
+    },
+    "/dysonprotocol.crontask.v1.Msg/UpdateParams": {
+      "post": {
+        "summary": "UpdateParams updates the parameters of the x/crontask module",
+        "operationId": "Msg_UpdateParams",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dysonprotocol.crontask.v1.MsgUpdateParamsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dysonprotocol.crontask.v1.MsgUpdateParams"
+            }
+          }
+        ],
+        "tags": [
+          "Msg"
+        ]
+      }
     }
   },
   "definitions": {
@@ -154,6 +187,50 @@
     "dysonprotocol.crontask.v1.MsgDeleteTaskResponse": {
       "type": "object",
       "title": "MsgDeleteTaskResponse defines the response for deleting a task"
+    },
+    "dysonprotocol.crontask.v1.MsgUpdateParams": {
+      "type": "object",
+      "properties": {
+        "authority": {
+          "type": "string",
+          "description": "authority is the address that controls the module (defaults to x/gov unless\noverwritten)."
+        },
+        "params": {
+          "$ref": "#/definitions/dysonprotocol.crontask.v1.Params",
+          "description": "params defines the x/crontask parameters to update.\nNOTE: All parameters must be supplied."
+        }
+      },
+      "description": "---------------------------------------------------------------------------\nMsgUpdateParams\n---------------------------------------------------------------------------\nUpdateParams defines a governance operation for updating the x/crontask\nmodule parameters. The authority defaults to the x/gov module account."
+    },
+    "dysonprotocol.crontask.v1.MsgUpdateParamsResponse": {
+      "type": "object",
+      "description": "MsgUpdateParamsResponse defines the response structure for executing a\nMsgUpdateParams message."
+    },
+    "dysonprotocol.crontask.v1.Params": {
+      "type": "object",
+      "properties": {
+        "block_gas_limit": {
+          "type": "string",
+          "format": "uint64",
+          "title": "Maximum gas allowed for executing tasks per block"
+        },
+        "expiry_limit": {
+          "type": "string",
+          "format": "int64",
+          "title": "Default expiry limit in seconds (24 hours)"
+        },
+        "max_scheduled_time": {
+          "type": "string",
+          "format": "int64",
+          "title": "Maximum allowed scheduled time in seconds from task creation (24 hours)"
+        },
+        "clean_up_time": {
+          "type": "string",
+          "format": "int64",
+          "title": "Retention period for completed/failed/expired tasks (seconds)"
+        }
+      },
+      "title": "Params defines the parameters for the crontask module"
     },
     "google.protobuf.Any": {
       "type": "object",

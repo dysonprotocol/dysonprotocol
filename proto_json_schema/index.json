@@ -428,6 +428,8 @@
     {"type":"file","name":"MsgCreateTaskResponse.tx.json"},
     {"type":"file","name":"MsgDeleteTask.tx.json"},
     {"type":"file","name":"MsgDeleteTaskResponse.tx.json"},
+    {"type":"file","name":"MsgUpdateParams.tx.json"},
+    {"type":"file","name":"MsgUpdateParamsResponse.tx.json"},
     {"type":"file","name":"QueryAllTasksRequest.query.json"},
     {"type":"file","name":"QueryDoneTasksRequest.query.json"},
     {"type":"file","name":"QueryParamsRequest.query.json"},
@@ -720,5 +722,5 @@
   {"type":"file","name":"index.html","contents":[{"error": "error opening dir"}
   ]}
 ,
-  {"type":"report","directories":35,"files":649}
+  {"type":"report","directories":35,"files":651}
 ]

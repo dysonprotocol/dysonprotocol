@@ -27,6 +27,10 @@
                 "max_scheduled_time": {
                     "type": "string",
                     "description": "Maximum allowed scheduled time in seconds from task creation (24 hours)"
+                },
+                "clean_up_time": {
+                    "type": "string",
+                    "description": "Retention period for completed/failed/expired tasks (seconds)"
                 }
             },
             "additionalProperties": true,

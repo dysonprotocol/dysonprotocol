@@ -1342,6 +1342,7 @@ var (
 	fd_Params_block_gas_limit    protoreflect.FieldDescriptor
 	fd_Params_expiry_limit       protoreflect.FieldDescriptor
 	fd_Params_max_scheduled_time protoreflect.FieldDescriptor
+	fd_Params_clean_up_time      protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -1350,6 +1351,7 @@ func init() {
 	fd_Params_block_gas_limit = md_Params.Fields().ByName("block_gas_limit")
 	fd_Params_expiry_limit = md_Params.Fields().ByName("expiry_limit")
 	fd_Params_max_scheduled_time = md_Params.Fields().ByName("max_scheduled_time")
+	fd_Params_clean_up_time = md_Params.Fields().ByName("clean_up_time")
 }
 
 var _ protoreflect.Message = (*fastReflection_Params)(nil)
@@ -1435,6 +1437,12 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 			return
 		}
 	}
+	if x.CleanUpTime != int64(0) {
+		value := protoreflect.ValueOfInt64(x.CleanUpTime)
+		if !f(fd_Params_clean_up_time, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -1456,6 +1464,8 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.ExpiryLimit != int64(0)
 	case "dysonprotocol.crontask.v1.Params.max_scheduled_time":
 		return x.MaxScheduledTime != int64(0)
+	case "dysonprotocol.crontask.v1.Params.clean_up_time":
+		return x.CleanUpTime != int64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.crontask.v1.Params"))
@@ -1478,6 +1488,8 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 		x.ExpiryLimit = int64(0)
 	case "dysonprotocol.crontask.v1.Params.max_scheduled_time":
 		x.MaxScheduledTime = int64(0)
+	case "dysonprotocol.crontask.v1.Params.clean_up_time":
+		x.CleanUpTime = int64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.crontask.v1.Params"))
@@ -1502,6 +1514,9 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 		return protoreflect.ValueOfInt64(value)
 	case "dysonprotocol.crontask.v1.Params.max_scheduled_time":
 		value := x.MaxScheduledTime
+		return protoreflect.ValueOfInt64(value)
+	case "dysonprotocol.crontask.v1.Params.clean_up_time":
+		value := x.CleanUpTime
 		return protoreflect.ValueOfInt64(value)
 	default:
 		if descriptor.IsExtension() {
@@ -1529,6 +1544,8 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 		x.ExpiryLimit = value.Int()
 	case "dysonprotocol.crontask.v1.Params.max_scheduled_time":
 		x.MaxScheduledTime = value.Int()
+	case "dysonprotocol.crontask.v1.Params.clean_up_time":
+		x.CleanUpTime = value.Int()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.crontask.v1.Params"))
@@ -1555,6 +1572,8 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 		panic(fmt.Errorf("field expiry_limit of message dysonprotocol.crontask.v1.Params is not mutable"))
 	case "dysonprotocol.crontask.v1.Params.max_scheduled_time":
 		panic(fmt.Errorf("field max_scheduled_time of message dysonprotocol.crontask.v1.Params is not mutable"))
+	case "dysonprotocol.crontask.v1.Params.clean_up_time":
+		panic(fmt.Errorf("field clean_up_time of message dysonprotocol.crontask.v1.Params is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.crontask.v1.Params"))
@@ -1573,6 +1592,8 @@ func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protor
 	case "dysonprotocol.crontask.v1.Params.expiry_limit":
 		return protoreflect.ValueOfInt64(int64(0))
 	case "dysonprotocol.crontask.v1.Params.max_scheduled_time":
+		return protoreflect.ValueOfInt64(int64(0))
+	case "dysonprotocol.crontask.v1.Params.clean_up_time":
 		return protoreflect.ValueOfInt64(int64(0))
 	default:
 		if fd.IsExtension() {
@@ -1652,6 +1673,9 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if x.MaxScheduledTime != 0 {
 			n += 1 + runtime.Sov(uint64(x.MaxScheduledTime))
 		}
+		if x.CleanUpTime != 0 {
+			n += 1 + runtime.Sov(uint64(x.CleanUpTime))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -1680,6 +1704,11 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.CleanUpTime != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.CleanUpTime))
+			i--
+			dAtA[i] = 0x20
 		}
 		if x.MaxScheduledTime != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.MaxScheduledTime))
@@ -1798,6 +1827,25 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 					b := dAtA[iNdEx]
 					iNdEx++
 					x.MaxScheduledTime |= int64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 4:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field CleanUpTime", wireType)
+				}
+				x.CleanUpTime = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.CleanUpTime |= int64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
@@ -2017,6 +2065,8 @@ type Params struct {
 	ExpiryLimit int64 `protobuf:"varint,2,opt,name=expiry_limit,json=expiryLimit,proto3" json:"expiry_limit,omitempty"`
 	// Maximum allowed scheduled time in seconds from task creation (24 hours)
 	MaxScheduledTime int64 `protobuf:"varint,3,opt,name=max_scheduled_time,json=maxScheduledTime,proto3" json:"max_scheduled_time,omitempty"`
+	// Retention period for completed/failed/expired tasks (seconds)
+	CleanUpTime int64 `protobuf:"varint,4,opt,name=clean_up_time,json=cleanUpTime,proto3" json:"clean_up_time,omitempty"`
 }
 
 func (x *Params) Reset() {
@@ -2056,6 +2106,13 @@ func (x *Params) GetExpiryLimit() int64 {
 func (x *Params) GetMaxScheduledTime() int64 {
 	if x != nil {
 		return x.MaxScheduledTime
+	}
+	return 0
+}
+
+func (x *Params) GetCleanUpTime() int64 {
+	if x != nil {
+		return x.CleanUpTime
 	}
 	return 0
 }
@@ -2119,7 +2176,7 @@ var file_dysonprotocol_crontask_v1_crontask_proto_rawDesc = []byte{
 	0x12, 0x2f, 0x0a, 0x13, 0x65, 0x78, 0x65, 0x63, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x74, 0x69,
 	0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x03, 0x52, 0x12, 0x65,
 	0x78, 0x65, 0x63, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d,
-	0x70, 0x22, 0x81, 0x01, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x26, 0x0a, 0x0f,
+	0x70, 0x22, 0xa5, 0x01, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x26, 0x0a, 0x0f,
 	0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x5f, 0x67, 0x61, 0x73, 0x5f, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x18,
 	0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0d, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x47, 0x61, 0x73, 0x4c,
 	0x69, 0x6d, 0x69, 0x74, 0x12, 0x21, 0x0a, 0x0c, 0x65, 0x78, 0x70, 0x69, 0x72, 0x79, 0x5f, 0x6c,
@@ -2127,10 +2184,12 @@ var file_dysonprotocol_crontask_v1_crontask_proto_rawDesc = []byte{
 	0x72, 0x79, 0x4c, 0x69, 0x6d, 0x69, 0x74, 0x12, 0x2c, 0x0a, 0x12, 0x6d, 0x61, 0x78, 0x5f, 0x73,
 	0x63, 0x68, 0x65, 0x64, 0x75, 0x6c, 0x65, 0x64, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x03, 0x20,
 	0x01, 0x28, 0x03, 0x52, 0x10, 0x6d, 0x61, 0x78, 0x53, 0x63, 0x68, 0x65, 0x64, 0x75, 0x6c, 0x65,
-	0x64, 0x54, 0x69, 0x6d, 0x65, 0x42, 0x24, 0x5a, 0x22, 0x64, 0x79, 0x73, 0x6f, 0x6e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x78, 0x2f, 0x63, 0x72, 0x6f,
-	0x6e, 0x74, 0x61, 0x73, 0x6b, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x64, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x22, 0x0a, 0x0d, 0x63, 0x6c, 0x65, 0x61, 0x6e, 0x5f, 0x75,
+	0x70, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0b, 0x63, 0x6c,
+	0x65, 0x61, 0x6e, 0x55, 0x70, 0x54, 0x69, 0x6d, 0x65, 0x42, 0x24, 0x5a, 0x22, 0x64, 0x79, 0x73,
+	0x6f, 0x6e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x78,
+	0x2f, 0x63, 0x72, 0x6f, 0x6e, 0x74, 0x61, 0x73, 0x6b, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (

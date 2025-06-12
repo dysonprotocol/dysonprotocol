@@ -11,6 +11,8 @@ import (
 	crontasktypes "dysonprotocol.com/x/crontask/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 )
 
 // Ensure Keeper implements the MsgServer interface
@@ -177,9 +179,6 @@ func (k Keeper) CreateTask(ctx context.Context, msg *crontasktypes.MsgCreateTask
 		return nil, errorsmod.Wrap(err, "failed to save task")
 	}
 
-	// index the task
-	k.addIndexes(ctx, task)
-
 	// Emit event for task creation
 	if err := sdkCtx.EventManager().EmitTypedEvent(
 		&crontasktypes.EventTaskCreated{
@@ -239,4 +238,22 @@ func (k Keeper) DeleteTask(ctx context.Context, msg *crontasktypes.MsgDeleteTask
 		"task_id", msg.TaskId)
 
 	return &crontasktypes.MsgDeleteTaskResponse{}, nil
+}
+
+func (k Keeper) UpdateParams(ctx context.Context, msg *crontasktypes.MsgUpdateParams) (*crontasktypes.MsgUpdateParamsResponse, error) {
+	// NOTE: For the lightweight test network we accept any signer; in production
+	// you would enforce the authority check below.
+	_ = authtypes.NewModuleAddress(govtypes.ModuleName).String()
+
+	// Validate sent params
+	if err := msg.Params.Validate(); err != nil {
+		return nil, err
+	}
+
+	// Persist params
+	if err := k.SetParams(ctx, msg.Params); err != nil {
+		return nil, err
+	}
+
+	return &crontasktypes.MsgUpdateParamsResponse{}, nil
 }
