@@ -246,6 +246,33 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					},
 				},
 				{
+					RpcMethod: "MoveNft",
+					Use:       "move-nft",
+					Short:     "Move an NFT between two accounts (requires signer to own the NFT class)",
+					FlagOptions: map[string]*autocliv1.FlagOptions{
+						"class_id": {
+							Name:         "class-id",
+							Usage:        "The NFT class ID",
+							DefaultValue: "",
+						},
+						"nft_id": {
+							Name:         "nft-id",
+							Usage:        "The NFT ID",
+							DefaultValue: "",
+						},
+						"from_address": {
+							Name:         "from-address",
+							Usage:        "Current holder address (Bech32)",
+							DefaultValue: "",
+						},
+						"to_address": {
+							Name:         "to-address",
+							Usage:        "Destination address (Bech32)",
+							DefaultValue: "",
+						},
+					},
+				},
+				{
 					RpcMethod: "SetNFTMetadata",
 					Use:       "set-nft-metadata --class-id=<class-id> --nft-id=<nft-id> --metadata=<metadata>",
 					Short:     "Set metadata for an NFT",

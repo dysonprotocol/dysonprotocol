@@ -465,6 +465,21 @@ def handle_demo(environ, start_response):
     return [main.encode()]
 
 
+@route(r"^/coins$")
+def handle_coins(environ, start_response):
+    """Handle the coins management page"""
+    start_response("200 OK", [("Content-Type", "text/html; charset=utf-8")])
+
+    data = {}
+    coins_template = SafeTemplate(fetch_template("coins.html"))
+    main = coins_template.substitute(data)
+
+    if environ.get("HTTP_HX_REQUEST") == "true":
+        return [main.encode()]
+
+    return [_render_base(main)]
+
+
 def wsgi(environ, start_response):
     path_info = environ["PATH_INFO"]
     for pattern, func in routes:

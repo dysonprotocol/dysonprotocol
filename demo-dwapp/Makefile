@@ -6,8 +6,10 @@ ADDRESS ?= $(shell dysond keys show alice --output json | jq -r .address)
 .PHONY: watch handle-change update-script upload-file create-script update generate-sri hashes
 
 watch:
-	@find script.py storage -type f | \
-	entr -dp -s 'make handle-change FILE="$$0"'
+	@while sleep 1; do \
+		find script.py storage -type f | entr -dp -s 'make handle-change FILE="$$0"' ; \
+	done
+
 
 handle-change:
 	@echo "File changed: $(FILE)"

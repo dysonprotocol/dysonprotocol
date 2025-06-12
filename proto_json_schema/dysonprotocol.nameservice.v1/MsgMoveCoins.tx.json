@@ -1,0 +1,80 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgMoveCoins",
+    "definitions": {
+        "MsgMoveCoins": {
+            "properties": {
+                "owner": {
+                    "type": "string",
+                    "description": "Signer must own the root name of each coin denoms in all inputs."
+                },
+                "inputs": {
+                    "items": {
+                        "$ref": "#/definitions/cosmos.bank.v1beta1.Input"
+                    },
+                    "type": "array",
+                    "description": "Single input expected: the account holding the coins."
+                },
+                "outputs": {
+                    "items": {
+                        "$ref": "#/definitions/cosmos.bank.v1beta1.Output"
+                    },
+                    "type": "array",
+                    "description": "One or multiple outputs; each destination must be a non-module account."
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Move Coins",
+            "description": "MsgMoveCoins moves custom denom coins between two accounts if signer owns the root denom."
+        },
+        "cosmos.bank.v1beta1.Input": {
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "coins": {
+                    "items": {
+                        "$ref": "#/definitions/cosmos.base.v1beta1.Coin"
+                    },
+                    "type": "array"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Input",
+            "description": "Input models transaction input."
+        },
+        "cosmos.bank.v1beta1.Output": {
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "coins": {
+                    "items": {
+                        "$ref": "#/definitions/cosmos.base.v1beta1.Coin"
+                    },
+                    "type": "array"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Output",
+            "description": "Output models transaction outputs."
+        },
+        "cosmos.base.v1beta1.Coin": {
+            "properties": {
+                "denom": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Coin",
+            "description": "Coin defines a token with a denomination and an amount. NOTE: The amount field is an Int which implements the custom method signatures required by gogoproto."
+        }
+    }
+}

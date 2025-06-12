@@ -1,0 +1,11 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgMoveNftResponse",
+    "definitions": {
+        "MsgMoveNftResponse": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Move Nft Response"
+        }
+    }
+}

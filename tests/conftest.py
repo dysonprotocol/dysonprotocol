@@ -15,6 +15,7 @@ import signal
 import atexit
 from typing import Dict
 from utils import poll_until_condition
+import secrets  # new
 
 NUM_CHAINS = 2
 NUM_NODES = 1
@@ -452,6 +453,84 @@ def update_crontask_params(chainnet):
 
     poll_until_condition(_updated, timeout=10, poll_interval=0.5,
                         error_message="clean_up_time did not update to 2s in time")
+
+
+# -----------------------------------------------------------------------------
+# Shared helper utilities
+# -----------------------------------------------------------------------------
+
+
+def generate_name() -> str:
+    """Return a random `.dys` root name (6-char prefix)."""
+    rand_suffix = ''.join(random.choices(string.ascii_lowercase, k=6))
+    return f"{rand_suffix}.dys"
+
+
+# -----------------------------------------------------------------------------
+# register_name fixture (commit + reveal)
+# -----------------------------------------------------------------------------
+
+
+@pytest.fixture
+def register_name():
+    """Fixture providing a helper to register a new name via commit/reveal.
+
+    Usage::
+
+        def test_something(chainnet, generate_account, register_name):
+            dysond_bin = chainnet[0]
+            owner_name, owner_addr = generate_account("owner")
+            name = register_name(dysond_bin, owner_name, owner_addr)
+    """
+
+    def _register(dysond_bin, owner_name: str, owner_addr: str, valuation: str = "10dys") -> str:
+        name = generate_name()
+        salt = secrets.token_hex(8)
+
+        # Compute commitment hash
+        commitment = dysond_bin(
+            "query",
+            "nameservice",
+            "compute-hash",
+            "--name",
+            name,
+            "--salt",
+            salt,
+            "--committer",
+            owner_addr,
+        )["hex_hash"]
+
+        # Commit
+        commit_resp = dysond_bin(
+            "tx",
+            "nameservice",
+            "commit",
+            "--commitment",
+            commitment,
+            "--valuation",
+            valuation,
+            "--from",
+            owner_name,
+        )
+        assert commit_resp["code"] == 0, commit_resp.get("raw_log")
+
+        # Reveal
+        reveal_resp = dysond_bin(
+            "tx",
+            "nameservice",
+            "reveal",
+            "--name",
+            name,
+            "--salt",
+            salt,
+            "--from",
+            owner_name,
+        )
+        assert reveal_resp["code"] == 0, reveal_resp.get("raw_log")
+
+        return name
+
+    return _register
 
 
 

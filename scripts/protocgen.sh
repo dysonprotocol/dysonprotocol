@@ -132,6 +132,34 @@ cd ..
 # all the individual swagger files need to be configured in `config.json` for merging
 swagger-combine ./client/docs/config.json -o ./client/docs/swagger-ui/swagger.yaml -f yaml --continueOnConflictingPaths true --includeDefinitions true
 
+# Python function to remove specific description keys from the YAML
+python - <<EOF
+import yaml
 
+def remove_specific_descriptions(yaml_file):
+    with open(yaml_file, 'r') as file:
+        data = yaml.safe_load(file)
+
+    def walk_and_modify(obj):
+        if isinstance(obj, dict):
+            keys_to_delete = []
+            for key, value in obj.items():
+                if key == 'description' and isinstance(value, str) and (value.startswith('\`Any\`') or value.startswith('A URL/resource')):
+                    keys_to_delete.append(key)
+                else:
+                    walk_and_modify(value)
+            for key in keys_to_delete:
+                del obj[key]
+        elif isinstance(obj, list):
+            for item in obj:
+                walk_and_modify(item)
+
+    walk_and_modify(data)
+
+    with open(yaml_file, 'w') as file:
+        yaml.safe_dump(data, file)
+
+remove_specific_descriptions('./client/docs/swagger-ui/swagger.yaml')
+EOF
 
 echo "Proto generation complete!" 

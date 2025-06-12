@@ -1,0 +1,32 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/MsgMoveNft",
+    "definitions": {
+        "MsgMoveNft": {
+            "properties": {
+                "owner": {
+                    "type": "string",
+                    "description": "Signer owning class root name"
+                },
+                "class_id": {
+                    "type": "string"
+                },
+                "nft_id": {
+                    "type": "string"
+                },
+                "from_address": {
+                    "type": "string",
+                    "description": "Current holder (must match NFT owner, non-module)"
+                },
+                "to_address": {
+                    "type": "string",
+                    "description": "Destination holder (non-module)"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Msg Move Nft",
+            "description": "MsgMoveNft moves an NFT between accounts when signer owns the NFT class."
+        }
+    }
+}

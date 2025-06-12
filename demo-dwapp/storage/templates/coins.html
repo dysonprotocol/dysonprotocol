@@ -1,0 +1,66 @@
+<h1 class="text-2xl font-bold mb-4">Manage Coins</h1>
+
+<!-- Balances Section -->
+<section id="balances" class="mb-8" x-data="balancesComponent()" x-init="init()">
+  <div class="overflow-x-auto">
+    <table class="table table-zebra w-full">
+      <thead>
+        <tr>
+          <th>Denom</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Loading state -->
+        <tr x-show="loading">
+          <td colspan="2" class="text-center">
+            <span class="loading loading-spinner"></span>
+          </td>
+        </tr>
+
+        <!-- Not connected -->
+        <tr x-show="!loading && !walletConnected">
+          <td colspan="2" class="text-center opacity-70">Connect a wallet to see balances.</td>
+        </tr>
+
+        <!-- Balance rows -->
+        <template x-for="b in balances" :key="b.denom">
+          <tr>
+            <td x-text="b.symbol"></td>
+            <td x-text="b.amount"></td>
+          </tr>
+        </template>
+
+        <!-- Empty balances -->
+        <tr x-show="!loading && walletConnected && balances.length === 0">
+          <td colspan="2" class="text-center opacity-70">No balances.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Send Funds Form -->
+<section id="send" x-data="sendFundsComponent()">
+  <form id="sendForm" class="space-y-4 max-w-md" hx-boost="false" @submit.prevent="submit">
+    <div>
+      <label class="label"><span class="label-text">Recipient Address</span></label>
+      <input type="text" name="to" x-model="to" class="input input-bordered w-full" :disabled="sending || !walletConnected" />
+    </div>
+    <div class="flex gap-2">
+      <div class="flex-1">
+        <label class="label"><span class="label-text">Amount</span></label>
+        <input type="number" name="amount" x-model="amount" class="input input-bordered w-full" min="0" :disabled="sending || !walletConnected" />
+      </div>
+      <div class="w-32">
+        <label class="label"><span class="label-text">Denom</span></label>
+        <select name="denom" x-model="denom" class="select select-bordered w-full" :disabled="sending || !walletConnected">
+          <option value="dys">dys</option>
+        </select>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary w-full" :disabled="sending || !walletConnected">Send</button>
+    <p x-show="error" class="text-error mt-2" x-text="error"></p>
+    <p x-show="txHash" class="text-success mt-2">Success! TxHash: <code x-text="txHash"></code></p>
+  </form>
+</section>

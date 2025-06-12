@@ -235,6 +235,70 @@
         ]
       }
     },
+    "/dysonprotocol.nameservice.v1.Msg/MoveCoins": {
+      "post": {
+        "operationId": "Msg_MoveCoins",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dysonprotocol.nameservice.v1.MsgMoveCoinsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dysonprotocol.nameservice.v1.MsgMoveCoins"
+            }
+          }
+        ],
+        "tags": [
+          "Msg"
+        ]
+      }
+    },
+    "/dysonprotocol.nameservice.v1.Msg/MoveNft": {
+      "post": {
+        "operationId": "Msg_MoveNft",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dysonprotocol.nameservice.v1.MsgMoveNftResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dysonprotocol.nameservice.v1.MsgMoveNft"
+            }
+          }
+        ],
+        "tags": [
+          "Msg"
+        ]
+      }
+    },
     "/dysonprotocol.nameservice.v1.Msg/PlaceBid": {
       "post": {
         "operationId": "Msg_PlaceBid",
@@ -611,6 +675,21 @@
       },
       "description": "DenomUnit represents a struct that describes a given\ndenomination unit of the basic token."
     },
+    "cosmos.bank.v1beta1.Input": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "coins": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/cosmos.base.v1beta1.Coin"
+          }
+        }
+      },
+      "description": "Input models transaction input."
+    },
     "cosmos.bank.v1beta1.Metadata": {
       "type": "object",
       "properties": {
@@ -650,6 +729,21 @@
         }
       },
       "description": "Metadata represents a struct that describes\na basic token."
+    },
+    "cosmos.bank.v1beta1.Output": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "coins": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/cosmos.base.v1beta1.Coin"
+          }
+        }
+      },
+      "description": "Output models transaction outputs."
     },
     "cosmos.base.v1beta1.Coin": {
       "type": "object",
@@ -796,6 +890,60 @@
       "title": "MintNFT"
     },
     "dysonprotocol.nameservice.v1.MsgMintNFTResponse": {
+      "type": "object"
+    },
+    "dysonprotocol.nameservice.v1.MsgMoveCoins": {
+      "type": "object",
+      "properties": {
+        "owner": {
+          "type": "string",
+          "description": "Signer must own the root name of each coin denoms in all inputs."
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/cosmos.bank.v1beta1.Input"
+          },
+          "description": "Single input expected: the account holding the coins."
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/cosmos.bank.v1beta1.Output"
+          },
+          "description": "One or multiple outputs; each destination must be a non-module account."
+        }
+      },
+      "description": "MsgMoveCoins moves custom denom coins between two accounts if signer owns the\nroot denom."
+    },
+    "dysonprotocol.nameservice.v1.MsgMoveCoinsResponse": {
+      "type": "object"
+    },
+    "dysonprotocol.nameservice.v1.MsgMoveNft": {
+      "type": "object",
+      "properties": {
+        "owner": {
+          "type": "string",
+          "title": "Signer owning class root name"
+        },
+        "class_id": {
+          "type": "string"
+        },
+        "nft_id": {
+          "type": "string"
+        },
+        "from_address": {
+          "type": "string",
+          "title": "Current holder (must match NFT owner, non-module)"
+        },
+        "to_address": {
+          "type": "string",
+          "title": "Destination holder (non-module)"
+        }
+      },
+      "description": "MsgMoveNft moves an NFT between accounts when signer owns the NFT class."
+    },
+    "dysonprotocol.nameservice.v1.MsgMoveNftResponse": {
       "type": "object"
     },
     "dysonprotocol.nameservice.v1.MsgPlaceBid": {

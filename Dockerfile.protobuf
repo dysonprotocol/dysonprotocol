@@ -11,7 +11,10 @@ RUN apk add --no-cache \
   clang-extra-tools \
   g++ \
   jq \
-  tree
+  tree \
+  python3 \
+  py3-yaml
+
 
 RUN npm install -g swagger-combine
 

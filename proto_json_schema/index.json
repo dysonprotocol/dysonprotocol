@@ -460,6 +460,10 @@
     {"type":"file","name":"MsgMintCoinsResponse.tx.json"},
     {"type":"file","name":"MsgMintNFT.tx.json"},
     {"type":"file","name":"MsgMintNFTResponse.tx.json"},
+    {"type":"file","name":"MsgMoveCoins.tx.json"},
+    {"type":"file","name":"MsgMoveCoinsResponse.tx.json"},
+    {"type":"file","name":"MsgMoveNft.tx.json"},
+    {"type":"file","name":"MsgMoveNftResponse.tx.json"},
     {"type":"file","name":"MsgPlaceBid.tx.json"},
     {"type":"file","name":"MsgPlaceBidResponse.tx.json"},
     {"type":"file","name":"MsgRejectBid.tx.json"},
@@ -722,5 +726,5 @@
   {"type":"file","name":"index.html","contents":[{"error": "error opening dir"}
   ]}
 ,
-  {"type":"report","directories":35,"files":651}
+  {"type":"report","directories":35,"files":655}
 ]
