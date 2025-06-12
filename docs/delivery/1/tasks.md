@@ -19,4 +19,4 @@ This document lists all tasks associated with PBI 1.
 | 1-8 | [CLI tests – pagination](./1-8.md) | Review | Verify offset/limit on all new endpoints |
 | 1-9 | [CLI tests – edge & error cases](./1-9.md) | Proposed | Non-existent IDs, empty address results, invalid status |
 | 1-10 | [Fix orphaned index entries on task deletion](./1-10.md) | Done | Ensure Keeper.RemoveTask also removes secondary index keys |
-| 1-11 | [Clean up old crontasks](./1-11.md) | InProgress | Add CleanUpTime param & removeOldTasks cleanup logic | 
+| 1-11 | [Clean up old crontasks](./1-11.md) | Done | Add CleanUpTime param & removeOldTasks cleanup logic | 
