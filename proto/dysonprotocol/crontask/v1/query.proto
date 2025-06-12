@@ -6,6 +6,8 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "cosmos_proto/cosmos.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "dysonprotocol/crontask/v1/crontask.proto";
+import "gogoproto/gogo.proto";
+import "amino/amino.proto";
 
 option go_package = "dysonprotocol.com/x/crontask/types";
 
@@ -50,29 +52,6 @@ service Query {
     };
   }
 
-  // TasksScheduled returns tasks with SCHEDULED status ordered by timestamp
-  // ascending
-  rpc TasksScheduled(QueryScheduledTasksRequest) returns (QueryTasksResponse) {
-    option (google.api.http) = {
-      get : "/dysonprotocol/crontask/v1/tasks/scheduled"
-    };
-  }
-
-  // TasksPending returns tasks with PENDING status ordered by gas price
-  // descending
-  rpc TasksPending(QueryPendingTasksRequest) returns (QueryTasksResponse) {
-    option (google.api.http) = {
-      get : "/dysonprotocol/crontask/v1/tasks/pending"
-    };
-  }
-
-  // TasksDone returns tasks with DONE status ordered by execution timestamp
-  rpc TasksDone(QueryDoneTasksRequest) returns (QueryTasksResponse) {
-    option (google.api.http) = {
-      get : "/dysonprotocol/crontask/v1/tasks/done"
-    };
-  }
-
   // Params returns the module parameters
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http) = {
@@ -98,7 +77,6 @@ message QueryTasksByAddressRequest {
 // Query/TasksByStatusTimestamp RPC method
 message QueryTasksByStatusTimestampRequest {
   string status = 1;
-  bool ascending = 2;
   cosmos.base.query.v1beta1.PageRequest pagination = 3;
 }
 
@@ -106,13 +84,14 @@ message QueryTasksByStatusTimestampRequest {
 // Query/TasksByStatusGasPrice RPC method
 message QueryTasksByStatusGasPriceRequest {
   string status = 1;
-  bool ascending = 2;
   cosmos.base.query.v1beta1.PageRequest pagination = 3;
 }
 
 // QueryTasksResponse is the response type for task queries with multiple
 // results
 message QueryTasksResponse {
+  // Explicit json tag without omitempty to ensure empty arrays are included in
+  // marshalled output so clients can reliably expect the "tasks" key.
   repeated Task tasks = 1;
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
@@ -127,19 +106,4 @@ message QueryParamsResponse { Params params = 1; }
 
 message QueryAllTasksRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
-}
-
-message QueryScheduledTasksRequest {
-  bool ascending = 1;
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
-}
-
-message QueryPendingTasksRequest {
-  bool ascending = 1;
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
-}
-
-message QueryDoneTasksRequest {
-  bool ascending = 1;
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }

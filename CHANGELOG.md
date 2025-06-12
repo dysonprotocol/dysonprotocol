@@ -41,3 +41,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Features
 
 * (x/nameservice) #6-3 Add MsgMoveNft to enable name owners to transfer NFTs between non-module accounts. Includes keeper logic, `EventNftMoved` event emission, CLI command `dysond tx nameservice move-nft`, and integration tests.
+
+### Bug Fixes
+
+* (x/crontask) #6-4 Query responses now encode empty task lists as [] instead of null, fixing CLI pagination and API consistency. Removed deprecated proto messages and endpoints for scheduled/pending/done tasks.

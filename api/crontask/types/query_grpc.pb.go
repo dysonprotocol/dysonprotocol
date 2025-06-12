@@ -24,9 +24,6 @@ const (
 	Query_TasksByStatusTimestamp_FullMethodName = "/dysonprotocol.crontask.v1.Query/TasksByStatusTimestamp"
 	Query_TasksByStatusGasPrice_FullMethodName  = "/dysonprotocol.crontask.v1.Query/TasksByStatusGasPrice"
 	Query_TasksAll_FullMethodName               = "/dysonprotocol.crontask.v1.Query/TasksAll"
-	Query_TasksScheduled_FullMethodName         = "/dysonprotocol.crontask.v1.Query/TasksScheduled"
-	Query_TasksPending_FullMethodName           = "/dysonprotocol.crontask.v1.Query/TasksPending"
-	Query_TasksDone_FullMethodName              = "/dysonprotocol.crontask.v1.Query/TasksDone"
 	Query_Params_FullMethodName                 = "/dysonprotocol.crontask.v1.Query/Params"
 )
 
@@ -48,14 +45,6 @@ type QueryClient interface {
 	TasksByStatusGasPrice(ctx context.Context, in *QueryTasksByStatusGasPriceRequest, opts ...grpc.CallOption) (*QueryTasksResponse, error)
 	// TasksAll returns all tasks ordered by ID
 	TasksAll(ctx context.Context, in *QueryAllTasksRequest, opts ...grpc.CallOption) (*QueryTasksResponse, error)
-	// TasksScheduled returns tasks with SCHEDULED status ordered by timestamp
-	// ascending
-	TasksScheduled(ctx context.Context, in *QueryScheduledTasksRequest, opts ...grpc.CallOption) (*QueryTasksResponse, error)
-	// TasksPending returns tasks with PENDING status ordered by gas price
-	// descending
-	TasksPending(ctx context.Context, in *QueryPendingTasksRequest, opts ...grpc.CallOption) (*QueryTasksResponse, error)
-	// TasksDone returns tasks with DONE status ordered by execution timestamp
-	TasksDone(ctx context.Context, in *QueryDoneTasksRequest, opts ...grpc.CallOption) (*QueryTasksResponse, error)
 	// Params returns the module parameters
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 }
@@ -118,36 +107,6 @@ func (c *queryClient) TasksAll(ctx context.Context, in *QueryAllTasksRequest, op
 	return out, nil
 }
 
-func (c *queryClient) TasksScheduled(ctx context.Context, in *QueryScheduledTasksRequest, opts ...grpc.CallOption) (*QueryTasksResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(QueryTasksResponse)
-	err := c.cc.Invoke(ctx, Query_TasksScheduled_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) TasksPending(ctx context.Context, in *QueryPendingTasksRequest, opts ...grpc.CallOption) (*QueryTasksResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(QueryTasksResponse)
-	err := c.cc.Invoke(ctx, Query_TasksPending_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) TasksDone(ctx context.Context, in *QueryDoneTasksRequest, opts ...grpc.CallOption) (*QueryTasksResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(QueryTasksResponse)
-	err := c.cc.Invoke(ctx, Query_TasksDone_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(QueryParamsResponse)
@@ -176,14 +135,6 @@ type QueryServer interface {
 	TasksByStatusGasPrice(context.Context, *QueryTasksByStatusGasPriceRequest) (*QueryTasksResponse, error)
 	// TasksAll returns all tasks ordered by ID
 	TasksAll(context.Context, *QueryAllTasksRequest) (*QueryTasksResponse, error)
-	// TasksScheduled returns tasks with SCHEDULED status ordered by timestamp
-	// ascending
-	TasksScheduled(context.Context, *QueryScheduledTasksRequest) (*QueryTasksResponse, error)
-	// TasksPending returns tasks with PENDING status ordered by gas price
-	// descending
-	TasksPending(context.Context, *QueryPendingTasksRequest) (*QueryTasksResponse, error)
-	// TasksDone returns tasks with DONE status ordered by execution timestamp
-	TasksDone(context.Context, *QueryDoneTasksRequest) (*QueryTasksResponse, error)
 	// Params returns the module parameters
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	mustEmbedUnimplementedQueryServer()
@@ -210,15 +161,6 @@ func (UnimplementedQueryServer) TasksByStatusGasPrice(context.Context, *QueryTas
 }
 func (UnimplementedQueryServer) TasksAll(context.Context, *QueryAllTasksRequest) (*QueryTasksResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TasksAll not implemented")
-}
-func (UnimplementedQueryServer) TasksScheduled(context.Context, *QueryScheduledTasksRequest) (*QueryTasksResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TasksScheduled not implemented")
-}
-func (UnimplementedQueryServer) TasksPending(context.Context, *QueryPendingTasksRequest) (*QueryTasksResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TasksPending not implemented")
-}
-func (UnimplementedQueryServer) TasksDone(context.Context, *QueryDoneTasksRequest) (*QueryTasksResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TasksDone not implemented")
 }
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
@@ -334,60 +276,6 @@ func _Query_TasksAll_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_TasksScheduled_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryScheduledTasksRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).TasksScheduled(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_TasksScheduled_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).TasksScheduled(ctx, req.(*QueryScheduledTasksRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_TasksPending_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryPendingTasksRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).TasksPending(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_TasksPending_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).TasksPending(ctx, req.(*QueryPendingTasksRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_TasksDone_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryDoneTasksRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).TasksDone(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_TasksDone_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).TasksDone(ctx, req.(*QueryDoneTasksRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryParamsRequest)
 	if err := dec(in); err != nil {
@@ -432,18 +320,6 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TasksAll",
 			Handler:    _Query_TasksAll_Handler,
-		},
-		{
-			MethodName: "TasksScheduled",
-			Handler:    _Query_TasksScheduled_Handler,
-		},
-		{
-			MethodName: "TasksPending",
-			Handler:    _Query_TasksPending_Handler,
-		},
-		{
-			MethodName: "TasksDone",
-			Handler:    _Query_TasksDone_Handler,
 		},
 		{
 			MethodName: "Params",

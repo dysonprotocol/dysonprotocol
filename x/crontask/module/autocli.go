@@ -60,6 +60,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					},
 				},
 				{
+					RpcMethod: "TasksAll",
+					Use:       "tasks-all",
+					Short:     "Query all tasks",
+					Long:      "Query all tasks",
+				},
+				{
 					RpcMethod: "Params",
 					Use:       "params",
 					Short:     "Query module parameters",

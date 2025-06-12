@@ -63,7 +63,7 @@ def test_query_tasks_by_status_timestamp(chainnet, generate_account):
     [alice_name, alice_address] = generate_account('alice')
     task_id1 = create_task_for_test_with_timestamp(dysond_bin, alice_name, alice_address, time_offset=3)
     task_id2 = create_task_for_test_with_timestamp(dysond_bin, alice_name, alice_address, time_offset=6)
-    tasks_result = dysond_bin("query", "crontask", "tasks-by-status-timestamp", "--status", "SCHEDULED", "--ascending")
+    tasks_result = dysond_bin("query", "crontask", "tasks-by-status-timestamp", "--status", "SCHEDULED")
     assert "tasks" in tasks_result, "Tasks response does not contain 'tasks' field"
     tasks = tasks_result["tasks"]
     for task in tasks:
@@ -79,7 +79,7 @@ def test_query_tasks_by_status_gas_price(chainnet, generate_account):
     [alice_name, alice_address] = generate_account('alice')
     task_id1 = create_task_for_test_with_gas_price(dysond_bin, alice_name, alice_address, gas_price=1)
     task_id2 = create_task_for_test_with_gas_price(dysond_bin, alice_name, alice_address, gas_price=2)
-    tasks_result = dysond_bin("query", "crontask", "tasks-by-status-gas-price", "--status", "SCHEDULED", "--ascending")
+    tasks_result = dysond_bin("query", "crontask", "tasks-by-status-gas-price", "--status", "SCHEDULED")
     assert "tasks" in tasks_result, "Tasks response does not contain 'tasks' field"
     tasks = tasks_result["tasks"]
     for task in tasks:
@@ -273,6 +273,7 @@ def test_query_tasks_by_status_timestamp_desc(chainnet, generate_account):
         "tasks-by-status-timestamp",
         "--status",
         "SCHEDULED",
+        "--page-reverse",
     )
     ts = [int(t["scheduled_timestamp"]) for t in res["tasks"]]
     assert ts == sorted(ts, reverse=True), "Scheduled timestamp should be DESC by default"
@@ -292,7 +293,6 @@ def test_query_tasks_by_status_timestamp_pagination(chainnet, generate_account):
         "tasks-by-status-timestamp",
         "--status",
         "SCHEDULED",
-        "--ascending",
         "--page-limit",
         "2",
         "--page-offset",
@@ -304,7 +304,6 @@ def test_query_tasks_by_status_timestamp_pagination(chainnet, generate_account):
         "tasks-by-status-timestamp",
         "--status",
         "SCHEDULED",
-        "--ascending",
         "--page-limit",
         "2",
         "--page-offset",
@@ -356,7 +355,6 @@ def test_query_tasks_by_status_gas_price_pagination(chainnet, generate_account):
         "tasks-by-status-gas-price",
         "--status",
         "SCHEDULED",
-        "--ascending",
         "--page-limit",
         "2",
         "--page-offset",
@@ -368,7 +366,6 @@ def test_query_tasks_by_status_gas_price_pagination(chainnet, generate_account):
         "tasks-by-status-gas-price",
         "--status",
         "SCHEDULED",
-        "--ascending",
         "--page-limit",
         "2",
         "--page-offset",
@@ -457,79 +454,6 @@ def test_tasks_all_endpoint(chainnet, generate_account):
     assert id_list == sorted(id_list), "tasks-all should be ordered by task_id ascending"
 
 
-def test_tasks_scheduled_endpoint(chainnet, generate_account):
-    """Verify /tasks/scheduled returns only SCHEDULED tasks (ascending timestamp)."""
-    dysond_bin = chainnet[0]
-    [name, addr] = generate_account("scheduled")
-    # create tasks far in the future so they remain SCHEDULED
-    for off in (90, 120, 150):
-        create_task_for_test_with_timestamp(dysond_bin, name, addr, time_offset=off)
-
-    res = dysond_bin(
-        "query",
-        "crontask",
-        "tasks-scheduled",
-        "--ascending",
-    )
-    assert "tasks" in res, "tasks-scheduled response missing tasks field"
-    tasks = res["tasks"]
-    # All tasks should have status SCHEDULED
-    for t in tasks:
-        assert t["status"] == "SCHEDULED", f"Unexpected status {t['status']} in tasks-scheduled"
-    # Verify ascending timestamp ordering
-    ts = [int(t["scheduled_timestamp"]) for t in tasks]
-    assert ts == sorted(ts), "Scheduled timestamp should be ascending when --ascending is supplied"
-
-
-def test_tasks_pending_endpoint(chainnet, generate_account):
-    """Basic sanity check that /tasks/pending responds and, when tasks exist, they are correctly ordered."""
-    dysond_bin = chainnet[0]
-    [name, addr] = generate_account("pending")
-
-    # Craft tasks whose cumulative gas will exceed a single block so at least some may appear as PENDING
-    params = dysond_bin("query", "crontask", "params")["params"]
-    block_gas_limit = int(params["block_gas_limit"])
-    near_limit = max(1, block_gas_limit - 1000)
-
-    for price in (5, 7, 6):
-        create_task_high_gas_limit(dysond_bin, name, addr, near_limit, gas_price=price)
-
-    # Wait a few seconds until the node has processed at least one more block
-    start = datetime.datetime.now().timestamp()
-    poll_until_condition(lambda: (datetime.datetime.now().timestamp() - start) > 2, timeout=3, poll_interval=0.2)
-
-    res = dysond_bin("query", "crontask", "tasks-pending")
-    assert isinstance(res, dict) and "tasks" in res, "tasks-pending returned invalid JSON"
-
-    if res["tasks"]:
-        # If tasks are present, ensure they are marked PENDING and sorted by gas price desc
-        statuses = {t["status"] for t in res["tasks"]}
-        assert statuses.issubset({"PENDING", "DONE", "FAILED"}), f"Unexpected statuses in tasks-pending: {statuses}"
-        prices = [int(t["task_gas_price"]["amount"]) for t in res["tasks"]]
-        assert prices == sorted(prices, reverse=True), "Gas price ordering incorrect in tasks-pending"
-
-
-def test_tasks_done_endpoint(chainnet, generate_account, faucet):
-    """Ensure /tasks/done lists DONE tasks ordered by execution timestamp DESC."""
-    dysond_bin = chainnet[0]
-    [name, addr] = generate_account("done")
-    faucet(addr, amount=100)
-
-    # Create tasks that will quickly execute
-    for _ in range(3):
-        create_task_for_test(dysond_bin, name, addr)
-
-    # Wait until at least 3 DONE tasks appear
-    def _done_ready():
-        res = dysond_bin("query", "crontask", "tasks-done")
-        return isinstance(res, dict) and len(res.get("tasks", [])) >= 3
-
-    poll_until_condition(_done_ready, timeout=10, error_message="DONE tasks not ready")
-
-    res = dysond_bin("query", "crontask", "tasks-done")
-    ts = [int(t["execution_timestamp"]) for t in res["tasks"]]
-    assert ts == sorted(ts, reverse=True), "Execution timestamp should be DESC by default in tasks-done"
-
 # -----------------------------------------------------------------------------
 # Task 1-8 pagination tests for new CLI endpoints
 # -----------------------------------------------------------------------------
@@ -583,130 +507,6 @@ def test_tasks_all_pagination(chainnet, generate_account):
     _assert_pages_non_overlapping(page0, page1)
 
 
-# ------------------------------
-# /tasks/scheduled
-# ------------------------------
-
-def test_tasks_scheduled_pagination(chainnet, generate_account):
-    """Verify pagination on /tasks/scheduled endpoint."""
-    dysond_bin = chainnet[0]
-    [name, addr] = generate_account("sched_page")
-
-    # Create tasks far in the future so they remain SCHEDULED
-    for off in (90, 120, 150, 180):
-        create_task_for_test_with_timestamp(dysond_bin, name, addr, time_offset=off)
-
-    page0 = dysond_bin(
-        "query",
-        "crontask",
-        "tasks-scheduled",
-        "--ascending",
-        "--page-limit",
-        "2",
-        "--page-offset",
-        "0",
-    )
-    page1 = dysond_bin(
-        "query",
-        "crontask",
-        "tasks-scheduled",
-        "--ascending",
-        "--page-limit",
-        "2",
-        "--page-offset",
-        "2",
-    )
-
-    _assert_pages_non_overlapping(page0, page1)
-
-
-# ------------------------------
-# /tasks/pending
-# ------------------------------
-
-def test_tasks_pending_pagination(chainnet, generate_account):
-    """Verify pagination on /tasks/pending endpoint."""
-    dysond_bin = chainnet[0]
-    [name, addr] = generate_account("pend_page")
-
-    # Use the block gas limit for each task to ensure only one can execute per block,
-    # leaving the others in PENDING state for a while.
-    params = dysond_bin("query", "crontask", "params")["params"]
-    block_gas_limit = int(params["block_gas_limit"])
-
-    for _ in range(6):  # create more than we need to account for executions
-        create_task_high_gas_limit(dysond_bin, name, addr, block_gas_limit, gas_price=1)
-
-    # Wait until at least 4 tasks are reported as PENDING
-    def _pending_ready():
-        res = dysond_bin("query", "crontask", "tasks-pending")
-        return res if len(res.get("tasks", [])) >= 4 else False
-
-    poll_until_condition(_pending_ready, timeout=15, error_message="Not enough pending tasks for pagination test")
-
-    page0 = dysond_bin(
-        "query",
-        "crontask",
-        "tasks-pending",
-        "--page-limit",
-        "2",
-        "--page-offset",
-        "0",
-    )
-    page1 = dysond_bin(
-        "query",
-        "crontask",
-        "tasks-pending",
-        "--page-limit",
-        "2",
-        "--page-offset",
-        "2",
-    )
-
-    _assert_pages_non_overlapping(page0, page1)
-
-
-# ------------------------------
-# /tasks/done
-# ------------------------------
-
-def test_tasks_done_pagination(chainnet, generate_account, faucet):
-    """Verify pagination on /tasks/done endpoint."""
-    dysond_bin = chainnet[0]
-    [name, addr] = generate_account("done_page")
-    faucet(addr, amount=100)
-
-    # Create multiple tasks that will execute quickly
-    for _ in range(4):
-        create_task_for_test(dysond_bin, name, addr)
-
-    # Wait until the DONE list has at least 4 tasks
-    def _done_ready():
-        res = dysond_bin("query", "crontask", "tasks-done")
-        return res if len(res.get("tasks", [])) >= 4 else False
-
-    poll_until_condition(_done_ready, timeout=20, error_message="Not enough done tasks for pagination test")
-
-    page0 = dysond_bin(
-        "query",
-        "crontask",
-        "tasks-done",
-        "--page-limit",
-        "2",
-        "--page-offset",
-        "0",
-    )
-    page1 = dysond_bin(
-        "query",
-        "crontask",
-        "tasks-done",
-        "--page-limit",
-        "2",
-        "--page-offset",
-        "2",
-    )
-
-    _assert_pages_non_overlapping(page0, page1)
 
 # ------------------------------------------------------------------
 # Test that DONE tasks are automatically cleaned up after the short retention.

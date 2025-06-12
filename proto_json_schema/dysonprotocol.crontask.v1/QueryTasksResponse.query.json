@@ -8,7 +8,8 @@
                     "items": {
                         "$ref": "#/definitions/dysonprotocol.crontask.v1.Task"
                     },
-                    "type": "array"
+                    "type": "array",
+                    "description": "Explicit json tag without omitempty to ensure empty arrays are included in marshalled output so clients can reliably expect the \"tasks\" key."
                 },
                 "pagination": {
                     "$ref": "#/definitions/cosmos.base.query.v1beta1.PageResponse",

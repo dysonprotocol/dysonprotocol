@@ -166,213 +166,6 @@
         ]
       }
     },
-    "/dysonprotocol/crontask/v1/tasks/done": {
-      "get": {
-        "summary": "TasksDone returns tasks with DONE status ordered by execution timestamp",
-        "operationId": "Query_TasksDone",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/dysonprotocol.crontask.v1.QueryTasksResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/grpc.gateway.runtime.Error"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "ascending",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
-          },
-          {
-            "name": "pagination.key",
-            "description": "key is a value returned in PageResponse.next_key to begin\nquerying the next page most efficiently. Only one of offset or key\nshould be set.",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "byte"
-          },
-          {
-            "name": "pagination.offset",
-            "description": "offset is a numeric offset that can be used when key is unavailable.\nIt is less efficient than using key. Only one of offset or key should\nbe set.",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "uint64"
-          },
-          {
-            "name": "pagination.limit",
-            "description": "limit is the total number of results to be returned in the result page.\nIf left empty it will default to a value to be set by each app.",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "uint64"
-          },
-          {
-            "name": "pagination.count_total",
-            "description": "count_total is set to true  to indicate that the result set should include\na count of the total number of items available for pagination in UIs.\ncount_total is only respected when offset is used. It is ignored when key\nis set.",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
-          },
-          {
-            "name": "pagination.reverse",
-            "description": "reverse is set to true if results are to be returned in the descending\norder.",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
-          }
-        ],
-        "tags": [
-          "Query"
-        ]
-      }
-    },
-    "/dysonprotocol/crontask/v1/tasks/pending": {
-      "get": {
-        "summary": "TasksPending returns tasks with PENDING status ordered by gas price\ndescending",
-        "operationId": "Query_TasksPending",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/dysonprotocol.crontask.v1.QueryTasksResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/grpc.gateway.runtime.Error"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "ascending",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
-          },
-          {
-            "name": "pagination.key",
-            "description": "key is a value returned in PageResponse.next_key to begin\nquerying the next page most efficiently. Only one of offset or key\nshould be set.",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "byte"
-          },
-          {
-            "name": "pagination.offset",
-            "description": "offset is a numeric offset that can be used when key is unavailable.\nIt is less efficient than using key. Only one of offset or key should\nbe set.",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "uint64"
-          },
-          {
-            "name": "pagination.limit",
-            "description": "limit is the total number of results to be returned in the result page.\nIf left empty it will default to a value to be set by each app.",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "uint64"
-          },
-          {
-            "name": "pagination.count_total",
-            "description": "count_total is set to true  to indicate that the result set should include\na count of the total number of items available for pagination in UIs.\ncount_total is only respected when offset is used. It is ignored when key\nis set.",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
-          },
-          {
-            "name": "pagination.reverse",
-            "description": "reverse is set to true if results are to be returned in the descending\norder.",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
-          }
-        ],
-        "tags": [
-          "Query"
-        ]
-      }
-    },
-    "/dysonprotocol/crontask/v1/tasks/scheduled": {
-      "get": {
-        "summary": "TasksScheduled returns tasks with SCHEDULED status ordered by timestamp\nascending",
-        "operationId": "Query_TasksScheduled",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/dysonprotocol.crontask.v1.QueryTasksResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/grpc.gateway.runtime.Error"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "ascending",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
-          },
-          {
-            "name": "pagination.key",
-            "description": "key is a value returned in PageResponse.next_key to begin\nquerying the next page most efficiently. Only one of offset or key\nshould be set.",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "byte"
-          },
-          {
-            "name": "pagination.offset",
-            "description": "offset is a numeric offset that can be used when key is unavailable.\nIt is less efficient than using key. Only one of offset or key should\nbe set.",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "uint64"
-          },
-          {
-            "name": "pagination.limit",
-            "description": "limit is the total number of results to be returned in the result page.\nIf left empty it will default to a value to be set by each app.",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "uint64"
-          },
-          {
-            "name": "pagination.count_total",
-            "description": "count_total is set to true  to indicate that the result set should include\na count of the total number of items available for pagination in UIs.\ncount_total is only respected when offset is used. It is ignored when key\nis set.",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
-          },
-          {
-            "name": "pagination.reverse",
-            "description": "reverse is set to true if results are to be returned in the descending\norder.",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
-          }
-        ],
-        "tags": [
-          "Query"
-        ]
-      }
-    },
     "/dysonprotocol/crontask/v1/tasks/status/{status}": {
       "get": {
         "summary": "TasksByStatusTimestamp returns tasks filtered by status and ordered by\ntimestamp",
@@ -397,12 +190,6 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "ascending",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
           },
           {
             "name": "pagination.key",
@@ -472,12 +259,6 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "ascending",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
           },
           {
             "name": "pagination.key",
@@ -666,7 +447,8 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/dysonprotocol.crontask.v1.Task"
-          }
+          },
+          "description": "Explicit json tag without omitempty to ensure empty arrays are included in\nmarshalled output so clients can reliably expect the \"tasks\" key."
         },
         "pagination": {
           "$ref": "#/definitions/cosmos.base.query.v1beta1.PageResponse"

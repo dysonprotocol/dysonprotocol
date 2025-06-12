@@ -7,9 +7,6 @@
                 "status": {
                     "type": "string"
                 },
-                "ascending": {
-                    "type": "boolean"
-                },
                 "pagination": {
                     "$ref": "#/definitions/cosmos.base.query.v1beta1.PageRequest",
                     "additionalProperties": true

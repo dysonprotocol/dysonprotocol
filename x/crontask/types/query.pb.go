@@ -9,6 +9,8 @@ import (
 	_ "github.com/cosmos/cosmos-proto"
 	_ "github.com/cosmos/cosmos-sdk/types"
 	query "github.com/cosmos/cosmos-sdk/types/query"
+	_ "github.com/cosmos/cosmos-sdk/types/tx/amino"
+	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
@@ -179,7 +181,6 @@ func (m *QueryTasksByAddressRequest) GetPagination() *query.PageRequest {
 // Query/TasksByStatusTimestamp RPC method
 type QueryTasksByStatusTimestampRequest struct {
 	Status     string             `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
-	Ascending  bool               `protobuf:"varint,2,opt,name=ascending,proto3" json:"ascending,omitempty"`
 	Pagination *query.PageRequest `protobuf:"bytes,3,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
@@ -223,13 +224,6 @@ func (m *QueryTasksByStatusTimestampRequest) GetStatus() string {
 	return ""
 }
 
-func (m *QueryTasksByStatusTimestampRequest) GetAscending() bool {
-	if m != nil {
-		return m.Ascending
-	}
-	return false
-}
-
 func (m *QueryTasksByStatusTimestampRequest) GetPagination() *query.PageRequest {
 	if m != nil {
 		return m.Pagination
@@ -241,7 +235,6 @@ func (m *QueryTasksByStatusTimestampRequest) GetPagination() *query.PageRequest 
 // Query/TasksByStatusGasPrice RPC method
 type QueryTasksByStatusGasPriceRequest struct {
 	Status     string             `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
-	Ascending  bool               `protobuf:"varint,2,opt,name=ascending,proto3" json:"ascending,omitempty"`
 	Pagination *query.PageRequest `protobuf:"bytes,3,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
@@ -285,13 +278,6 @@ func (m *QueryTasksByStatusGasPriceRequest) GetStatus() string {
 	return ""
 }
 
-func (m *QueryTasksByStatusGasPriceRequest) GetAscending() bool {
-	if m != nil {
-		return m.Ascending
-	}
-	return false
-}
-
 func (m *QueryTasksByStatusGasPriceRequest) GetPagination() *query.PageRequest {
 	if m != nil {
 		return m.Pagination
@@ -302,6 +288,8 @@ func (m *QueryTasksByStatusGasPriceRequest) GetPagination() *query.PageRequest {
 // QueryTasksResponse is the response type for task queries with multiple
 // results
 type QueryTasksResponse struct {
+	// Explicit json tag without omitempty to ensure empty arrays are included in
+	// marshalled output so clients can reliably expect the "tasks" key.
 	Tasks      []*Task             `protobuf:"bytes,1,rep,name=tasks,proto3" json:"tasks,omitempty"`
 	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
@@ -479,162 +467,6 @@ func (m *QueryAllTasksRequest) GetPagination() *query.PageRequest {
 	return nil
 }
 
-type QueryScheduledTasksRequest struct {
-	Ascending  bool               `protobuf:"varint,1,opt,name=ascending,proto3" json:"ascending,omitempty"`
-	Pagination *query.PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
-}
-
-func (m *QueryScheduledTasksRequest) Reset()         { *m = QueryScheduledTasksRequest{} }
-func (m *QueryScheduledTasksRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryScheduledTasksRequest) ProtoMessage()    {}
-func (*QueryScheduledTasksRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_31d3eefc3a09d7ff, []int{9}
-}
-func (m *QueryScheduledTasksRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryScheduledTasksRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryScheduledTasksRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryScheduledTasksRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryScheduledTasksRequest.Merge(m, src)
-}
-func (m *QueryScheduledTasksRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryScheduledTasksRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryScheduledTasksRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryScheduledTasksRequest proto.InternalMessageInfo
-
-func (m *QueryScheduledTasksRequest) GetAscending() bool {
-	if m != nil {
-		return m.Ascending
-	}
-	return false
-}
-
-func (m *QueryScheduledTasksRequest) GetPagination() *query.PageRequest {
-	if m != nil {
-		return m.Pagination
-	}
-	return nil
-}
-
-type QueryPendingTasksRequest struct {
-	Ascending  bool               `protobuf:"varint,1,opt,name=ascending,proto3" json:"ascending,omitempty"`
-	Pagination *query.PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
-}
-
-func (m *QueryPendingTasksRequest) Reset()         { *m = QueryPendingTasksRequest{} }
-func (m *QueryPendingTasksRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryPendingTasksRequest) ProtoMessage()    {}
-func (*QueryPendingTasksRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_31d3eefc3a09d7ff, []int{10}
-}
-func (m *QueryPendingTasksRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryPendingTasksRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryPendingTasksRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryPendingTasksRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryPendingTasksRequest.Merge(m, src)
-}
-func (m *QueryPendingTasksRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryPendingTasksRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryPendingTasksRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryPendingTasksRequest proto.InternalMessageInfo
-
-func (m *QueryPendingTasksRequest) GetAscending() bool {
-	if m != nil {
-		return m.Ascending
-	}
-	return false
-}
-
-func (m *QueryPendingTasksRequest) GetPagination() *query.PageRequest {
-	if m != nil {
-		return m.Pagination
-	}
-	return nil
-}
-
-type QueryDoneTasksRequest struct {
-	Ascending  bool               `protobuf:"varint,1,opt,name=ascending,proto3" json:"ascending,omitempty"`
-	Pagination *query.PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
-}
-
-func (m *QueryDoneTasksRequest) Reset()         { *m = QueryDoneTasksRequest{} }
-func (m *QueryDoneTasksRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryDoneTasksRequest) ProtoMessage()    {}
-func (*QueryDoneTasksRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_31d3eefc3a09d7ff, []int{11}
-}
-func (m *QueryDoneTasksRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryDoneTasksRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryDoneTasksRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryDoneTasksRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryDoneTasksRequest.Merge(m, src)
-}
-func (m *QueryDoneTasksRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryDoneTasksRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryDoneTasksRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryDoneTasksRequest proto.InternalMessageInfo
-
-func (m *QueryDoneTasksRequest) GetAscending() bool {
-	if m != nil {
-		return m.Ascending
-	}
-	return false
-}
-
-func (m *QueryDoneTasksRequest) GetPagination() *query.PageRequest {
-	if m != nil {
-		return m.Pagination
-	}
-	return nil
-}
-
 func init() {
 	proto.RegisterType((*QueryTaskByIDRequest)(nil), "dysonprotocol.crontask.v1.QueryTaskByIDRequest")
 	proto.RegisterType((*QueryTaskByIDResponse)(nil), "dysonprotocol.crontask.v1.QueryTaskByIDResponse")
@@ -645,9 +477,6 @@ func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "dysonprotocol.crontask.v1.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "dysonprotocol.crontask.v1.QueryParamsResponse")
 	proto.RegisterType((*QueryAllTasksRequest)(nil), "dysonprotocol.crontask.v1.QueryAllTasksRequest")
-	proto.RegisterType((*QueryScheduledTasksRequest)(nil), "dysonprotocol.crontask.v1.QueryScheduledTasksRequest")
-	proto.RegisterType((*QueryPendingTasksRequest)(nil), "dysonprotocol.crontask.v1.QueryPendingTasksRequest")
-	proto.RegisterType((*QueryDoneTasksRequest)(nil), "dysonprotocol.crontask.v1.QueryDoneTasksRequest")
 }
 
 func init() {
@@ -655,60 +484,52 @@ func init() {
 }
 
 var fileDescriptor_31d3eefc3a09d7ff = []byte{
-	// 838 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x95, 0x4d, 0x4f, 0x1b, 0x47,
-	0x18, 0xc7, 0x19, 0x5e, 0x0c, 0x4c, 0x51, 0x0f, 0x53, 0xa0, 0xc6, 0x42, 0x6e, 0xd9, 0x96, 0x97,
-	0x22, 0xd8, 0xc1, 0xa6, 0xa8, 0xa5, 0xa2, 0xaa, 0xb0, 0x50, 0x11, 0x52, 0x0f, 0xae, 0xe1, 0xd4,
-	0x43, 0xd1, 0x78, 0x77, 0xe4, 0xac, 0x58, 0xef, 0x2c, 0x3b, 0x6b, 0x14, 0x0b, 0x59, 0x8a, 0xb8,
-	0x47, 0x8a, 0x92, 0x1c, 0x90, 0x72, 0x22, 0xca, 0x29, 0xc7, 0x28, 0x1f, 0x20, 0x97, 0x48, 0x39,
-	0xa2, 0xe4, 0x92, 0x63, 0x04, 0xf9, 0x20, 0xd1, 0xce, 0xcc, 0xda, 0xac, 0x31, 0x5e, 0x2f, 0x87,
-	0x24, 0x27, 0x7b, 0x76, 0x9e, 0x97, 0xdf, 0xf3, 0xcc, 0x33, 0xff, 0x81, 0xb3, 0x66, 0x9d, 0x33,
-	0xc7, 0xf5, 0x98, 0xcf, 0x0c, 0x66, 0x63, 0xc3, 0x63, 0x8e, 0x4f, 0xf8, 0x01, 0x3e, 0xca, 0xe1,
-	0xc3, 0x1a, 0xf5, 0xea, 0xba, 0xd8, 0x42, 0x53, 0x11, 0x33, 0x3d, 0x34, 0xd3, 0x8f, 0x72, 0x99,
-	0xe9, 0x0a, 0x63, 0x15, 0x9b, 0x62, 0xe2, 0x5a, 0x98, 0x38, 0x0e, 0xf3, 0x89, 0x6f, 0x31, 0x87,
-	0x4b, 0xc7, 0xcc, 0xa2, 0xc1, 0x78, 0x95, 0x71, 0x5c, 0x26, 0x9c, 0xca, 0x88, 0xf8, 0x28, 0x57,
-	0xa6, 0x3e, 0xc9, 0x61, 0x97, 0x54, 0x2c, 0x47, 0x18, 0x2b, 0xdb, 0x29, 0x69, 0xbb, 0x2f, 0x56,
-	0x58, 0x2e, 0xd4, 0x56, 0xf6, 0x6a, 0x98, 0x30, 0x80, 0xc1, 0xac, 0xd0, 0x75, 0xe1, 0xe6, 0x32,
-	0x9a, 0xac, 0x62, 0x57, 0xc3, 0x70, 0xfc, 0xdf, 0x00, 0x63, 0x8f, 0xf0, 0x83, 0x42, 0x7d, 0x67,
-	0xab, 0x44, 0x0f, 0x6b, 0x94, 0xfb, 0xe8, 0x7b, 0x38, 0x1c, 0x58, 0xed, 0x5b, 0x66, 0x1a, 0xfc,
-	0x08, 0x16, 0x06, 0x4b, 0xa9, 0x60, 0xb9, 0x63, 0x6a, 0xff, 0xc0, 0x89, 0x36, 0x07, 0xee, 0x32,
-	0x87, 0x53, 0xb4, 0x0a, 0x07, 0x03, 0x13, 0x61, 0xfe, 0x4d, 0xfe, 0x07, 0xfd, 0xc6, 0x16, 0xe9,
-	0x81, 0x6b, 0x49, 0x18, 0x6b, 0xa7, 0x00, 0x66, 0x9a, 0xe1, 0x78, 0xa1, 0xbe, 0x69, 0x9a, 0x1e,
-	0xe5, 0x3c, 0xa4, 0xc8, 0xc3, 0x61, 0xc3, 0xa3, 0xc4, 0x67, 0x9e, 0x08, 0x3b, 0x5a, 0x48, 0xbf,
-	0x7d, 0xb9, 0x3c, 0xae, 0x5a, 0xa1, 0x6c, 0x77, 0x7d, 0xcf, 0x72, 0x2a, 0xa5, 0xd0, 0x10, 0xfd,
-	0x0d, 0x61, 0xab, 0x95, 0xe9, 0x7e, 0x41, 0x33, 0xa7, 0x2b, 0x9f, 0xa0, 0x61, 0xba, 0x3c, 0x49,
-	0xd5, 0x36, 0xbd, 0x48, 0x2a, 0x54, 0xe5, 0x2b, 0x5d, 0xf1, 0xd4, 0x9e, 0x02, 0xa8, 0x5d, 0x45,
-	0xdb, 0xf5, 0x89, 0x5f, 0xe3, 0x7b, 0x56, 0x95, 0x72, 0x9f, 0x54, 0xdd, 0x10, 0x71, 0x12, 0xa6,
-	0xb8, 0xd8, 0x91, 0x84, 0x25, 0xb5, 0x42, 0xd3, 0x70, 0x94, 0x70, 0x83, 0x3a, 0xa6, 0xe5, 0x54,
-	0x04, 0xc5, 0x48, 0xa9, 0xf5, 0xa1, 0x0d, 0x72, 0xe0, 0xd6, 0x90, 0x67, 0x00, 0xce, 0x5c, 0x87,
-	0xdc, 0x26, 0xbc, 0xe8, 0x59, 0x06, 0xfd, 0x3a, 0x18, 0x1f, 0x03, 0x88, 0x5a, 0x8c, 0xcd, 0x79,
-	0x59, 0x83, 0x43, 0xc1, 0x08, 0x04, 0x4c, 0x03, 0xbd, 0x0c, 0x8c, 0xb4, 0x46, 0xdb, 0x1d, 0x8e,
-	0x77, 0x3e, 0x96, 0x4a, 0xe6, 0x8c, 0x60, 0x8d, 0x2b, 0xaa, 0x22, 0xf1, 0x48, 0x35, 0x9c, 0x38,
-	0xad, 0x08, 0xbf, 0x8b, 0x7c, 0x55, 0xb0, 0xeb, 0x30, 0xe5, 0x8a, 0x2f, 0x6a, 0xbc, 0x67, 0xba,
-	0xd0, 0x2a, 0x57, 0xe5, 0xa0, 0xfd, 0xaf, 0x6e, 0xd8, 0xa6, 0x6d, 0xab, 0x06, 0xc8, 0x43, 0x89,
-	0xb6, 0x17, 0xdc, 0xba, 0xbd, 0x27, 0xe1, 0x15, 0xda, 0x35, 0xee, 0x50, 0xb3, 0x66, 0x53, 0x33,
-	0x92, 0x26, 0x72, 0xc6, 0xa0, 0xfb, 0x19, 0xdf, 0xfe, 0xb2, 0xdc, 0x03, 0x30, 0x2d, 0xfb, 0x26,
-	0x03, 0x7f, 0x01, 0x84, 0x86, 0x12, 0xa6, 0x2d, 0xe6, 0xd0, 0xcf, 0x9f, 0x3e, 0x7f, 0x7f, 0x0c,
-	0x0e, 0x89, 0xfc, 0xe8, 0x0c, 0xc0, 0x91, 0x50, 0x1d, 0x11, 0xee, 0x32, 0x28, 0x9d, 0x84, 0x37,
-	0xb3, 0xd2, 0xbb, 0x83, 0x9c, 0x4d, 0x2d, 0x7f, 0xf2, 0xee, 0xe3, 0xa3, 0xfe, 0x25, 0xb4, 0x88,
-	0x6f, 0x56, 0x7d, 0x71, 0x77, 0xf0, 0xb1, 0x92, 0xf4, 0x06, 0x7a, 0x01, 0xe0, 0xb7, 0x51, 0xc9,
-	0x45, 0x6b, 0xbd, 0x24, 0xbe, 0x26, 0xd1, 0x99, 0xe5, 0x9e, 0xdc, 0x9a, 0xb0, 0x7f, 0x08, 0xd8,
-	0x5f, 0x51, 0x3e, 0x16, 0x56, 0xe9, 0x39, 0x3e, 0x56, 0x7f, 0x1a, 0xe8, 0x15, 0x80, 0x93, 0x9d,
-	0xc5, 0x18, 0xfd, 0xd9, 0x23, 0x7c, 0x67, 0x11, 0x4f, 0x5a, 0xc4, 0xef, 0xa2, 0x88, 0x3c, 0x5a,
-	0x89, 0x2d, 0x42, 0x0a, 0x2d, 0x3e, 0x96, 0xbf, 0x0d, 0xf4, 0x1a, 0xc0, 0x89, 0x8e, 0x52, 0x8d,
-	0x36, 0x12, 0x55, 0xd0, 0xa6, 0xf0, 0x49, 0x0b, 0xf8, 0x4b, 0x14, 0xb0, 0x8e, 0x7e, 0x4b, 0x5a,
-	0x00, 0x2e, 0xd7, 0xf7, 0x2b, 0x84, 0xa3, 0x53, 0x35, 0xe3, 0x7c, 0xd3, 0xb6, 0xe3, 0x67, 0xbc,
-	0x4d, 0xfa, 0x92, 0xd2, 0x2e, 0x09, 0xda, 0x39, 0xf4, 0x73, 0x2c, 0x2d, 0xb1, 0x6d, 0xf4, 0x3c,
-	0x1c, 0xed, 0xa6, 0x1e, 0xc6, 0x8f, 0x76, 0x47, 0xe9, 0x4c, 0x8a, 0xd9, 0xfb, 0x3d, 0xe4, 0x4d,
-	0xb2, 0x67, 0x00, 0x8e, 0x89, 0x28, 0x4a, 0x37, 0xd1, 0x6a, 0x5c, 0xce, 0x0e, 0x02, 0x9b, 0x14,
-	0x74, 0x45, 0x80, 0x2e, 0xa2, 0x85, 0x58, 0x50, 0x57, 0x51, 0x3d, 0x01, 0x70, 0x54, 0xc4, 0x08,
-	0xc4, 0x15, 0xc5, 0x4a, 0x54, 0xbb, 0x04, 0x27, 0x05, 0x5c, 0x16, 0x80, 0xf3, 0x68, 0x36, 0x16,
-	0xd0, 0x0c, 0x78, 0x1e, 0x02, 0x98, 0x92, 0x8f, 0x2e, 0x8a, 0x4d, 0x14, 0x79, 0xed, 0x33, 0x7a,
-	0xaf, 0xe6, 0x0a, 0xec, 0x17, 0x01, 0xf6, 0x13, 0x9a, 0xe9, 0x02, 0x26, 0x9f, 0xfd, 0xc2, 0xc6,
-	0x9b, 0x8b, 0x2c, 0x38, 0xbf, 0xc8, 0x82, 0x0f, 0x17, 0x59, 0xf0, 0xe0, 0x32, 0xdb, 0x77, 0x7e,
-	0x99, 0xed, 0x7b, 0x7f, 0x99, 0xed, 0xfb, 0x4f, 0x6b, 0xcb, 0xc9, 0xaa, 0xf8, 0x6e, 0x2b, 0x82,
-	0x5f, 0x77, 0x29, 0x2f, 0xa7, 0xc4, 0xf6, 0xea, 0xa7, 0x00, 0x00, 0x00, 0xff, 0xff, 0x2f, 0xe7,
-	0xce, 0x00, 0x90, 0x0c, 0x00, 0x00,
+	// 720 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x94, 0xcf, 0x4f, 0x13, 0x41,
+	0x14, 0xc7, 0x19, 0x7e, 0x14, 0x1c, 0x13, 0x13, 0xc7, 0x82, 0xd0, 0x98, 0x55, 0x56, 0x45, 0x24,
+	0xb0, 0x43, 0x8b, 0x44, 0x31, 0x18, 0x43, 0x63, 0x24, 0x24, 0x1e, 0x6a, 0xe1, 0xe4, 0x41, 0x32,
+	0x6d, 0x27, 0x9b, 0x0d, 0xdb, 0x9d, 0x65, 0x67, 0x20, 0x6e, 0x08, 0x17, 0xf5, 0x0f, 0x30, 0xea,
+	0x81, 0xc4, 0x93, 0xff, 0x82, 0xf1, 0x0f, 0xf0, 0x62, 0xe2, 0x91, 0xe8, 0xc5, 0xa3, 0x01, 0xff,
+	0x10, 0xb3, 0x33, 0xb3, 0x85, 0x2d, 0x85, 0xdd, 0x72, 0xf0, 0xd2, 0xee, 0xcc, 0x7c, 0xdf, 0x7b,
+	0x9f, 0xf7, 0x66, 0xde, 0x83, 0xb7, 0x1b, 0x21, 0x67, 0x9e, 0x1f, 0x30, 0xc1, 0xea, 0xcc, 0xc5,
+	0xf5, 0x80, 0x79, 0x82, 0xf0, 0x0d, 0xbc, 0x5d, 0xc4, 0x9b, 0x5b, 0x34, 0x08, 0x2d, 0x79, 0x84,
+	0xc6, 0x12, 0x32, 0x2b, 0x96, 0x59, 0xdb, 0xc5, 0xc2, 0x35, 0x9b, 0x31, 0xdb, 0xa5, 0x98, 0xf8,
+	0x0e, 0x26, 0x9e, 0xc7, 0x04, 0x11, 0x0e, 0xf3, 0xb8, 0x32, 0x2c, 0x4c, 0xd5, 0x19, 0x6f, 0x32,
+	0x8e, 0x6b, 0x84, 0x53, 0xe5, 0x11, 0x6f, 0x17, 0x6b, 0x54, 0x90, 0x22, 0xf6, 0x89, 0xed, 0x78,
+	0x52, 0xac, 0xb5, 0x63, 0x4a, 0xbb, 0x2e, 0x57, 0x58, 0x2d, 0xf4, 0x91, 0x71, 0xdc, 0x4d, 0xec,
+	0xa0, 0xce, 0x9c, 0xd8, 0x74, 0xf2, 0xf4, 0x34, 0x5a, 0xac, 0x4a, 0x99, 0xb7, 0x99, 0xcd, 0x54,
+	0x84, 0xe8, 0x4b, 0xef, 0x5e, 0x26, 0x4d, 0xc7, 0x63, 0x58, 0xfe, 0xaa, 0x2d, 0x13, 0xc3, 0xfc,
+	0xf3, 0x88, 0x77, 0x8d, 0xf0, 0x8d, 0x72, 0xb8, 0xf2, 0xa4, 0x4a, 0x37, 0xb7, 0x28, 0x17, 0xe8,
+	0x2a, 0x1c, 0x8c, 0xdc, 0xad, 0x3b, 0x8d, 0x51, 0x70, 0x03, 0x4c, 0xf6, 0x57, 0x73, 0xd1, 0x72,
+	0xa5, 0x61, 0x3e, 0x83, 0xc3, 0x6d, 0x06, 0xdc, 0x67, 0x1e, 0xa7, 0x68, 0x0e, 0xf6, 0x47, 0x12,
+	0x29, 0xbf, 0x58, 0xba, 0x6e, 0x9d, 0x5a, 0x4b, 0x2b, 0x32, 0xad, 0x4a, 0xb1, 0xb9, 0x07, 0x60,
+	0xa1, 0xe5, 0x8e, 0x97, 0xc3, 0xa5, 0x46, 0x23, 0xa0, 0x9c, 0xc7, 0x14, 0x25, 0x38, 0x58, 0x0f,
+	0x28, 0x11, 0x2c, 0x90, 0x6e, 0x2f, 0x94, 0x47, 0x7f, 0x7e, 0x9d, 0xc9, 0xeb, 0x9a, 0x69, 0xed,
+	0xaa, 0x08, 0x1c, 0xcf, 0xae, 0xc6, 0x42, 0xf4, 0x14, 0xc2, 0xa3, 0x9a, 0x8f, 0xf6, 0x4a, 0x9a,
+	0x09, 0x4b, 0xdb, 0x44, 0x95, 0xb5, 0xd4, 0x95, 0xeb, 0xfa, 0x5a, 0x15, 0x62, 0x53, 0x1d, 0xaf,
+	0x7a, 0xcc, 0xd2, 0x7c, 0x0b, 0xa0, 0x79, 0x1c, 0x6d, 0x55, 0x10, 0xb1, 0xc5, 0xd7, 0x9c, 0x26,
+	0xe5, 0x82, 0x34, 0xfd, 0x18, 0x71, 0x04, 0xe6, 0xb8, 0x3c, 0x51, 0x84, 0x55, 0xbd, 0x6a, 0xc3,
+	0xe8, 0x3b, 0x37, 0xc6, 0x1b, 0x00, 0xc7, 0x4f, 0x62, 0x2c, 0x13, 0x5e, 0x09, 0x9c, 0x3a, 0xfd,
+	0x5f, 0x14, 0x1f, 0x01, 0x44, 0x47, 0x14, 0xad, 0x3b, 0x9f, 0x87, 0x03, 0xd1, 0x35, 0x46, 0x51,
+	0xfb, 0xb2, 0x5c, 0xba, 0x52, 0xa3, 0xe5, 0x0e, 0x57, 0x74, 0x27, 0x95, 0x4a, 0xc5, 0x4c, 0x60,
+	0xe5, 0x35, 0x55, 0x85, 0x04, 0xa4, 0x19, 0xbf, 0x1a, 0xb3, 0x02, 0xaf, 0x24, 0x76, 0x35, 0xec,
+	0x02, 0xcc, 0xf9, 0x72, 0x47, 0x3f, 0xd1, 0xf1, 0x33, 0x68, 0xb5, 0xa9, 0x36, 0x30, 0x5f, 0xea,
+	0x2e, 0x59, 0x72, 0x5d, 0x5d, 0x00, 0x55, 0xf6, 0x64, 0x79, 0xc1, 0x79, 0xcb, 0x5b, 0xfa, 0x34,
+	0x04, 0x07, 0x64, 0x00, 0xf4, 0x19, 0xc0, 0xa1, 0xb8, 0xb5, 0x10, 0x3e, 0x83, 0xb0, 0x53, 0xd7,
+	0x16, 0x66, 0xb3, 0x1b, 0xa8, 0xa2, 0x98, 0xa5, 0xd7, 0xbf, 0xfe, 0x7e, 0xe8, 0x9d, 0x46, 0x53,
+	0xf8, 0xf4, 0xd9, 0x22, 0x2f, 0x0d, 0xef, 0xe8, 0x79, 0xb0, 0x8b, 0xbe, 0x00, 0x78, 0x29, 0xd9,
+	0xaf, 0x68, 0x3e, 0x4b, 0xe0, 0x13, 0xfd, 0x5d, 0x98, 0xc9, 0x64, 0xd6, 0x82, 0x7d, 0x28, 0x61,
+	0xef, 0xa1, 0x52, 0x2a, 0xac, 0x1e, 0x06, 0x78, 0x47, 0x7f, 0xec, 0xa2, 0x6f, 0x00, 0x8e, 0x74,
+	0xee, 0x64, 0xf4, 0x28, 0x23, 0x7c, 0xe7, 0x09, 0xd0, 0x6d, 0x12, 0x0f, 0x64, 0x12, 0x25, 0x34,
+	0x9b, 0x9a, 0x84, 0xea, 0x61, 0xbc, 0xa3, 0xfe, 0x77, 0xd1, 0x77, 0x00, 0x87, 0x3b, 0x4e, 0x01,
+	0xb4, 0xd8, 0x55, 0x06, 0x6d, 0xc3, 0xa3, 0xdb, 0x04, 0x1e, 0xcb, 0x04, 0x16, 0xd0, 0xfd, 0x6e,
+	0x13, 0xc0, 0xb5, 0x70, 0xdd, 0x26, 0x1c, 0xed, 0xe9, 0x37, 0xce, 0x97, 0x5c, 0x37, 0xfd, 0x8d,
+	0xb7, 0xf5, 0x5c, 0xb7, 0xb4, 0xd3, 0x92, 0x76, 0x02, 0xdd, 0x4a, 0xa5, 0x25, 0xae, 0x8b, 0xde,
+	0x03, 0x98, 0x53, 0xbd, 0x8f, 0x52, 0xe3, 0x24, 0x86, 0x4e, 0xc1, 0xca, 0x2a, 0xd7, 0x5c, 0x77,
+	0x25, 0xd7, 0x4d, 0x34, 0x7e, 0x06, 0x97, 0x9a, 0x3e, 0xe5, 0xc5, 0x1f, 0x07, 0x06, 0xd8, 0x3f,
+	0x30, 0xc0, 0x9f, 0x03, 0x03, 0xbc, 0x3b, 0x34, 0x7a, 0xf6, 0x0f, 0x8d, 0x9e, 0xdf, 0x87, 0x46,
+	0xcf, 0x0b, 0xb3, 0x2d, 0x26, 0x6b, 0xe2, 0x57, 0x47, 0x1e, 0x44, 0xe8, 0x53, 0x5e, 0xcb, 0xc9,
+	0xe3, 0xb9, 0x7f, 0x01, 0x00, 0x00, 0xff, 0xff, 0x0b, 0x27, 0xa5, 0x93, 0x04, 0x09, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -735,14 +556,6 @@ type QueryClient interface {
 	TasksByStatusGasPrice(ctx context.Context, in *QueryTasksByStatusGasPriceRequest, opts ...grpc.CallOption) (*QueryTasksResponse, error)
 	// TasksAll returns all tasks ordered by ID
 	TasksAll(ctx context.Context, in *QueryAllTasksRequest, opts ...grpc.CallOption) (*QueryTasksResponse, error)
-	// TasksScheduled returns tasks with SCHEDULED status ordered by timestamp
-	// ascending
-	TasksScheduled(ctx context.Context, in *QueryScheduledTasksRequest, opts ...grpc.CallOption) (*QueryTasksResponse, error)
-	// TasksPending returns tasks with PENDING status ordered by gas price
-	// descending
-	TasksPending(ctx context.Context, in *QueryPendingTasksRequest, opts ...grpc.CallOption) (*QueryTasksResponse, error)
-	// TasksDone returns tasks with DONE status ordered by execution timestamp
-	TasksDone(ctx context.Context, in *QueryDoneTasksRequest, opts ...grpc.CallOption) (*QueryTasksResponse, error)
 	// Params returns the module parameters
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 }
@@ -800,33 +613,6 @@ func (c *queryClient) TasksAll(ctx context.Context, in *QueryAllTasksRequest, op
 	return out, nil
 }
 
-func (c *queryClient) TasksScheduled(ctx context.Context, in *QueryScheduledTasksRequest, opts ...grpc.CallOption) (*QueryTasksResponse, error) {
-	out := new(QueryTasksResponse)
-	err := c.cc.Invoke(ctx, "/dysonprotocol.crontask.v1.Query/TasksScheduled", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) TasksPending(ctx context.Context, in *QueryPendingTasksRequest, opts ...grpc.CallOption) (*QueryTasksResponse, error) {
-	out := new(QueryTasksResponse)
-	err := c.cc.Invoke(ctx, "/dysonprotocol.crontask.v1.Query/TasksPending", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) TasksDone(ctx context.Context, in *QueryDoneTasksRequest, opts ...grpc.CallOption) (*QueryTasksResponse, error) {
-	out := new(QueryTasksResponse)
-	err := c.cc.Invoke(ctx, "/dysonprotocol.crontask.v1.Query/TasksDone", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
 	out := new(QueryParamsResponse)
 	err := c.cc.Invoke(ctx, "/dysonprotocol.crontask.v1.Query/Params", in, out, opts...)
@@ -850,14 +636,6 @@ type QueryServer interface {
 	TasksByStatusGasPrice(context.Context, *QueryTasksByStatusGasPriceRequest) (*QueryTasksResponse, error)
 	// TasksAll returns all tasks ordered by ID
 	TasksAll(context.Context, *QueryAllTasksRequest) (*QueryTasksResponse, error)
-	// TasksScheduled returns tasks with SCHEDULED status ordered by timestamp
-	// ascending
-	TasksScheduled(context.Context, *QueryScheduledTasksRequest) (*QueryTasksResponse, error)
-	// TasksPending returns tasks with PENDING status ordered by gas price
-	// descending
-	TasksPending(context.Context, *QueryPendingTasksRequest) (*QueryTasksResponse, error)
-	// TasksDone returns tasks with DONE status ordered by execution timestamp
-	TasksDone(context.Context, *QueryDoneTasksRequest) (*QueryTasksResponse, error)
 	// Params returns the module parameters
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 }
@@ -880,15 +658,6 @@ func (*UnimplementedQueryServer) TasksByStatusGasPrice(ctx context.Context, req 
 }
 func (*UnimplementedQueryServer) TasksAll(ctx context.Context, req *QueryAllTasksRequest) (*QueryTasksResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TasksAll not implemented")
-}
-func (*UnimplementedQueryServer) TasksScheduled(ctx context.Context, req *QueryScheduledTasksRequest) (*QueryTasksResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TasksScheduled not implemented")
-}
-func (*UnimplementedQueryServer) TasksPending(ctx context.Context, req *QueryPendingTasksRequest) (*QueryTasksResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TasksPending not implemented")
-}
-func (*UnimplementedQueryServer) TasksDone(ctx context.Context, req *QueryDoneTasksRequest) (*QueryTasksResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TasksDone not implemented")
 }
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
@@ -988,60 +757,6 @@ func _Query_TasksAll_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_TasksScheduled_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryScheduledTasksRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).TasksScheduled(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dysonprotocol.crontask.v1.Query/TasksScheduled",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).TasksScheduled(ctx, req.(*QueryScheduledTasksRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_TasksPending_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryPendingTasksRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).TasksPending(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dysonprotocol.crontask.v1.Query/TasksPending",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).TasksPending(ctx, req.(*QueryPendingTasksRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_TasksDone_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryDoneTasksRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).TasksDone(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dysonprotocol.crontask.v1.Query/TasksDone",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).TasksDone(ctx, req.(*QueryDoneTasksRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryParamsRequest)
 	if err := dec(in); err != nil {
@@ -1084,18 +799,6 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TasksAll",
 			Handler:    _Query_TasksAll_Handler,
-		},
-		{
-			MethodName: "TasksScheduled",
-			Handler:    _Query_TasksScheduled_Handler,
-		},
-		{
-			MethodName: "TasksPending",
-			Handler:    _Query_TasksPending_Handler,
-		},
-		{
-			MethodName: "TasksDone",
-			Handler:    _Query_TasksDone_Handler,
 		},
 		{
 			MethodName: "Params",
@@ -1243,16 +946,6 @@ func (m *QueryTasksByStatusTimestampRequest) MarshalToSizedBuffer(dAtA []byte) (
 		i--
 		dAtA[i] = 0x1a
 	}
-	if m.Ascending {
-		i--
-		if m.Ascending {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x10
-	}
 	if len(m.Status) > 0 {
 		i -= len(m.Status)
 		copy(dAtA[i:], m.Status)
@@ -1294,16 +987,6 @@ func (m *QueryTasksByStatusGasPriceRequest) MarshalToSizedBuffer(dAtA []byte) (i
 		}
 		i--
 		dAtA[i] = 0x1a
-	}
-	if m.Ascending {
-		i--
-		if m.Ascending {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x10
 	}
 	if len(m.Status) > 0 {
 		i -= len(m.Status)
@@ -1457,141 +1140,6 @@ func (m *QueryAllTasksRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryScheduledTasksRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryScheduledTasksRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryScheduledTasksRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Pagination != nil {
-		{
-			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintQuery(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x12
-	}
-	if m.Ascending {
-		i--
-		if m.Ascending {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryPendingTasksRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryPendingTasksRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryPendingTasksRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Pagination != nil {
-		{
-			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintQuery(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x12
-	}
-	if m.Ascending {
-		i--
-		if m.Ascending {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryDoneTasksRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryDoneTasksRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryDoneTasksRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Pagination != nil {
-		{
-			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintQuery(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x12
-	}
-	if m.Ascending {
-		i--
-		if m.Ascending {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -1655,9 +1203,6 @@ func (m *QueryTasksByStatusTimestampRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
-	if m.Ascending {
-		n += 2
-	}
 	if m.Pagination != nil {
 		l = m.Pagination.Size()
 		n += 1 + l + sovQuery(uint64(l))
@@ -1674,9 +1219,6 @@ func (m *QueryTasksByStatusGasPriceRequest) Size() (n int) {
 	l = len(m.Status)
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
-	}
-	if m.Ascending {
-		n += 2
 	}
 	if m.Pagination != nil {
 		l = m.Pagination.Size()
@@ -1732,54 +1274,6 @@ func (m *QueryAllTasksRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.Pagination != nil {
-		l = m.Pagination.Size()
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	return n
-}
-
-func (m *QueryScheduledTasksRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Ascending {
-		n += 2
-	}
-	if m.Pagination != nil {
-		l = m.Pagination.Size()
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	return n
-}
-
-func (m *QueryPendingTasksRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Ascending {
-		n += 2
-	}
-	if m.Pagination != nil {
-		l = m.Pagination.Size()
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	return n
-}
-
-func (m *QueryDoneTasksRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Ascending {
-		n += 2
-	}
 	if m.Pagination != nil {
 		l = m.Pagination.Size()
 		n += 1 + l + sovQuery(uint64(l))
@@ -2127,26 +1621,6 @@ func (m *QueryTasksByStatusTimestampRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.Status = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Ascending", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Ascending = bool(v != 0)
 		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
@@ -2265,26 +1739,6 @@ func (m *QueryTasksByStatusGasPriceRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.Status = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Ascending", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Ascending = bool(v != 0)
 		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
@@ -2628,324 +2082,6 @@ func (m *QueryAllTasksRequest) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Pagination == nil {
-				m.Pagination = &query.PageRequest{}
-			}
-			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryScheduledTasksRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryScheduledTasksRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryScheduledTasksRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Ascending", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Ascending = bool(v != 0)
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Pagination == nil {
-				m.Pagination = &query.PageRequest{}
-			}
-			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryPendingTasksRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryPendingTasksRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryPendingTasksRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Ascending", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Ascending = bool(v != 0)
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Pagination == nil {
-				m.Pagination = &query.PageRequest{}
-			}
-			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryDoneTasksRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryDoneTasksRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryDoneTasksRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Ascending", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Ascending = bool(v != 0)
-		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
 			}
