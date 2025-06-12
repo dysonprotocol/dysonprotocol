@@ -68,14 +68,18 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) error {
 		if err != nil {
 			task.Status = crontasktypes.TaskStatus_FAILED
 			task.ErrorLog = fmt.Sprintf("invalid creator address: %s", err)
-			_ = k.SetTask(ctx, task)
+			if err := k.SetTask(ctx, task); err != nil {
+				k.Logger.Error("failed to set task failed due to invalid creator address", "task_id", task.TaskId, "error", err)
+			}
 			continue
 		}
 
 		if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, creatorAddr, "fee_collector", gasFee); err != nil {
 			task.Status = crontasktypes.TaskStatus_FAILED
 			task.ErrorLog = fmt.Sprintf("fee deduction failed: %s", err)
-			_ = k.SetTask(ctx, task)
+			if err := k.SetTask(ctx, task); err != nil {
+				k.Logger.Error("failed to set task failed due to fee deduction failure", "task_id", task.TaskId, "error", err)
+			}
 			continue
 		}
 
