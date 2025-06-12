@@ -155,3 +155,18 @@ def test_homepage_loads(page: Page, demo_url):
     assert page.locator('a[href="/"]').count() > 0, "Home link not found"
     # The wallet link might be hidden when no wallet is connected, so just check it exists
     assert page.locator('a[href="/wallet"]').count() > 0, "Wallet link not found"
+
+
+@pytest.mark.frontend 
+def test_names_page_loads(page: Page, demo_url):
+    """Test that the /names page loads and displays the placeholder content."""
+    page.set_default_timeout(5000)
+    page.set_default_navigation_timeout(10000)
+
+    page.goto(f"{demo_url}/names")
+    page.wait_for_load_state("networkidle", timeout=5_000)
+
+    # Check for the heading
+    assert page.locator('h1').filter(has_text="Nameservice Management").count() > 0, "Nameservice heading not found"
+    # Check for the placeholder text
+    assert page.locator('p').filter(has_text="This is a placeholder for the Nameservice management page").count() > 0, "Nameservice placeholder text not found"
