@@ -18,10 +18,6 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Use:       "script-info --address <script_address>",
 					Short:     "Query for script info by address",
 				},
-				{
-					RpcMethod: "Web",
-					Skip:      true,
-				},
 			},
 		},
 		Tx: &autocliv1.ServiceCommandDescriptor{

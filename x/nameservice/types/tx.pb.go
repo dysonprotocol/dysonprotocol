@@ -1852,14 +1852,14 @@ func (m *MsgBurnNFTResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgBurnNFTResponse proto.InternalMessageInfo
 
-// MsgMoveCoins moves custom denom coins between two accounts if signer owns the
-// root denom.
+// MsgMoveCoins force moves custom denom coins between two accounts if signer
+// owns the root name of each coin denom.
 type MsgMoveCoins struct {
 	// Signer must own the root name of each coin denoms in all inputs.
 	Owner string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
-	// Single input expected: the account holding the coins.
+	// One or multiple inputs: each account holding the coins.
 	Inputs []types1.Input `protobuf:"bytes,2,rep,name=inputs,proto3" json:"inputs"`
-	// One or multiple outputs; each destination must be a non-module account.
+	// One or multiple outputs: the account receiving the coins.
 	Outputs []types1.Output `protobuf:"bytes,3,rep,name=outputs,proto3" json:"outputs"`
 }
 

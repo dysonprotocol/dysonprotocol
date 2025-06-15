@@ -50,6 +50,14 @@ document.addEventListener("alpine:init", () => {
           }
         }
       }
+      // TODO: remove this
+      if (this.localCosmJsWallets.length === 0) {
+        // TODO: remove this
+        const seed = "degree outdoor ridge system dice tent ill wolf lady demise salmon crash"; 
+        await this.importNamedCosmJsWallet("Default", seed, "password");
+        await this.connectNamedCosmJsWallet("Default", "password");
+      }
+
     },
 
     // Utilities

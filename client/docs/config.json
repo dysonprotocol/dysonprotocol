@@ -7,7 +7,7 @@
     },
     "apis": [
       {
-        "url": "./swagger-gen/dysonprotocol/script/v1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/dysonprotocol/script/v1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_ScriptParams"
@@ -15,7 +15,7 @@
         }
       },
       {
-        "url": "./swagger-gen/dysonprotocol/script/v1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/dysonprotocol/script/v1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateScriptParams"
@@ -23,7 +23,7 @@
         }
       },
       {
-        "url": "./swagger-gen/dysonprotocol/storage/v1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/dysonprotocol/storage/v1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_StorageParams"
@@ -31,7 +31,7 @@
         }
       },
       {
-        "url": "./swagger-gen/dysonprotocol/storage/v1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/dysonprotocol/storage/v1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateStorageParams"
@@ -39,7 +39,7 @@
         }
       },
       {
-        "url": "./swagger-gen/dysonprotocol/crontask/v1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/dysonprotocol/crontask/v1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_CrontaskParams"
@@ -47,7 +47,7 @@
         }
       },
       {
-        "url": "./swagger-gen/dysonprotocol/crontask/v1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/dysonprotocol/crontask/v1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateCrontaskParams"
@@ -55,7 +55,7 @@
         }
       },
       {
-        "url": "./swagger-gen/dysonprotocol/nameservice/v1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/dysonprotocol/nameservice/v1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_NameserviceParams"
@@ -63,7 +63,7 @@
         }
       },
       {
-        "url": "./swagger-gen/dysonprotocol/nameservice/v1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/dysonprotocol/nameservice/v1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateNameserviceParams"
@@ -71,7 +71,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/auth/v1beta1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/auth/v1beta1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_AuthParams"
@@ -79,7 +79,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/auth/v1beta1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/auth/v1beta1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateAuthParams"
@@ -87,7 +87,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/bank/v1beta1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/bank/v1beta1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_BankParams"
@@ -95,7 +95,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/bank/v1beta1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/bank/v1beta1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateBankParams",
@@ -104,7 +104,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/base/tendermint/v1beta1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/base/tendermint/v1beta1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_BaseParams"
@@ -112,10 +112,10 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/base/node/v1beta1/query.swagger.json"
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/base/node/v1beta1/query.swagger.json"
       },
       {
-        "url": "./swagger-gen/cosmos/distribution/v1beta1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/distribution/v1beta1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_DistributionParams"
@@ -123,7 +123,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/distribution/v1beta1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/distribution/v1beta1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateDistributionParams"
@@ -131,7 +131,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/evidence/v1beta1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/evidence/v1beta1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_EvidenceParams"
@@ -139,7 +139,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/evidence/v1beta1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/evidence/v1beta1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateEvidenceParams"
@@ -147,7 +147,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/gov/v1beta1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/gov/v1beta1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_GovParams"
@@ -155,7 +155,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/gov/v1beta1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/gov/v1beta1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateGovParams",
@@ -167,7 +167,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/gov/v1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/gov/v1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_GovV1Params",
@@ -182,7 +182,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/gov/v1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/gov/v1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateGovV1Params",
@@ -194,7 +194,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/mint/v1beta1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/mint/v1beta1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_MintParams"
@@ -202,7 +202,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/mint/v1beta1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/mint/v1beta1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateMintParams"
@@ -210,7 +210,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/params/v1beta1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/params/v1beta1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_Params"
@@ -218,7 +218,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/slashing/v1beta1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/slashing/v1beta1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_SlashingParams"
@@ -226,7 +226,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/slashing/v1beta1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/slashing/v1beta1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateSlashingParams"
@@ -234,7 +234,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/staking/v1beta1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/staking/v1beta1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_StakingParams",
@@ -243,7 +243,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/staking/v1beta1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/staking/v1beta1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateStakingParams"
@@ -251,13 +251,13 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/tx/v1beta1/service.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/tx/v1beta1/service.swagger.json",
         "dereference": {
           "circular": "ignore"
         }
       },
       {
-        "url": "./swagger-gen/cosmos/upgrade/v1beta1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/upgrade/v1beta1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_UpgradeParams"
@@ -265,7 +265,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/upgrade/v1beta1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/upgrade/v1beta1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateUpgradeParams"
@@ -273,7 +273,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/authz/v1beta1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/authz/v1beta1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_AuthzParams"
@@ -281,7 +281,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/feegrant/v1beta1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/feegrant/v1beta1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_FeegrantParams"
@@ -289,7 +289,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/feegrant/v1beta1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/feegrant/v1beta1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateFeegrantParams"
@@ -297,7 +297,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/nft/v1beta1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/nft/v1beta1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_NftParams",
@@ -306,7 +306,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/nft/v1beta1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/nft/v1beta1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateNftParams",
@@ -315,7 +315,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/circuit/v1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/circuit/v1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Accounts": "Query_CircuitAccounts",
@@ -325,7 +325,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/circuit/v1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/circuit/v1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateCircuitParams"
@@ -333,7 +333,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/consensus/v1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/consensus/v1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_ConsensusParams"
@@ -341,7 +341,7 @@
         }
       },
       {
-        "url": "./swagger-gen/cosmos/consensus/v1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/cosmos/consensus/v1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateConsensusParams"
@@ -349,7 +349,7 @@
         }
       },
       {
-        "url": "./swagger-gen/ibc/applications/interchain_accounts/controller/v1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/ibc/applications/interchain_accounts/controller/v1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_IBCInterchainAccountsControllerParams"
@@ -357,7 +357,7 @@
         }
       },
       {
-        "url": "./swagger-gen/ibc/applications/interchain_accounts/controller/v1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/ibc/applications/interchain_accounts/controller/v1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateIBCInterchainAccountsControllerParams"
@@ -365,7 +365,7 @@
         }
       },
       {
-        "url": "./swagger-gen/ibc/applications/interchain_accounts/host/v1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/ibc/applications/interchain_accounts/host/v1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_IBCInterchainAccountsHostParams"
@@ -373,7 +373,7 @@
         }
       },
       {
-        "url": "./swagger-gen/ibc/applications/interchain_accounts/host/v1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/ibc/applications/interchain_accounts/host/v1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateIBCInterchainAccountsHostParams"
@@ -381,7 +381,7 @@
         }
       },
       {
-        "url": "./swagger-gen/ibc/applications/transfer/v1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/ibc/applications/transfer/v1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_IBCTransferParams"
@@ -389,7 +389,7 @@
         }
       },
       {
-        "url": "./swagger-gen/ibc/applications/transfer/v1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/ibc/applications/transfer/v1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateIBCTransferParams"
@@ -397,7 +397,7 @@
         }
       },
       {
-        "url": "./swagger-gen/ibc/core/channel/v1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/ibc/core/channel/v1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_IBCChannelParams",
@@ -413,7 +413,7 @@
         }
       },
       {
-        "url": "./swagger-gen/ibc/core/channel/v1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/ibc/core/channel/v1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateIBCChannelParams",
@@ -424,7 +424,7 @@
         }
       },
       {
-        "url": "./swagger-gen/ibc/core/channel/v2/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/ibc/core/channel/v2/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_IBCChannelV2Params",
@@ -440,7 +440,7 @@
         }
       },
       {
-        "url": "./swagger-gen/ibc/core/channel/v2/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/ibc/core/channel/v2/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateIBCChannelV2Params",
@@ -451,7 +451,7 @@
         }
       },
       {
-        "url": "./swagger-gen/ibc/core/client/v1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/ibc/core/client/v1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_IBCClientParams",
@@ -460,7 +460,7 @@
         }
       },
       {
-        "url": "./swagger-gen/ibc/core/client/v1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/ibc/core/client/v1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateIBCClientParams"
@@ -468,7 +468,7 @@
         }
       },
       {
-        "url": "./swagger-gen/ibc/core/client/v2/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/ibc/core/client/v2/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_IBCClientV2Params",
@@ -477,7 +477,7 @@
         }
       },
       {
-        "url": "./swagger-gen/ibc/core/client/v2/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/ibc/core/client/v2/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateIBCClientV2Params"
@@ -485,7 +485,7 @@
         }
       },
       {
-        "url": "./swagger-gen/ibc/core/connection/v1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/ibc/core/connection/v1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_IBCConnectionParams"
@@ -493,7 +493,7 @@
         }
       },
       {
-        "url": "./swagger-gen/ibc/core/connection/v1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/ibc/core/connection/v1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateIBCConnectionParams"
@@ -501,7 +501,7 @@
         }
       },
       {
-        "url": "./swagger-gen/ibc/lightclients/wasm/v1/query.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/ibc/lightclients/wasm/v1/query.swagger.json",
         "operationIds": {
           "rename": {
             "Query_Params": "Query_IBCWasmParams"
@@ -509,7 +509,7 @@
         }
       },
       {
-        "url": "./swagger-gen/ibc/lightclients/wasm/v1/tx.swagger.json",
+        "url": "./client/docs/swagger-ui/swagger-gen/ibc/lightclients/wasm/v1/tx.swagger.json",
         "operationIds": {
           "rename": {
             "Msg_UpdateParams": "Msg_UpdateIBCWasmParams"

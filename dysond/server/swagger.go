@@ -26,16 +26,22 @@ func RegisterDysonServer(clientCtx client.Context, rtr *mux.Router, config confi
 
 	// Register Swagger UI if enabled
 	if config.Swagger {
-		root, err := fs.Sub(docs.SwaggerUI, "swagger-ui")
+		swaggerUI, err := fs.Sub(docs.SwaggerUI, "swagger-ui")
 		if err != nil {
 			return err
 		}
 
-		staticServer := http.FileServer(http.FS(root))
+		staticServer := http.FileServer(http.FS(swaggerUI))
 
 		rtr.PathPrefix("/swagger/").Handler(http.StripPrefix("/swagger/", staticServer))
 		rtr.PathPrefix("/favicon.ico").Handler(staticServer)
 
+		// serve ../proto_json_schema
+		//protoJsonSchema, err := fs.Sub(docs.ProtoJsonSchema, "proto_json_schema")
+		//if err != nil {
+		//	return err
+		//}
+		//rtr.PathPrefix("/proto_json_schema/").Handler(http.StripPrefix("/proto_json_schema/", http.FileServer(http.FS(protoJsonSchema))))
 	}
 
 	if config.Enable {

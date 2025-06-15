@@ -80,6 +80,9 @@ func RegisterInterfaces(registrar codectypes.InterfaceRegistry) {
 		&scripttypes.QueryEncodeJsonRequest{}, &scripttypes.QueryEncodeJsonResponse{},
 		&scripttypes.QueryDecodeBytesRequest{}, &scripttypes.QueryDecodeBytesResponse{},
 
+		// script web service
+		&scripttypes.WebRequest{}, &scripttypes.WebResponse{},
+
 		// storage
 		&storagetypes.QueryStorageGetRequest{}, &storagetypes.QueryStorageGetResponse{},
 		&storagetypes.QueryStorageListRequest{}, &storagetypes.QueryStorageListResponse{},

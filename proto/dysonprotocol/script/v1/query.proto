@@ -25,14 +25,6 @@ service Query {
         "/dysonprotocol/script/v1/script_info/{address}";
   };
 
-  // Queries the WSGI web application function of a script.
-  rpc Web(QueryWebRequest) returns (QueryWebResponse) {
-    option (google.api.http) = {
-      post : "/dysonprotocol/script/v1/web_request"
-      body : "*"
-    };
-  }
-
   // EncodeJson encodes a JSON string to bytes.
   rpc EncodeJson(QueryEncodeJsonRequest) returns (QueryEncodeJsonResponse) {
     option (google.api.http).get = "/dysonprotocol/script/v1/encode_json";
@@ -52,6 +44,28 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/dysonprotocol/script/v1/params";
   }
+
+  // Queries the WSGI web application function of a script.
+  rpc Web(WebRequest) returns (WebResponse) {
+    option (google.api.http) = {
+      post : "/dysonprotocol/script/v1/web_request"
+      body : "*"
+    };
+  }
+}
+
+// WebRequest is the Service/Web request type.
+message WebRequest {
+  // address is the account address of the script.
+  string address_or_name = 1;
+  // httprequest is the http request.
+  string httprequest = 2;
+}
+
+// WebResponse is the Service/Web response type.
+message WebResponse {
+  // httpresponse is the http response.
+  string httpresponse = 1;
 }
 
 // QueryScriptInfoRequest is the Query/ScriptInfo request type.
@@ -64,20 +78,6 @@ message QueryScriptInfoRequest {
 message QueryScriptInfoResponse {
   // info is the ScriptInfo of the script.
   Script script = 1;
-}
-
-// QueryWebRequest is the Query/Web request type.
-message QueryWebRequest {
-  // address is the account address of the script.
-  string address_or_name = 1;
-  // httprequest is the http request.
-  string httprequest = 2;
-}
-
-// QueryWebResponse is the Query/Web response type.
-message QueryWebResponse {
-  // httpresponse is the http response.
-  string httpresponse = 1;
 }
 
 // QueryEncodeJsonRequest is the Query/EncodeJson request type.

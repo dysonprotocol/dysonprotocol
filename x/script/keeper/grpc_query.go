@@ -65,14 +65,14 @@ func (k Keeper) ScriptInfo(ctx context.Context, req *scripttypes.QueryScriptInfo
 	return nil, status.Error(codes.Internal, err.Error())
 }
 
-func (k Keeper) Web(ctx context.Context, req *scripttypes.QueryWebRequest) (*scripttypes.QueryWebResponse, error) {
+func (k Keeper) Web(ctx context.Context, req *scripttypes.WebRequest) (*scripttypes.WebResponse, error) {
 	// Calls RunWeb which handles name resolution via nameservice keeper
 	out, err := k.RunWeb(ctx, req.AddressOrName, req.Httprequest)
 	if err != nil {
 		return nil, err
 	}
 
-	return &scripttypes.QueryWebResponse{
+	return &scripttypes.WebResponse{
 		Httpresponse: out,
 	}, nil
 }

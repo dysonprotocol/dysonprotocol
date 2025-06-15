@@ -1,5 +1,711 @@
-<h1 class="text-2xl font-bold mb-4">Nameservice Management</h1>
+<h1 class="text-2xl font-bold mb-6">Nameservice Management</h1>
 
-<section class="mb-8">
-  <p class="opacity-70">This is a placeholder for the Nameservice management page. Features coming soon.</p>
+<!-- Register New Name Section -->
+<section id="register-name" x-data="registerNameComponent()" class="mb-8">
+  <fieldset class="fieldset bg-base-200 border border-base-300 rounded-lg p-6">
+    <legend class="fieldset-legend text-lg font-semibold">Register a New Name</legend>
+
+    <!-- Stepper -->
+    <div class="w-full mb-6">
+      <ul class="steps steps-horizontal w-full">
+        <li class="step" :class="{'step-primary': $store.registerNameStore.step >= 1}">
+          <div class="step-content">
+            <div class="text-sm font-medium">Step 1</div>
+            <div class="text-xs opacity-70">Commit</div>
+          </div>
+        </li>
+        <li class="step" :class="{'step-primary': $store.registerNameStore.step >= 2}">
+          <div class="step-content">
+            <div class="text-sm font-medium">Step 2</div>
+            <div class="text-xs opacity-70">Reveal</div>
+          </div>
+        </li>
+        <li class="step" :class="{'step-primary': $store.registerNameStore.step >= 3}">
+          <div class="step-content">
+            <div class="text-sm font-medium">Step 3</div>
+            <div class="text-xs opacity-70">Complete</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Step 1: Commit Form -->
+    <div x-show="$store.registerNameStore.step === 1">
+        <p class="mb-4 text-sm opacity-70 text-center">
+            Enter the name you wish to register and its initial valuation. This starts a two-step process (commit/reveal) to prevent front-running.
+        </p>
+      <form class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end" @submit.prevent="$store.registerNameStore.commit()">
+        <div>
+          <label class="label">
+            <span class="label-text">Name</span>
+          </label>
+          <input 
+            type="text" 
+            x-model="$store.registerNameStore.name" 
+            class="input input-bordered w-full" 
+            placeholder="e.g., alice.dys" 
+            :disabled="$store.registerNameStore.committing"
+            @blur="if ($store.registerNameStore.name && !$store.registerNameStore.name.endsWith('.dys')) { $store.registerNameStore.name += '.dys' }"
+          >
+        </div>
+        <div>
+          <label class="label">
+            <span class="label-text">Initial Valuation (dys)</span>
+          </label>
+          <input type="number" x-model="$store.registerNameStore.valuation" min="0" class="input input-bordered w-full" placeholder="e.g., 100" :disabled="$store.registerNameStore.committing">
+        </div>
+        <div>
+          <button type="submit" class="btn btn-primary w-full" :disabled="$store.registerNameStore.committing || !$store.registerNameStore.name || !$store.registerNameStore.valuation || !$store.registerNameStore.isReady">
+            <span x-show="!$store.registerNameStore.committing">Commit</span>
+            <span x-show="$store.registerNameStore.committing" class="loading loading-spinner loading-sm"></span>
+            <span x-show="$store.registerNameStore.committing">Committing...</span>
+          </button>
+        </div>
+      </form>
+      <div x-show="!$store.registerNameStore.isReady" class="text-warning mt-2 text-center text-sm">
+          Please connect your wallet to register a name.
+      </div>
+      <div x-show="$store.registerNameStore.error" class="text-error mt-2 text-center" x-text="$store.registerNameStore.error"></div>
+    </div>
+
+    <!-- Step 2: Reveal Form -->
+    <div x-show="$store.registerNameStore.step === 2" x-cloak>
+      <p class="mb-4 text-sm opacity-70 text-center">
+        Your commitment transaction has been sent. To complete the registration, click Reveal.
+      </p>
+      <div class="max-w-md mx-auto">
+        <div class="form-control">
+            <label class="label">
+              <span class="label-text">Name to Reveal</span>
+            </label>
+            <input type="text" :value="$store.registerNameStore.name" class="input input-bordered" disabled>
+        </div>
+        <div class="mt-4 text-center">
+            <button type="button" @click="$store.registerNameStore.reveal()" class="btn btn-primary btn-wide" :disabled="$store.registerNameStore.revealing">
+                <span x-show="!$store.registerNameStore.revealing">Reveal</span>
+                <span x-show="$store.registerNameStore.revealing" class="loading loading-spinner loading-sm"></span>
+                <span x-show="$store.registerNameStore.revealing">Revealing...</span>
+            </button>
+        </div>
+      </div>
+      <div x-show="$store.registerNameStore.error" class="text-error mt-2 text-center" x-text="$store.registerNameStore.error"></div>
+       <div x-show="$store.registerNameStore.txHash" class="text-success mt-2 text-center">
+        Commit Tx: <code class="text-xs" x-text="$store.registerNameStore.txHash"></code>
+      </div>
+    </div>
+    
+    <!-- Step 3: Done -->
+    <div x-show="$store.registerNameStore.step === 3" x-cloak class="text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-success mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <h4 class="text-lg font-semibold mt-4">Registration Complete!</h4>
+        <p class="opacity-80">The name <strong x-text="$store.registerNameStore.name"></strong> has been successfully registered.</p>
+        <div x-show="$store.registerNameStore.txHash" class="text-success text-sm mt-2">
+            Reveal Tx: <code class="text-xs" x-text="$store.registerNameStore.txHash"></code>
+        </div>
+        <div class="mt-6">
+            <button class="btn btn-secondary" @click="$store.registerNameStore.reset()">Register Another Name</button>
+        </div>
+    </div>
+
+  </fieldset>
+</section>
+
+<!-- Names Dashboard -->
+<section id="names-dashboard" x-data="namesDashboardComponent()" x-init="init()" class="space-y-6">
+  <!-- Loading State -->
+  <template x-if="loading">
+    <div class="flex justify-center my-10">
+      <span class="loading loading-spinner loading-lg"></span>
+    </div>
+  </template>
+
+  <!-- No Wallet Connected -->
+  <template x-if="!loading && !walletConnected">
+    <div class="card bg-base-100 shadow-lg">
+      <div class="card-body text-center">
+        <h2 class="card-title justify-center">Connect Your Wallet</h2>
+        <p class="opacity-70">Connect a wallet to view and manage your names.</p>
+      </div>
+    </div>
+  </template>
+
+  <!-- No Names Owned -->
+  <template x-if="!loading && walletConnected && names.length === 0">
+    <div class="card bg-base-100 shadow-lg">
+      <div class="card-body text-center">
+        <h2 class="card-title justify-center">No Names Found</h2>
+        <p class="opacity-70">You don't own any names yet.</p>
+      </div>
+    </div>
+  </template>
+
+  <!-- Name Management Cards -->
+  <template x-for="n in names" :key="n.id">
+    <div class="card bg-base-200 shadow-lg" :id="'name-' + n.id" :data-name="n.id">
+      <div class="card-body space-y-6">
+        <div class="flex justify-between items-center">
+          <h3 class="card-title text-2xl" x-text="n.id"></h3>
+          <div class="badge badge-outline">
+            <span x-text="n.valuation"></span> dys
+          </div>
+        </div>
+
+        <!-- Update Name Section -->
+        <fieldset class="fieldset bg-base-100 border border-base-300 rounded-lg p-4">
+          <legend class="fieldset-legend">Update Name</legend>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Update Destination Form -->
+            <fieldset class="fieldset bg-base-50 border border-base-300 rounded-lg p-4">
+              <legend class="fieldset-legend">Update Destination</legend>
+              <form class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end" @submit.prevent="updateDestination(n)">
+                <div>
+                  <label class="label" :for="'destination-' + n.id">
+                    <span class="label-text">Destination Address</span>
+                  </label>
+                  <input 
+                    :id="'destination-' + n.id"
+                    type="text" 
+                    class="input input-bordered w-full" 
+                    x-model="n.update.destination" 
+                    placeholder="Enter destination address"
+                    :disabled="!walletConnected || n.update.updatingDestination" 
+                  />
+                </div>
+                
+                <div>
+                  <button 
+                    type="submit" 
+                    class="btn btn-primary w-full" 
+                    :disabled="!walletConnected || n.update.updatingDestination || !n.update.destination"
+                  >
+                    <span x-show="!n.update.updatingDestination">Update Destination</span>
+                    <span x-show="n.update.updatingDestination" class="loading loading-spinner loading-sm"></span>
+                  </button>
+                </div>
+              </form>
+              
+              <!-- Destination Status Messages -->
+              <div class="mt-2 space-y-1">
+                <div x-show="!walletConnected" class="text-error text-sm">
+                  Connect a wallet to update destination.
+                </div>
+                <div x-show="n.update.destinationError" class="text-error text-sm" x-text="n.update.destinationError"></div>
+                <div x-show="n.update.destinationTxHash" class="text-success text-sm">
+                  Success! Tx: <code x-text="n.update.destinationTxHash"></code>
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- Update Valuation Form -->
+            <fieldset class="fieldset bg-base-50 border border-base-300 rounded-lg p-4">
+              <legend class="fieldset-legend">Update Valuation</legend>
+              <form class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end" @submit.prevent="updateValuation(n)">
+                <div>
+                  <label class="label" :for="'valuation-' + n.id">
+                    <span class="label-text">Valuation (dys)</span>
+                  </label>
+                  <input 
+                    :id="'valuation-' + n.id"
+                    type="number" 
+                    min="0" 
+                    step="1" 
+                    class="input input-bordered w-full" 
+                    x-model="n.update.valuation" 
+                    placeholder="Enter valuation"
+                    :disabled="!walletConnected || n.update.updatingValuation" 
+                  />
+                </div>
+                
+                <div>
+                  <button 
+                    type="submit" 
+                    class="btn btn-primary w-full" 
+                    :disabled="!walletConnected || n.update.updatingValuation || !n.update.valuation"
+                  >
+                    <span x-show="!n.update.updatingValuation">Update Valuation</span>
+                    <span x-show="n.update.updatingValuation" class="loading loading-spinner loading-sm"></span>
+                  </button>
+                </div>
+              </form>
+              
+              <!-- Valuation Status Messages -->
+              <div class="mt-2 space-y-1">
+                <div x-show="!walletConnected" class="text-error text-sm">
+                  Connect a wallet to update valuation.
+                </div>
+                <div x-show="n.update.valuationError" class="text-error text-sm" x-text="n.update.valuationError"></div>
+                <div x-show="n.update.valuationTxHash" class="text-success text-sm">
+                  Success! Tx: <code x-text="n.update.valuationTxHash"></code>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+        </fieldset>
+
+        <!-- Coins Management Section -->
+        <fieldset class="fieldset bg-base-100 border border-base-300 rounded-lg p-4">
+          <legend class="fieldset-legend">Coins Management</legend>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <!-- Mint Coins Form -->
+            <fieldset class="fieldset bg-base-50 border border-base-300 rounded-lg p-4">
+              <legend class="fieldset-legend">Mint New Coins</legend>
+              <form class="space-y-4" @submit.prevent="mintCoins(n)">
+                <div>
+                  <label class="label" :for="'mint-amount-' + n.id">
+                    <span class="label-text">Amount</span>
+                  </label>
+                  <input 
+                    :id="'mint-amount-' + n.id"
+                    type="number" 
+                    min="1" 
+                    class="input input-bordered w-full" 
+                    x-model="n.mint.amount"
+                    placeholder="Enter amount"
+                    :disabled="!walletConnected || n.mint.creating"
+                  />
+                </div>
+                
+                <div x-init="if (!n.mint.denom) n.mint.denom = n.id">
+                  <label class="label" :for="'mint-denom-' + n.id">
+                    <span class="label-text">Denomination</span>
+                  </label>
+                  <input 
+                    :id="'mint-denom-' + n.id"
+                    type="text" 
+                    class="input input-bordered w-full font-mono"
+                    x-model="n.mint.denom"
+                    :disabled="!walletConnected || n.mint.creating"
+                  />
+                </div>
+                
+                <div>
+                  <button 
+                    type="submit" 
+                    class="btn btn-secondary w-full"
+                    :disabled="!walletConnected || n.mint.creating"
+                  >
+                    <span x-show="!n.mint.creating">Mint Coins</span>
+                    <span x-show="n.mint.creating" class="loading loading-spinner loading-sm"></span>
+                  </button>
+                </div>
+              </form>
+              
+              <!-- Mint Status Messages -->
+              <div class="mt-2 space-y-1">
+                <div x-show="n.mint.error" class="text-error text-sm" x-text="n.mint.error"></div>
+                <div x-show="n.mint.txHash" class="text-success text-sm">
+                  Success! Tx: <code x-text="n.mint.txHash"></code>
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- Burn Coins Form -->
+            <fieldset class="fieldset bg-base-50 border border-base-300 rounded-lg p-4">
+              <legend class="fieldset-legend">Burn Coins</legend>
+              <form class="space-y-4" @submit.prevent="burnCoins(n, {denom: n.burn.denom, burn: n.burn})">
+                <div>
+                  <label class="label" :for="'burn-denom-' + n.id">
+                    <span class="label-text">Denomination</span>
+                  </label>
+                  <input 
+                    :id="'burn-denom-' + n.id"
+                    type="text" 
+                    class="input input-bordered w-full font-mono"
+                    x-model="n.burn.denom"
+                    placeholder="Enter denomination"
+                  />
+                </div>
+                
+                <div>
+                  <label class="label" :for="'burn-amount-' + n.id">
+                    <span class="label-text">Amount to Burn</span>
+                  </label>
+                  <input 
+                    :id="'burn-amount-' + n.id"
+                    type="number" 
+                    min="1" 
+                    class="input input-bordered w-full" 
+                    x-model="n.burn.amount"
+                    placeholder="Enter amount to burn"
+                    :disabled="!walletConnected || n.burn.processing"
+                  />
+                </div>
+                
+                <div>
+                  <button 
+                    type="submit" 
+                    class="btn btn-error w-full"
+                    :disabled="!walletConnected || n.burn.processing || !n.burn.denom || !n.burn.amount"
+                  >
+                    <span x-show="!n.burn.processing">Burn Coins</span>
+                    <span x-show="n.burn.processing" class="loading loading-spinner loading-sm"></span>
+                  </button>
+                </div>
+              </form>
+              
+              <!-- Burn Status Messages -->
+              <div class="mt-2 space-y-1">
+                <div x-show="!walletConnected" class="text-error text-sm">
+                  Connect wallet to burn coins.
+                </div>
+                <div x-show="n.burn.error" class="text-error text-sm" x-text="n.burn.error"></div>
+                <div x-show="n.burn.txHash" class="text-success text-sm">
+                  Success! Tx: <code x-text="n.burn.txHash"></code>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <!-- Existing Coins List -->
+          <fieldset class="fieldset bg-base-50 border border-base-300 rounded-lg p-4">
+            <legend class="fieldset-legend">Existing Coins</legend>
+            <div class="space-y-3">
+              <template x-for="c in n.coins" :key="c.denom">
+                <div class="border border-base-300 rounded-lg p-3 bg-base-50">
+                  <div class="flex flex-wrap gap-2 items-center mb-3">
+                    <span class="font-mono font-semibold" x-text="c.denom"></span>
+                    <span class="badge badge-neutral">Balance: <span x-text="c.amount"></span></span>
+                    <span class="badge badge-ghost text-xs">Supply: <span x-text="c.supply"></span></span>
+                  </div>
+
+                  <!-- Move Coins Form -->
+                  <form class="grid grid-cols-1 md:grid-cols-4 gap-2 items-end mb-2" @submit.prevent="moveCoins(n, c)">
+                    <div>
+                      <label class="label">
+                        <span class="label-text text-xs">From Address</span>
+                      </label>
+                      <input 
+                        type="text" 
+                        class="input input-bordered input-sm w-full" 
+                        x-model="c.move.from" 
+                        placeholder="From address"
+                        :disabled="!walletConnected || c.processing" 
+                      />
+                    </div>
+                    <div>
+                      <label class="label">
+                        <span class="label-text text-xs">To Address</span>
+                      </label>
+                      <input 
+                        type="text" 
+                        class="input input-bordered input-sm w-full" 
+                        x-model="c.move.to" 
+                        placeholder="To address"
+                        :disabled="!walletConnected || c.processing" 
+                      />
+                    </div>
+                    <div>
+                      <label class="label">
+                        <span class="label-text text-xs">Amount</span>
+                      </label>
+                      <input 
+                        type="number" 
+                        min="1" 
+                        class="input input-bordered input-sm w-full" 
+                        x-model="c.move.amount" 
+                        placeholder="Amount"
+                        :disabled="!walletConnected || c.processing" 
+                      />
+                    </div>
+                    <button 
+                      type="submit" 
+                      class="btn btn-primary btn-sm" 
+                      :disabled="!walletConnected || c.processing"
+                    >
+                      Move
+                    </button>
+                  </form>
+
+
+
+                  <!-- Coin Status Messages -->
+                  <div class="mt-2 space-y-1">
+                    <div x-show="c.error" class="text-error text-xs" x-text="c.error"></div>
+                    <div x-show="c.txHash" class="text-success text-xs">
+                      Tx: <code x-text="c.txHash"></code>
+                    </div>
+                  </div>
+                </div>
+              </template>
+              
+              <div x-show="n.coins.length === 0" class="text-sm opacity-70 text-center py-4">
+                No custom coins minted yet.
+              </div>
+            </div>
+          </fieldset>
+        </fieldset>
+
+        <!-- NFT Classes Management Section -->
+        <fieldset class="fieldset bg-base-100 border border-base-300 rounded-lg p-4">
+          <legend class="fieldset-legend">NFT Classes Management</legend>
+          
+          <!-- Create NFT Class Form -->
+          <div class="mb-4">
+            <h4 class="font-semibold mb-2">Create New NFT Class</h4>
+            <form class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end" @submit.prevent="createClass(n)">
+              <div>
+                <label class="label" :for="'class-suffix-' + n.id">
+                  <span class="label-text">Suffix (optional)</span>
+                </label>
+                <input 
+                  :id="'class-suffix-' + n.id"
+                  type="text" 
+                  class="input input-bordered w-full" 
+                  x-model="n.newClass.suffix" 
+                  placeholder="e.g., art, tokens"
+                  :disabled="!walletConnected || n.newClass.creating" 
+                />
+              </div>
+              
+              <div>
+                <label class="label" :for="'class-symbol-' + n.id">
+                  <span class="label-text">Symbol</span>
+                </label>
+                <input 
+                  :id="'class-symbol-' + n.id"
+                  type="text" 
+                  class="input input-bordered w-full" 
+                  x-model="n.newClass.symbol" 
+                  placeholder="e.g., ART"
+                  :disabled="!walletConnected || n.newClass.creating" 
+                />
+              </div>
+              
+              <div>
+                <label class="label" :for="'class-desc-' + n.id">
+                  <span class="label-text">Description</span>
+                </label>
+                <input 
+                  :id="'class-desc-' + n.id"
+                  type="text" 
+                  class="input input-bordered w-full" 
+                  x-model="n.newClass.desc" 
+                  placeholder="Class description"
+                  :disabled="!walletConnected || n.newClass.creating" 
+                />
+              </div>
+              
+              <div>
+                <button 
+                  type="submit" 
+                  class="btn btn-secondary w-full" 
+                  :disabled="!walletConnected || n.newClass.creating"
+                >
+                  <span x-show="!n.newClass.creating">Create Class</span>
+                  <span x-show="n.newClass.creating" class="loading loading-spinner loading-sm"></span>
+                </button>
+              </div>
+            </form>
+            
+            <!-- Create Class Status Messages -->
+            <div class="mt-2 space-y-1">
+              <div x-show="!walletConnected" class="text-error text-sm">
+                Connect wallet to create NFT class.
+              </div>
+              <div x-show="n.newClass.error" class="text-error text-sm" x-text="n.newClass.error"></div>
+              <div x-show="n.newClass.txHash" class="text-success text-sm">
+                Success! Tx: <code x-text="n.newClass.txHash"></code>
+              </div>
+            </div>
+          </div>
+
+          <!-- Existing NFT Classes -->
+          <fieldset class="fieldset bg-base-50 border border-base-300 rounded-lg p-4">
+            <legend class="fieldset-legend">Existing NFT Classes</legend>
+            <div class="space-y-4">
+              <template x-for="cls in n.classes" :key="cls.class_id">
+                <div class="border border-base-300 rounded-lg p-4 bg-base-50" :id="cls.class_id">
+                  <h5 class="font-semibold mb-3" x-text="cls.class_id"></h5>
+
+                  <!-- Update Class Form -->
+                  <form class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end mb-4" @submit.prevent="updateClass(n, cls)">
+                    <div>
+                      <label class="label">
+                        <span class="label-text">Symbol</span>
+                      </label>
+                      <input 
+                        type="text" 
+                        class="input input-bordered input-sm w-full" 
+                        x-model="cls.symbol" 
+                        placeholder="Symbol"
+                        :disabled="!walletConnected || cls.updating"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label class="label">
+                        <span class="label-text">Description</span>
+                      </label>
+                      <input 
+                        type="text" 
+                        class="input input-bordered input-sm w-full" 
+                        x-model="cls.description" 
+                        placeholder="Description"
+                        :disabled="!walletConnected || cls.updating"
+                      />
+                    </div>
+                    
+                    <button 
+                      type="submit" 
+                      class="btn btn-primary btn-sm" 
+                      :disabled="!walletConnected || cls.updating"
+                    >
+                      <span x-show="!cls.updating">Update Class</span>
+                      <span x-show="cls.updating" class="loading loading-spinner loading-sm"></span>
+                    </button>
+                  </form>
+
+                  <!-- Mint NFT Form -->
+                  <form class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end mb-4" @submit.prevent="mintNft(n, cls)">
+                    <div>
+                      <label class="label">
+                        <span class="label-text">NFT ID</span>
+                      </label>
+                      <input 
+                        type="text" 
+                        class="input input-bordered input-sm w-full" 
+                        x-model="cls.newNftId" 
+                        placeholder="Unique NFT ID"
+                        :disabled="!walletConnected || cls.minting"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label class="label">
+                        <span class="label-text">URI (optional)</span>
+                      </label>
+                      <input 
+                        type="text" 
+                        class="input input-bordered input-sm w-full" 
+                        x-model="cls.newNftUri" 
+                        placeholder="Metadata URI"
+                        :disabled="!walletConnected || cls.minting"
+                      />
+                    </div>
+                    
+                    <button 
+                      type="submit" 
+                      class="btn btn-secondary btn-sm" 
+                      :disabled="!walletConnected || cls.minting"
+                    >
+                      <span x-show="!cls.minting">Mint NFT</span>
+                      <span x-show="cls.minting" class="loading loading-spinner loading-sm"></span>
+                    </button>
+                  </form>
+
+                  <!-- NFTs in this Class -->
+                  <fieldset class="fieldset bg-base-25 border border-dashed border-base-300 rounded-lg p-3">
+                    <legend class="fieldset-legend text-sm">NFTs in this class</legend>
+                    <template x-for="nf in cls.nfts" :key="nf.uniqueKey">
+                      <div class="border border-dashed border-base-300 rounded p-3 bg-base-25 mb-3">
+                        <div class="flex flex-wrap gap-2 items-center mb-2">
+                          <span class="font-mono font-semibold text-sm" x-text="nf.id"></span>
+                          <span class="badge badge-ghost badge-xs" x-text="nf.owner"></span>
+                        </div>
+                        
+                        <!-- Update NFT Form -->
+                        <form class="flex gap-2 items-end mb-2" @submit.prevent="updateNft(cls, nf)">
+                          <div class="flex-1">
+                            <label class="label">
+                              <span class="label-text text-xs">URI</span>
+                            </label>
+                            <input 
+                              type="text" 
+                              class="input input-bordered input-xs w-full" 
+                              x-model="nf.uri" 
+                              placeholder="Metadata URI"
+                              :disabled="!walletConnected"
+                            />
+                          </div>
+                          <button 
+                            type="submit" 
+                            class="btn btn-primary btn-xs"
+                            :disabled="!walletConnected"
+                          >
+                            Save
+                          </button>
+                        </form>
+                        
+                        <!-- Move NFT Form -->
+                        <form class="grid grid-cols-1 md:grid-cols-3 gap-2 items-end mb-2" @submit.prevent="moveNft(cls, nf)">
+                          <div>
+                            <label class="label">
+                              <span class="label-text text-xs">From Address</span>
+                            </label>
+                            <input 
+                              type="text" 
+                              class="input input-bordered input-xs w-full" 
+                              x-model="nf.moveFrom" 
+                              placeholder="From address"
+                              :disabled="!walletConnected" 
+                            />
+                          </div>
+                          <div>
+                            <label class="label">
+                              <span class="label-text text-xs">To Address</span>
+                            </label>
+                            <input 
+                              type="text" 
+                              class="input input-bordered input-xs w-full" 
+                              x-model="nf.moveTo" 
+                              placeholder="To address"
+                              :disabled="!walletConnected" 
+                            />
+                          </div>
+                          <button 
+                            type="submit" 
+                            class="btn btn-secondary btn-xs" 
+                            :disabled="!walletConnected"
+                          >
+                            Move
+                          </button>
+                        </form>
+                        
+                        <!-- Burn NFT Button -->
+                        <div class="flex justify-between items-center">
+                          <button 
+                            class="btn btn-error btn-xs" 
+                            @click="burnNft(cls, nf)"
+                            :disabled="!walletConnected"
+                          >
+                            Burn NFT
+                          </button>
+                          <span class="text-xs opacity-70" x-text="nf.tx"></span>
+                        </div>
+                        
+                        <!-- NFT Status Messages -->
+                        <div class="mt-2 space-y-1">
+                          <div x-show="nf.error" class="text-error text-xs" x-text="nf.error"></div>
+                        </div>
+                      </div>
+                    </template>
+                    
+                    <div x-show="cls.nfts.length === 0" class="text-sm opacity-70 text-center py-2">
+                      No NFTs in this class yet.
+                    </div>
+                  </fieldset>
+
+                  <!-- Class Status Messages -->
+                  <div class="mt-3 space-y-1">
+                    <div x-show="cls.error" class="text-error text-sm" x-text="cls.error"></div>
+                    <div x-show="cls.txHash" class="text-success text-sm">
+                      Tx: <code x-text="cls.txHash"></code>
+                    </div>
+                  </div>
+                </div>
+              </template>
+              
+              <div x-show="n.classes.length === 0" class="text-sm opacity-70 text-center py-4">
+                No NFT classes created yet.
+              </div>
+            </div>
+          </fieldset>
+        </fieldset>
+      </div>
+    </div>
+  </template>
 </section> 

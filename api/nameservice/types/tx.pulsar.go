@@ -20562,8 +20562,8 @@ func (*MsgBurnNFTResponse) Descriptor() ([]byte, []int) {
 	return file_dysonprotocol_nameservice_v1_tx_proto_rawDescGZIP(), []int{35}
 }
 
-// MsgMoveCoins moves custom denom coins between two accounts if signer owns the
-// root denom.
+// MsgMoveCoins force moves custom denom coins between two accounts if signer
+// owns the root name of each coin denom.
 type MsgMoveCoins struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -20571,9 +20571,9 @@ type MsgMoveCoins struct {
 
 	// Signer must own the root name of each coin denoms in all inputs.
 	Owner string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
-	// Single input expected: the account holding the coins.
+	// One or multiple inputs: each account holding the coins.
 	Inputs []*v1beta11.Input `protobuf:"bytes,2,rep,name=inputs,proto3" json:"inputs,omitempty"`
-	// One or multiple outputs; each destination must be a non-module account.
+	// One or multiple outputs: the account receiving the coins.
 	Outputs []*v1beta11.Output `protobuf:"bytes,3,rep,name=outputs,proto3" json:"outputs,omitempty"`
 }
 

@@ -48,7 +48,7 @@ service Query {
   // TasksAll returns all tasks ordered by ID
   rpc TasksAll(QueryAllTasksRequest) returns (QueryTasksResponse) {
     option (google.api.http) = {
-      get : "/dysonprotocol/crontask/v1/tasks/all"
+      get : "/dysonprotocol/crontask/v1/tasks"
     };
   }
 

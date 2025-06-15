@@ -53,13 +53,13 @@ func (h *DefaultHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	fmt.Println("rawRequest: ", rawRequest)
 
 	// Create the request
-	queryReq := &scriptv1.QueryWebRequest{
+	queryReq := &scriptv1.WebRequest{
 		AddressOrName: addressOrName,
 		Httprequest:   rawRequest,
 	}
 
 	// Create a response object
-	resp := &scriptv1.QueryWebResponse{}
+	resp := &scriptv1.WebResponse{}
 
 	// Use clientCtx.Invoke instead of direct app.Query
 	err = h.clientCtx.Invoke(req.Context(), "/dysonprotocol.script.v1.Query/Web", queryReq, resp)

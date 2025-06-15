@@ -22,11 +22,11 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	Query_ScriptInfo_FullMethodName  = "/dysonprotocol.script.v1.Query/ScriptInfo"
-	Query_Web_FullMethodName         = "/dysonprotocol.script.v1.Query/Web"
 	Query_EncodeJson_FullMethodName  = "/dysonprotocol.script.v1.Query/EncodeJson"
 	Query_DecodeBytes_FullMethodName = "/dysonprotocol.script.v1.Query/DecodeBytes"
 	Query_VerifyTx_FullMethodName    = "/dysonprotocol.script.v1.Query/VerifyTx"
 	Query_Params_FullMethodName      = "/dysonprotocol.script.v1.Query/Params"
+	Query_Web_FullMethodName         = "/dysonprotocol.script.v1.Query/Web"
 )
 
 // QueryClient is the client API for Query service.
@@ -37,8 +37,6 @@ const (
 type QueryClient interface {
 	// ScriptInfo queries script info based on script address
 	ScriptInfo(ctx context.Context, in *QueryScriptInfoRequest, opts ...grpc.CallOption) (*QueryScriptInfoResponse, error)
-	// Queries the WSGI web application function of a script.
-	Web(ctx context.Context, in *QueryWebRequest, opts ...grpc.CallOption) (*QueryWebResponse, error)
 	// EncodeJson encodes a JSON string to bytes.
 	EncodeJson(ctx context.Context, in *QueryEncodeJsonRequest, opts ...grpc.CallOption) (*QueryEncodeJsonResponse, error)
 	// DecodeBytes decodes bytes to a JSON string.
@@ -47,6 +45,8 @@ type QueryClient interface {
 	VerifyTx(ctx context.Context, in *QueryVerifyTxRequest, opts ...grpc.CallOption) (*QueryVerifyTxResponse, error)
 	// Params queries the parameters of the script module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	// Queries the WSGI web application function of a script.
+	Web(ctx context.Context, in *WebRequest, opts ...grpc.CallOption) (*WebResponse, error)
 }
 
 type queryClient struct {
@@ -61,16 +61,6 @@ func (c *queryClient) ScriptInfo(ctx context.Context, in *QueryScriptInfoRequest
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(QueryScriptInfoResponse)
 	err := c.cc.Invoke(ctx, Query_ScriptInfo_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) Web(ctx context.Context, in *QueryWebRequest, opts ...grpc.CallOption) (*QueryWebResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(QueryWebResponse)
-	err := c.cc.Invoke(ctx, Query_Web_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -117,6 +107,16 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
+func (c *queryClient) Web(ctx context.Context, in *WebRequest, opts ...grpc.CallOption) (*WebResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(WebResponse)
+	err := c.cc.Invoke(ctx, Query_Web_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility.
@@ -125,8 +125,6 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 type QueryServer interface {
 	// ScriptInfo queries script info based on script address
 	ScriptInfo(context.Context, *QueryScriptInfoRequest) (*QueryScriptInfoResponse, error)
-	// Queries the WSGI web application function of a script.
-	Web(context.Context, *QueryWebRequest) (*QueryWebResponse, error)
 	// EncodeJson encodes a JSON string to bytes.
 	EncodeJson(context.Context, *QueryEncodeJsonRequest) (*QueryEncodeJsonResponse, error)
 	// DecodeBytes decodes bytes to a JSON string.
@@ -135,6 +133,8 @@ type QueryServer interface {
 	VerifyTx(context.Context, *QueryVerifyTxRequest) (*QueryVerifyTxResponse, error)
 	// Params queries the parameters of the script module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	// Queries the WSGI web application function of a script.
+	Web(context.Context, *WebRequest) (*WebResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -148,9 +148,6 @@ type UnimplementedQueryServer struct{}
 func (UnimplementedQueryServer) ScriptInfo(context.Context, *QueryScriptInfoRequest) (*QueryScriptInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ScriptInfo not implemented")
 }
-func (UnimplementedQueryServer) Web(context.Context, *QueryWebRequest) (*QueryWebResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Web not implemented")
-}
 func (UnimplementedQueryServer) EncodeJson(context.Context, *QueryEncodeJsonRequest) (*QueryEncodeJsonResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EncodeJson not implemented")
 }
@@ -162,6 +159,9 @@ func (UnimplementedQueryServer) VerifyTx(context.Context, *QueryVerifyTxRequest)
 }
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
+}
+func (UnimplementedQueryServer) Web(context.Context, *WebRequest) (*WebResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Web not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 func (UnimplementedQueryServer) testEmbeddedByValue()               {}
@@ -198,24 +198,6 @@ func _Query_ScriptInfo_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).ScriptInfo(ctx, req.(*QueryScriptInfoRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_Web_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryWebRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Web(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_Web_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Web(ctx, req.(*QueryWebRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -292,6 +274,24 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Web_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WebRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Web(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Web_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Web(ctx, req.(*WebRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -302,10 +302,6 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ScriptInfo",
 			Handler:    _Query_ScriptInfo_Handler,
-		},
-		{
-			MethodName: "Web",
-			Handler:    _Query_Web_Handler,
 		},
 		{
 			MethodName: "EncodeJson",
@@ -322,6 +318,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
+		},
+		{
+			MethodName: "Web",
+			Handler:    _Query_Web_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -5174,10 +5174,13 @@ type MsgExec struct {
 	// The keyword argument to pass to the function (**kwargs) encoded as a
 	// json dict
 	Kwargs string `protobuf:"bytes,6,opt,name=kwargs,proto3" json:"kwargs,omitempty"`
-	// Any attached_messages is the list of attached messages
-	// to run before the script and the result will be passed
-	// to the script. If any of the attached messages fails,
-	// the script execution will be aborted.
+	// The list of messages to run before the script and the result will be
+	// available in `dys.get_attached_messages()`. If any of the attached messages
+	// fails, the script execution will be aborted. The script can assume that the
+	// attached messages have been executed successfully by virtue of the fact
+	// that the script execution will never occur if any of the attached messages
+	// had failed. The attached messages are executed in the order they are
+	// provided.
 	AttachedMessages []*anypb.Any `protobuf:"bytes,7,rep,name=attached_messages,json=attachedMessages,proto3" json:"attached_messages,omitempty"`
 }
 

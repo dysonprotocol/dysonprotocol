@@ -80,10 +80,13 @@ message MsgExec {
   // json dict
   string kwargs = 6;
 
-  // Any attached_messages is the list of attached messages
-  // to run before the script and the result will be passed
-  // to the script. If any of the attached messages fails,
-  // the script execution will be aborted.
+  // The list of messages to run before the script and the result will be
+  // available in `dys.get_attached_messages()`. If any of the attached messages
+  // fails, the script execution will be aborted. The script can assume that the
+  // attached messages have been executed successfully by virtue of the fact
+  // that the script execution will never occur if any of the attached messages
+  // had failed. The attached messages are executed in the order they are
+  // provided.
   repeated google.protobuf.Any attached_messages = 7;
 }
 

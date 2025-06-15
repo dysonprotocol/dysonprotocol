@@ -248,18 +248,18 @@ message MsgBurnNFT {
 
 message MsgBurnNFTResponse {}
 
-// MsgMoveCoins moves custom denom coins between two accounts if signer owns the
-// root denom.
+// MsgMoveCoins force moves custom denom coins between two accounts if signer
+// owns the root name of each coin denom.
 message MsgMoveCoins {
   option (cosmos.msg.v1.signer) = "owner";
   // Signer must own the root name of each coin denoms in all inputs.
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
-  // Single input expected: the account holding the coins.
+  // One or multiple inputs: each account holding the coins.
   repeated cosmos.bank.v1beta1.Input inputs = 2
       [ (gogoproto.nullable) = false ];
 
-  // One or multiple outputs; each destination must be a non-module account.
+  // One or multiple outputs: the account receiving the coins.
   repeated cosmos.bank.v1beta1.Output outputs = 3
       [ (gogoproto.nullable) = false ];
 }
