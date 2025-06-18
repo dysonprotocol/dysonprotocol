@@ -38,15 +38,15 @@ check_python() {
     local python_cmd=""
     
     # Try different Python command variations
-    for cmd in python3.11 python3.12 python3.13 python3; do
+    for cmd in python3.12 python3; do
         if command_exists "$cmd"; then
             local version=$($cmd --version 2>&1 | grep -oE '[0-9]+\.[0-9]+')
             local major=$(echo "$version" | cut -d. -f1)
             local minor=$(echo "$version" | cut -d. -f2)
             
-            if [ "$major" -eq 3 ] && [ "$minor" -ge 11 ]; then
+            if [[ $(echo "$version" | cut -d'.' -f1-2) == "3.12" ]] || [[ $(echo "$version" | cut -d'.' -f1-2) > "3.12" ]]; then
                 python_cmd="$cmd"
-                echo "✓ Python version $version (>= 3.11 required) found at $cmd"
+                echo "✓ Python version $version (>= 3.12 required) found at $cmd"
                 break
             fi
         fi
@@ -59,7 +59,7 @@ check_python() {
     
     # Check if venv module is available
     if ! "$python_cmd" -m venv --help >/dev/null 2>&1; then
-        echo "Error: Python venv module not available. Install python3.11-venv or equivalent package"
+        echo "Error: Python venv module not available. Install python3.12-venv or equivalent package"
         return 1
     fi
     
@@ -105,7 +105,7 @@ verify_requirements() {
         echo "   - Go (>= 1.24): https://golang.org/doc/install"
         echo "   - Git: Package manager or https://git-scm.com/downloads"
         echo "   - Make: Package manager (build-essential on Ubuntu/Debian)"
-        echo "   - Python 3.11+ with venv: python3.11-venv package or equivalent"
+        echo "   - Python 3.12+ with venv: python3.12-venv package or equivalent"
         exit 1
     fi
     

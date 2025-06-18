@@ -11,7 +11,7 @@ from functools import wraps
 import typing
 
 import forge
-import re2
+import re as re_module
 import requests
 import simplejson
 import simplejson as json
@@ -29,7 +29,6 @@ FakeDate.__qualname__ = "Date"
 
 
 import dyslang
-import re as re_module
 
 
 MAX_CUM_SIZE = dyslang.MAX_SCOPE_SIZE * dyslang.MAX_NODE_CALLS
@@ -200,16 +199,16 @@ def get_module_dict():
             "uniform": random.uniform,
         },
         "re2": {
-            "compile": copy_docstr(re_module.compile, re2.compile),
-            "escape": copy_docstr(re_module.escape, re2.escape),
-            "findall": copy_docstr(re_module.findall, re2.findall),
-            "finditer": copy_docstr(re_module.finditer, re2.finditer),
-            "fullmatch": copy_docstr(re_module.fullmatch, re2.fullmatch),
-            "match": copy_docstr(re_module.match, re2.match),
-            "search": copy_docstr(re_module.search, re2.search),
-            "split": copy_docstr(re_module.split, re2.split),
-            "sub": copy_docstr(re_module.sub, re2.sub),
-            "subn": copy_docstr(re_module.subn, re2.subn),
+            "compile": copy_docstr(re_module.compile, re_module.compile),
+            "escape": copy_docstr(re_module.escape, re_module.escape),
+            "findall": copy_docstr(re_module.findall, re_module.findall),
+            "finditer": copy_docstr(re_module.finditer, re_module.finditer),
+            "fullmatch": copy_docstr(re_module.fullmatch, re_module.fullmatch),
+            "match": copy_docstr(re_module.match, re_module.match),
+            "search": copy_docstr(re_module.search, re_module.search),
+            "split": copy_docstr(re_module.split, re_module.split),
+            "sub": copy_docstr(re_module.sub, re_module.sub),
+            "subn": copy_docstr(re_module.subn, re_module.subn),
         },
         "math": {
             "ceil": math.ceil,

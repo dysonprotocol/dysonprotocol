@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"dysonprotocol.com/dysvm"
+
+	"github.com/kluctl/go-embed-python/python"
 )
 
 func main() {
@@ -43,4 +45,17 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	// python version
+	ep, err := python.NewEmbeddedPython("dyslang")
+	if err != nil {
+	}
+	cmd, err := ep.PythonCmd("--version")
+	if err != nil {
+		panic(err)
+	}
+	runOut, runErr := cmd.CombinedOutput()
+	fmt.Println("Command output: ", string(runOut))
+	fmt.Println("Command error: ", runErr)
+
 }

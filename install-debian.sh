@@ -6,7 +6,7 @@
 set -e
 
 echo "🚀 Installing Dyson Protocol on Debian/Ubuntu..."
-echo "This script will install: Git, Make, Python 3.11+, Go 1.24.4, Docker, and build Dyson Protocol"
+echo "This script will install: Git, Make, Python 3.12, Go 1.24.4, Docker, and build Dyson Protocol"
 echo ""
 
 # Update package list
@@ -14,8 +14,8 @@ echo "📦 Updating package list..."
 sudo apt update
 
 # Install basic dependencies
-echo "📦 Installing Git, Make, and Python 3.11 with venv..."
-sudo apt install -y git make python3.11-venv
+echo "📦 Installing Git, Make, and Python 3.12 with venv..."
+sudo apt install -y git make python3.12-venv
 
 # Install Go 1.24.4
 echo "🐹 Installing Go 1.24.4..."
