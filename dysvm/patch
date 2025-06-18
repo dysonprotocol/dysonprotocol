@@ -459,9 +459,18 @@ index ef9db6a9cd0..eda4acbce52 100644
          goto error;
      }
 diff --git a/Python/hamt.c b/Python/hamt.c
-index 908c2531870..9787407c129 100644
+index 908c2531870..c6e0e9485fd 100644
 --- a/Python/hamt.c
 +++ b/Python/hamt.c
+@@ -1208,7 +1208,7 @@ hamt_node_bitmap_dump(PyHamtNode_Bitmap *node,
+     if (tmp2 == NULL) {
+         goto error;
+     }
+-    if (_hamt_dump_format(writer, "bitmap=%S id=%p):\n", tmp2, node)) {
++    if (_hamt_dump_format(writer, "bitmap=%S id=0x1234):\n", tmp2)) {
+         Py_DECREF(tmp2);
+         goto error;
+     }
 @@ -1599,8 +1599,8 @@ hamt_node_collision_dump(PyHamtNode_Collision *node,
          goto error;
      }
