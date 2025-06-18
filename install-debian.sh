@@ -13,13 +13,11 @@ echo ""
 echo "📦 Updating package list..."
 sudo apt update
 
-# Install basic dependencies
-echo "📦 Installing Git, Make, and Python 3.12 with venv..."
-sudo apt install -y git make python3.12-venv
-
-# Install Python build dependencies for dysvm
-echo "📦 Installing Python build dependencies..."
+# Install build dependencies for dysvm
+echo "📦 Installing  build dependencies..."
 sudo apt install -y \
+    git \
+    make \
     build-essential \
     zlib1g-dev \
     libncurses5-dev \
@@ -32,6 +30,22 @@ sudo apt install -y \
     wget \
     libbz2-dev \
     liblzma-dev
+
+# Install pyenv
+echo "🐍 Installing pyenv..."
+curl -fsSL https://pyenv.run | bash
+
+# Add pyenv to bashrc
+echo "🐍 Adding pyenv to bashrc..."
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(pyenv init - bash)"' >> ~/.bashrc
+
+
+# Install Python from .python-version
+echo "🐍 Installing Python..."
+pyenv install
+
 
 # Install Go 1.24.4
 echo "🐹 Installing Go 1.24.4..."
@@ -69,7 +83,7 @@ echo "✅ Docker installed successfully"
 
 # Clone and build Dyson Protocol
 echo "🔗 Cloning Dyson Protocol repository..."
-git clone --depth 1 --recurse-submodules https://github.com/dysonprotocol/dysonprotocol.git
+git clone --depth 1 --no-single-branch --recurse-submodules https://github.com/dysonprotocol/dysonprotocol.git
 cd dysonprotocol
 
 echo "🔨 Building Dyson Protocol..."
