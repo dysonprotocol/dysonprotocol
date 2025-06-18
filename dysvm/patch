@@ -458,3 +458,27 @@ index ef9db6a9cd0..eda4acbce52 100644
      if (addr == NULL) {
          goto error;
      }
+diff --git a/Python/hamt.c b/Python/hamt.c
+index 908c2531870..9787407c129 100644
+--- a/Python/hamt.c
++++ b/Python/hamt.c
+@@ -1599,8 +1599,8 @@ hamt_node_collision_dump(PyHamtNode_Collision *node,
+         goto error;
+     }
+ 
+-    if (_hamt_dump_format(writer, "CollisionNode(size=%zd id=%p):\n",
+-                          Py_SIZE(node), node))
++    if (_hamt_dump_format(writer, "CollisionNode(size=%zd id=0x1234):\n",
++                          Py_SIZE(node)))
+     {
+         goto error;
+     }
+@@ -1981,7 +1981,7 @@ hamt_node_array_dump(PyHamtNode_Array *node,
+         goto error;
+     }
+ 
+-    if (_hamt_dump_format(writer, "ArrayNode(id=%p):\n", node)) {
++    if (_hamt_dump_format(writer, "ArrayNode(id=0x1234):\n")) {
+         goto error;
+     }
+ 

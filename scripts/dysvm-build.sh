@@ -12,10 +12,8 @@ DYSVM_DIR="$REPO_ROOT/dysvm"
 CPYTHON_DIR="$DYSVM_DIR/cpython"
 PYTHON_BUILD_STANDALONE_DIR="$DYSVM_DIR/python-build-standalone"
 
-# Python version for DYSVM
-PYTHON_VERSION="3.11.8"
-PYTHON_VERSION_SHORT=$(echo $PYTHON_VERSION | cut -d. -f1,2)
-
+# Load shared version variables
+source "$SCRIPT_DIR/dysvm.env"
 
 echo "Building custom Python distributions..."
 
