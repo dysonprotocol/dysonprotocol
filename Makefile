@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 
-VERSION ?= $(shell git describe --tags 2>/dev/null || echo "v0.0.0")
+VERSION ?= $(shell git describe --tags 2>/dev/null || git describe --all)
 COMMIT ?= $(shell git rev-parse --short HEAD)
 BUILDDIR ?= $(CURDIR)/build
 CURRENT_DIR = $(shell pwd)
