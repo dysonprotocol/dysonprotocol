@@ -17,6 +17,22 @@ sudo apt update
 echo "📦 Installing Git, Make, and Python 3.12 with venv..."
 sudo apt install -y git make python3.12-venv
 
+# Install Python build dependencies for dysvm
+echo "📦 Installing Python build dependencies..."
+sudo apt install -y \
+    build-essential \
+    zlib1g-dev \
+    libncurses5-dev \
+    libgdbm-dev \
+    libnss3-dev \
+    libssl-dev \
+    libreadline-dev \
+    libffi-dev \
+    libsqlite3-dev \
+    wget \
+    libbz2-dev \
+    liblzma-dev
+
 # Install Go 1.24.4
 echo "🐹 Installing Go 1.24.4..."
 wget https://go.dev/dl/go1.24.4.linux-amd64.tar.gz
