@@ -14,7 +14,7 @@ GO_EMBED_PYTHON_DIR="$DYSVM_DIR/go-embed-python"
 TEMP_DIR="/tmp"
 
 # Python version for DYSVM
-PYTHON_VERSION="3.11.8"
+PYTHON_VERSION="3.12.11"
 PYTHON_DIST_NAME="cpython-${PYTHON_VERSION}"
 CUSTOM_VERSION="custom"
 

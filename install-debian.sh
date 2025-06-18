@@ -5,6 +5,12 @@
 
 set -e
 
+# Clone and build Dyson Protocol
+echo "🔗 Cloning Dyson Protocol repository..."
+git clone --depth 1 --no-single-branch --recurse-submodules https://github.com/dysonprotocol/dysonprotocol.git
+cd dysonprotocol
+
+
 echo "🚀 Installing Dyson Protocol on Debian/Ubuntu..."
 echo "This script will install: Git, Make, Python 3.12, Go 1.24.4, Docker, and build Dyson Protocol"
 echo ""
