@@ -350,8 +350,30 @@ def setup(config_file, force):
                 '--chain-id', cid, '--home', str(node_config_data['home'])
             ], check=True)
 
-        # Step 3: Collect Gentxs into the primary node's genesis and distribute
-        primary_node_home_str = str(Path(chain['nodes'][0]['home']))
+        # Step 3: Add all validator accounts to primary node's genesis, copy gentx files, and collect gentxs
+        
+        primary_node_home = Path(chain['nodes'][0]['home'])
+        primary_node_home_str = str(primary_node_home)
+        primary_gentx_dir = primary_node_home / 'config' / 'gentx'
+        
+        # Add all other validator accounts to the primary node's genesis
+        for i in range(1, len(chain['nodes'])):
+            other_validator_address = chain['nodes'][i]['validator_address']
+            other_initial_balance = chain['nodes'][i]['validator']['initial_balance']
+            subprocess.run([
+                bin_path, 'genesis', 'add-genesis-account', other_validator_address, 
+                other_initial_balance, '--home', primary_node_home_str
+            ], check=True, capture_output=True, text=True)
+        
+        # Copy gentx files from all other nodes to the primary node's gentx directory
+        for i in range(1, len(chain['nodes'])):
+            other_node_home = Path(chain['nodes'][i]['home'])
+            other_gentx_dir = other_node_home / 'config' / 'gentx'
+            
+            if other_gentx_dir.exists():
+                for gentx_file in other_gentx_dir.glob('*.json'):
+                    shutil.copy2(gentx_file, primary_gentx_dir)
+        
         subprocess.run([
             bin_path, 'genesis', 'collect-gentxs', '--home', primary_node_home_str
         ], check=True, capture_output=True, text=True)
