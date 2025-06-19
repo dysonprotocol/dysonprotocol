@@ -1,8 +1,8 @@
 diff --git a/Objects/bytesobject.c b/Objects/bytesobject.c
-index 3b0ff9a19d9..f25e5370fad 100644
+index dae84127a7d..2970331ed42 100644
 --- a/Objects/bytesobject.c
 +++ b/Objects/bytesobject.c
-@@ -332,17 +332,10 @@ PyBytes_FromFormatV(const char *format, va_list vargs)
+@@ -329,17 +329,10 @@ PyBytes_FromFormatV(const char *format, va_list vargs)
          }
  
          case 'p':
@@ -25,10 +25,10 @@ index 3b0ff9a19d9..f25e5370fad 100644
  
          case '%':
 diff --git a/Objects/capsule.c b/Objects/capsule.c
-index 606e50e6961..50bc0a150a9 100644
+index baaddb3f1f0..13b9fd0e687 100644
 --- a/Objects/capsule.c
 +++ b/Objects/capsule.c
-@@ -275,8 +275,8 @@ capsule_repr(PyObject *o)
+@@ -274,8 +274,8 @@ capsule_repr(PyObject *o)
          name = "NULL";
      }
  
@@ -40,10 +40,10 @@ index 606e50e6961..50bc0a150a9 100644
  
  
 diff --git a/Objects/cellobject.c b/Objects/cellobject.c
-index 86a89f02e60..ee940e02691 100644
+index f516707f6f8..33af06c3410 100644
 --- a/Objects/cellobject.c
 +++ b/Objects/cellobject.c
-@@ -107,11 +107,10 @@ static PyObject *
+@@ -104,11 +104,10 @@ static PyObject *
  cell_repr(PyCellObject *op)
  {
      if (op->ob_ref == NULL)
@@ -59,11 +59,11 @@ index 86a89f02e60..ee940e02691 100644
  
  static int
 diff --git a/Objects/classobject.c b/Objects/classobject.c
-index b9708ba0e41..ecbb2303c00 100644
+index 12dc276f289..e6141fd1a6a 100644
 --- a/Objects/classobject.c
 +++ b/Objects/classobject.c
-@@ -496,8 +496,8 @@ instancemethod_repr(PyObject *self)
-         funcname = NULL;
+@@ -488,8 +488,8 @@ instancemethod_repr(PyObject *self)
+         Py_SETREF(funcname, NULL);
      }
  
 -    result = PyUnicode_FromFormat("<instancemethod %V at %p>",
@@ -74,10 +74,10 @@ index b9708ba0e41..ecbb2303c00 100644
      Py_XDECREF(funcname);
      return result;
 diff --git a/Objects/codeobject.c b/Objects/codeobject.c
-index 32938b52ab4..cfc78cf6fe9 100644
+index 6f7b8b54dcf..72deb386176 100644
 --- a/Objects/codeobject.c
 +++ b/Objects/codeobject.c
-@@ -1654,12 +1654,12 @@ code_repr(PyCodeObject *co)
+@@ -1757,12 +1757,12 @@ code_repr(PyCodeObject *co)
          lineno = -1;
      if (co->co_filename && PyUnicode_Check(co->co_filename)) {
          return PyUnicode_FromFormat(
@@ -95,10 +95,10 @@ index 32938b52ab4..cfc78cf6fe9 100644
  }
  
 diff --git a/Objects/descrobject.c b/Objects/descrobject.c
-index 4d8b83758b5..62758334750 100644
+index a6c90e7ac13..4eed82e8c5d 100644
 --- a/Objects/descrobject.c
 +++ b/Objects/descrobject.c
-@@ -1326,10 +1326,9 @@ wrapper_hash(wrapperobject *wp)
+@@ -1334,10 +1334,9 @@ wrapper_hash(wrapperobject *wp)
  static PyObject *
  wrapper_repr(wrapperobject *wp)
  {
@@ -112,10 +112,10 @@ index 4d8b83758b5..62758334750 100644
  
  static PyObject *
 diff --git a/Objects/fileobject.c b/Objects/fileobject.c
-index ffe55eb7c37..98e0f4a5014 100644
+index e99e155f2b8..130e5ea4beb 100644
 --- a/Objects/fileobject.c
 +++ b/Objects/fileobject.c
-@@ -368,8 +368,8 @@ stdprinter_fileno(PyStdPrinter_Object *self, PyObject *Py_UNUSED(ignored))
+@@ -363,8 +363,8 @@ stdprinter_fileno(PyStdPrinter_Object *self, PyObject *Py_UNUSED(ignored))
  static PyObject *
  stdprinter_repr(PyStdPrinter_Object *self)
  {
@@ -127,10 +127,10 @@ index ffe55eb7c37..98e0f4a5014 100644
  
  static PyObject *
 diff --git a/Objects/frameobject.c b/Objects/frameobject.c
-index 1e6bdcfb592..71946580f74 100644
+index 44f2726f2cc..c29eb4969a3 100644
 --- a/Objects/frameobject.c
 +++ b/Objects/frameobject.c
-@@ -955,8 +955,8 @@ frame_repr(PyFrameObject *f)
+@@ -991,8 +991,8 @@ frame_repr(PyFrameObject *f)
      int lineno = PyFrame_GetLineNumber(f);
      PyCodeObject *code = f->f_frame->f_code;
      return PyUnicode_FromFormat(
@@ -142,10 +142,10 @@ index 1e6bdcfb592..71946580f74 100644
  
  static PyMethodDef frame_methods[] = {
 diff --git a/Objects/funcobject.c b/Objects/funcobject.c
-index 3a0553261bf..d1145cc9e0d 100644
+index f43e3a2787b..d4a6b9dbdc8 100644
 --- a/Objects/funcobject.c
 +++ b/Objects/funcobject.c
-@@ -721,8 +721,8 @@ func_dealloc(PyFunctionObject *op)
+@@ -862,8 +862,8 @@ func_dealloc(PyFunctionObject *op)
  static PyObject*
  func_repr(PyFunctionObject *op)
  {
@@ -157,10 +157,10 @@ index 3a0553261bf..d1145cc9e0d 100644
  
  static int
 diff --git a/Objects/genobject.c b/Objects/genobject.c
-index b9a0c30c411..b2c800985ab 100644
+index 640a7d906c8..8535fc1e8e6 100644
 --- a/Objects/genobject.c
 +++ b/Objects/genobject.c
-@@ -697,8 +697,8 @@ _PyGen_FetchStopIterationValue(PyObject **pvalue)
+@@ -664,8 +664,8 @@ _PyGen_FetchStopIterationValue(PyObject **pvalue)
  static PyObject *
  gen_repr(PyGenObject *gen)
  {
@@ -171,7 +171,7 @@ index b9a0c30c411..b2c800985ab 100644
  }
  
  static PyObject *
-@@ -1083,8 +1083,8 @@ _PyCoro_GetAwaitableIter(PyObject *o)
+@@ -1057,8 +1057,8 @@ _PyCoro_GetAwaitableIter(PyObject *o)
  static PyObject *
  coro_repr(PyCoroObject *coro)
  {
@@ -182,7 +182,7 @@ index b9a0c30c411..b2c800985ab 100644
  }
  
  static PyObject *
-@@ -1440,8 +1440,8 @@ async_gen_traverse(PyAsyncGenObject *gen, visitproc visit, void *arg)
+@@ -1419,8 +1419,8 @@ async_gen_traverse(PyAsyncGenObject *gen, visitproc visit, void *arg)
  static PyObject *
  async_gen_repr(PyAsyncGenObject *o)
  {
@@ -194,10 +194,10 @@ index b9a0c30c411..b2c800985ab 100644
  
  
 diff --git a/Objects/memoryobject.c b/Objects/memoryobject.c
-index e958ab45963..eaf587f2bcb 100644
+index 9a5f9c665b2..fe5965afe96 100644
 --- a/Objects/memoryobject.c
 +++ b/Objects/memoryobject.c
-@@ -2269,9 +2269,9 @@ static PyObject *
+@@ -2345,9 +2345,9 @@ static PyObject *
  memory_repr(PyMemoryViewObject *self)
  {
      if (self->flags & _Py_MEMORYVIEW_RELEASED)
@@ -210,10 +210,10 @@ index e958ab45963..eaf587f2bcb 100644
  
  
 diff --git a/Objects/methodobject.c b/Objects/methodobject.c
-index 953cf4666d3..a8f8a0d95e9 100644
+index 51752dec3dd..13998e37706 100644
 --- a/Objects/methodobject.c
 +++ b/Objects/methodobject.c
-@@ -286,10 +286,9 @@ meth_repr(PyCFunctionObject *m)
+@@ -282,10 +282,9 @@ meth_repr(PyCFunctionObject *m)
      if (m->m_self == NULL || PyModule_Check(m->m_self))
          return PyUnicode_FromFormat("<built-in function %s>",
                                     m->m_ml->ml_name);
@@ -227,21 +227,19 @@ index 953cf4666d3..a8f8a0d95e9 100644
  
  static PyObject *
 diff --git a/Objects/object.c b/Objects/object.c
-index c4f2786c50a..da577df45d1 100644
+index 706719116da..b0aa4c0b431 100644
 --- a/Objects/object.c
 +++ b/Objects/object.c
-@@ -276,8 +276,8 @@ PyObject_Print(PyObject *op, FILE *fp, int flags)
-             /* XXX(twouters) cast refcount to long until %zd is
-                universally available */
+@@ -428,7 +428,7 @@ PyObject_Print(PyObject *op, FILE *fp, int flags)
+     else {
+         if (Py_REFCNT(op) <= 0) {
              Py_BEGIN_ALLOW_THREADS
--            fprintf(fp, "<refcnt %ld at %p>",
--                (long)Py_REFCNT(op), (void *)op);
-+            fprintf(fp, "<refcnt %ld at 0x1234>",
-+                (long)Py_REFCNT(op));
+-            fprintf(fp, "<refcnt %zd at %p>", Py_REFCNT(op), (void *)op);
++            fprintf(fp, "<refcnt %zd at 0x1234>", Py_REFCNT(op));
              Py_END_ALLOW_THREADS
          }
          else {
-@@ -363,20 +363,20 @@ _PyObject_Dump(PyObject* op)
+@@ -505,18 +505,18 @@ _PyObject_Dump(PyObject* op)
      if (_PyObject_IsFreed(op)) {
          /* It seems like the object memory has been freed:
             don't access it to prevent a segmentation fault. */
@@ -254,9 +252,7 @@ index c4f2786c50a..da577df45d1 100644
      /* first, write fields which are the least likely to crash */
 -    fprintf(stderr, "object address  : %p\n", (void *)op);
 +    fprintf(stderr, "object address  : 0x1234\n");
-     /* XXX(twouters) cast refcount to long until %zd is
-        universally available */
-     fprintf(stderr, "object refcount : %ld\n", (long)Py_REFCNT(op));
+     fprintf(stderr, "object refcount : %zd\n", Py_REFCNT(op));
      fflush(stderr);
  
      PyTypeObject *type = Py_TYPE(op);
@@ -265,7 +261,7 @@ index c4f2786c50a..da577df45d1 100644
      fprintf(stderr, "object type name: %s\n",
              type==NULL ? "NULL" : type->tp_name);
  
-@@ -413,8 +413,8 @@ PyObject_Repr(PyObject *v)
+@@ -552,8 +552,8 @@ PyObject_Repr(PyObject *v)
      if (v == NULL)
          return PyUnicode_FromString("<NULL>");
      if (Py_TYPE(v)->tp_repr == NULL)
@@ -276,27 +272,25 @@ index c4f2786c50a..da577df45d1 100644
  
      PyThreadState *tstate = _PyThreadState_GET();
  #ifdef Py_DEBUG
-@@ -2077,7 +2077,7 @@ _Py_PrintReferences(FILE *fp)
-     PyObject *op;
+@@ -2278,7 +2278,7 @@ _Py_PrintReferences(PyInterpreterState *interp, FILE *fp)
      fprintf(fp, "Remaining objects:\n");
-     for (op = refchain._ob_next; op != &refchain; op = op->_ob_next) {
+     PyObject *refchain = REFCHAIN(interp);
+     for (op = refchain->_ob_next; op != refchain; op = op->_ob_next) {
 -        fprintf(fp, "%p [%zd] ", (void *)op, Py_REFCNT(op));
 +        fprintf(fp, "0x1234 [%zd] ", Py_REFCNT(op));
          if (PyObject_Print(op, fp, 0) != 0) {
              PyErr_Clear();
          }
-@@ -2094,8 +2094,8 @@ _Py_PrintReferenceAddresses(FILE *fp)
-     PyObject *op;
+@@ -2300,7 +2300,7 @@ _Py_PrintReferenceAddresses(PyInterpreterState *interp, FILE *fp)
+     PyObject *refchain = REFCHAIN(interp);
      fprintf(fp, "Remaining object addresses:\n");
-     for (op = refchain._ob_next; op != &refchain; op = op->_ob_next)
+     for (op = refchain->_ob_next; op != refchain; op = op->_ob_next)
 -        fprintf(fp, "%p [%zd] %s\n", (void *)op,
--            Py_REFCNT(op), Py_TYPE(op)->tp_name);
-+                fprintf(fp, "0x1234 [%zd] %s\n",
-+                Py_REFCNT(op), Py_TYPE(op)->tp_name);
++        fprintf(fp, "0x1234 [%zd] %s\n",
+             Py_REFCNT(op), Py_TYPE(op)->tp_name);
  }
  
- PyObject *
-@@ -2340,7 +2340,7 @@ _PyObject_AssertFailed(PyObject *obj, const char *expr, const char *msg,
+@@ -2595,7 +2595,7 @@ _PyObject_AssertFailed(PyObject *obj, const char *expr, const char *msg,
      if (_PyObject_IsFreed(obj)) {
          /* It seems like the object memory has been freed:
             don't access it to prevent a segmentation fault. */
@@ -306,10 +300,10 @@ index c4f2786c50a..da577df45d1 100644
      }
      else {
 diff --git a/Objects/typeobject.c b/Objects/typeobject.c
-index 782a7e97228..931f84a75a4 100644
+index b0c79d34e65..e16b7c1f6ca 100644
 --- a/Objects/typeobject.c
 +++ b/Objects/typeobject.c
-@@ -1027,7 +1027,7 @@ type_repr(PyTypeObject *type)
+@@ -1596,7 +1596,7 @@ type_repr(PyTypeObject *type)
      if (type->tp_name == NULL) {
          // type_repr() called before the type is fully initialized
          // by PyType_Ready().
@@ -318,7 +312,7 @@ index 782a7e97228..931f84a75a4 100644
      }
  
      PyObject *mod, *name, *rtn;
-@@ -4602,10 +4602,10 @@ object_repr(PyObject *self)
+@@ -5539,10 +5539,10 @@ object_repr(PyObject *self)
          return NULL;
      }
      if (mod != NULL && !_PyUnicode_Equal(mod, &_Py_ID(builtins)))
@@ -332,7 +326,7 @@ index 782a7e97228..931f84a75a4 100644
      Py_XDECREF(mod);
      Py_DECREF(name);
      return rtn;
-@@ -7562,8 +7562,8 @@ slot_tp_repr(PyObject *self)
+@@ -8722,8 +8722,8 @@ slot_tp_repr(PyObject *self)
          return res;
      }
      PyErr_Clear();
@@ -344,14 +338,14 @@ index 782a7e97228..931f84a75a4 100644
  
  SLOT0(slot_tp_str, __str__)
 diff --git a/Objects/unicodeobject.c b/Objects/unicodeobject.c
-index 4bdc89316a8..641f0d5bb65 100644
+index 5accbd6d1dd..4005d2620d2 100644
 --- a/Objects/unicodeobject.c
 +++ b/Objects/unicodeobject.c
-@@ -2955,23 +2955,11 @@ unicode_fromformat_arg(_PyUnicodeWriter *writer,
+@@ -2844,23 +2844,11 @@ unicode_fromformat_arg(_PyUnicodeWriter *writer,
  
      case 'p':
      {
--        char number[MAX_LONG_LONG_CHARS];
+-        char number[MAX_INTMAX_CHARS];
 +        /* Skip the pointer argument */
 +        (void) va_arg(*vargs, void*);
  
@@ -376,7 +370,7 @@ index 4bdc89316a8..641f0d5bb65 100644
          break;
      }
 diff --git a/Objects/weakrefobject.c b/Objects/weakrefobject.c
-index c76c92843cb..04f4407725b 100644
+index aee79fc1410..72be6124a69 100644
 --- a/Objects/weakrefobject.c
 +++ b/Objects/weakrefobject.c
 @@ -166,24 +166,20 @@ weakref_repr(PyWeakReference *self)
@@ -408,7 +402,7 @@ index c76c92843cb..04f4407725b 100644
              name);
      }
      Py_DECREF(obj);
-@@ -476,10 +472,8 @@ static PyObject *
+@@ -475,10 +471,8 @@ static PyObject *
  proxy_repr(PyWeakReference *proxy)
  {
      return PyUnicode_FromFormat(
@@ -422,10 +416,10 @@ index c76c92843cb..04f4407725b 100644
  
  
 diff --git a/Python/ceval.c b/Python/ceval.c
-index 47df3531970..74182b13f2a 100644
+index 3985b52649c..acb347b2014 100644
 --- a/Python/ceval.c
 +++ b/Python/ceval.c
-@@ -115,8 +115,8 @@ dump_stack(_PyInterpreterFrame *frame, PyObject **stack_pointer)
+@@ -116,8 +116,8 @@ dump_stack(_PyInterpreterFrame *frame, PyObject **stack_pointer)
          }
          if (PyObject_Print(*ptr, stdout, 0) != 0) {
              PyErr_Clear();
@@ -437,10 +431,10 @@ index 47df3531970..74182b13f2a 100644
      }
      printf("]\n");
 diff --git a/Python/context.c b/Python/context.c
-index ef9db6a9cd0..eda4acbce52 100644
+index e5899219daa..3d2442ba477 100644
 --- a/Python/context.c
 +++ b/Python/context.c
-@@ -944,7 +944,7 @@ contextvar_tp_repr(PyContextVar *self)
+@@ -937,7 +937,7 @@ contextvar_tp_repr(PyContextVar *self)
          Py_DECREF(def);
      }
  
@@ -449,7 +443,7 @@ index ef9db6a9cd0..eda4acbce52 100644
      if (addr == NULL) {
          goto error;
      }
-@@ -1156,7 +1156,7 @@ token_tp_repr(PyContextToken *self)
+@@ -1149,7 +1149,7 @@ token_tp_repr(PyContextToken *self)
      }
      Py_DECREF(var);
  
@@ -459,10 +453,10 @@ index ef9db6a9cd0..eda4acbce52 100644
          goto error;
      }
 diff --git a/Python/hamt.c b/Python/hamt.c
-index 908c2531870..c6e0e9485fd 100644
+index 8cb94641bef..2cc7ef09897 100644
 --- a/Python/hamt.c
 +++ b/Python/hamt.c
-@@ -1208,7 +1208,7 @@ hamt_node_bitmap_dump(PyHamtNode_Bitmap *node,
+@@ -1180,7 +1180,7 @@ hamt_node_bitmap_dump(PyHamtNode_Bitmap *node,
      if (tmp2 == NULL) {
          goto error;
      }
@@ -471,7 +465,7 @@ index 908c2531870..c6e0e9485fd 100644
          Py_DECREF(tmp2);
          goto error;
      }
-@@ -1599,8 +1599,8 @@ hamt_node_collision_dump(PyHamtNode_Collision *node,
+@@ -1557,8 +1557,8 @@ hamt_node_collision_dump(PyHamtNode_Collision *node,
          goto error;
      }
  
@@ -482,7 +476,7 @@ index 908c2531870..c6e0e9485fd 100644
      {
          goto error;
      }
-@@ -1981,7 +1981,7 @@ hamt_node_array_dump(PyHamtNode_Array *node,
+@@ -1933,7 +1933,7 @@ hamt_node_array_dump(PyHamtNode_Array *node,
          goto error;
      }
  

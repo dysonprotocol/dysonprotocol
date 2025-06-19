@@ -37,7 +37,7 @@ Before building Dyson Protocol, ensure you have the following installed:
 - **Go** (>= 1.24) - [Installation Guide](https://golang.org/doc/install)
 - **Git** - For cloning repositories and submodules
 - **Make** - Build automation tool
-- **Python 3.11+ with venv** - `python3.11-venv` package (or equivalent for your system)
+- **Python 3.12+ with venv** - `python3.12-venv` package (or equivalent for your system)
 - **Docker** (optional) - [Installation Guide](https://docs.docker.com/get-docker/) (platform-specific)
 
 > **🐧 Debian/Ubuntu Users:** For a complete automated installation, run:

@@ -5,23 +5,60 @@
 
 set -e
 
+# Clone and build Dyson Protocol
+echo "🔗 Cloning Dyson Protocol repository..."
+git clone --depth 1 --no-single-branch --recurse-submodules https://github.com/dysonprotocol/dysonprotocol.git
+cd dysonprotocol
+
+
 echo "🚀 Installing Dyson Protocol on Debian/Ubuntu..."
-echo "This script will install: Git, Make, Python 3.11+, Go 1.24.4, Docker, and build Dyson Protocol"
+echo "This script will install: Git, Make, Python 3.12, Go 1.24.4, Docker, and build Dyson Protocol"
 echo ""
 
 # Update package list
 echo "📦 Updating package list..."
 sudo apt update
 
-# Install basic dependencies
-echo "📦 Installing Git, Make, and Python 3.11 with venv..."
-sudo apt install -y git make python3.11-venv
+# Install build dependencies for dysvm
+echo "📦 Installing  build dependencies..."
+sudo apt install -y \
+    git \
+    make \
+    build-essential \
+    zlib1g-dev \
+    libncurses5-dev \
+    libgdbm-dev \
+    libnss3-dev \
+    libssl-dev \
+    libreadline-dev \
+    libffi-dev \
+    libsqlite3-dev \
+    wget \
+    libbz2-dev \
+    liblzma-dev
+
+# Install pyenv
+echo "🐍 Installing pyenv..."
+curl -fsSL https://pyenv.run | bash
+
+# Add pyenv to bashrc
+echo "🐍 Adding pyenv to bashrc..."
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(pyenv init - bash)"' >> ~/.bashrc
+
+
+# Install Python from .python-version
+echo "🐍 Installing Python..."
+pyenv install
+
 
 # Install Go 1.24.4
 echo "🐹 Installing Go 1.24.4..."
 wget https://go.dev/dl/go1.24.4.linux-amd64.tar.gz
 sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.24.4.linux-amd64.tar.gz
-echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.profile
+echo 'export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin' >> ~/.profile
+echo 'export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin' >> ~/.bashrc
 export PATH=$PATH:/usr/local/go/bin
 
 # Clean up Go tarball
@@ -53,7 +90,7 @@ echo "✅ Docker installed successfully"
 
 # Clone and build Dyson Protocol
 echo "🔗 Cloning Dyson Protocol repository..."
-git clone --depth 1 --recurse-submodules https://github.com/dysonprotocol/dysonprotocol.git
+git clone --depth 1 --no-single-branch --recurse-submodules https://github.com/dysonprotocol/dysonprotocol.git
 cd dysonprotocol
 
 echo "🔨 Building Dyson Protocol..."

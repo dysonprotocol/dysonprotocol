@@ -40,7 +40,7 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/gorilla/rpc v1.2.1
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
-	github.com/kluctl/go-embed-python v0.0.0-3.13.1-20241219-1
+	github.com/kluctl/go-embed-python v0.0.0-3.12.11-20241219-1
 	golang.org/x/sync v0.14.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20250414145226-207652e42e2e
 	google.golang.org/grpc v1.72.1
