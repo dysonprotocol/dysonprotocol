@@ -76,6 +76,22 @@ cp "$DIST_FILE" "$TARGET_FILE"
 mkdir -p "$EXTRACT_DIR"
 zstd -d < "$TARGET_FILE" | tar -x -C "$EXTRACT_DIR"
 
+# Clean up case-sensitive file conflicts in terminfo
+echo "🧹 Removing terminfo directory to avoid case-sensitivity conflicts..."
+PYTHON_INSTALL_DIR="$EXTRACT_DIR/python/install"
+if [ -d "$PYTHON_INSTALL_DIR/share/terminfo" ]; then
+    rm -rf "$PYTHON_INSTALL_DIR/share/terminfo"
+    echo "✓ Removed terminfo directory"
+else
+    echo "ℹ️ No terminfo directory found"
+fi
+
+# Repackage the cleaned distribution
+echo "📦 Repackaging cleaned Python distribution..."
+cd "$EXTRACT_DIR"
+tar -cf - python | zstd > "$TARGET_FILE"
+echo "✓ Repackaged successfully"
+
 # Run the packer script - only do the current platform
 cd "$GO_EMBED_PYTHON_DIR" && \
 go mod tidy && \
