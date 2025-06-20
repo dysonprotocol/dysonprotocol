@@ -19,9 +19,10 @@ document.addEventListener("alpine:init", () => {
     gasPrice: Alpine.$persist(0.00000),
     activeWalletMeta: Alpine.$persist(null),
     activeWalletInstance: null,
+    isLoading: true,
 
     // Call this somewhere (e.g. <body x-init="$store.walletStore.init()">
-    async init() {
+    async init() {      
       ///====
       console.log("walletStore init");
       ///====
@@ -53,11 +54,14 @@ document.addEventListener("alpine:init", () => {
       // TODO: remove this
       if (this.localCosmJsWallets.length === 0) {
         // TODO: remove this
-        const seed = "degree outdoor ridge system dice tent ill wolf lady demise salmon crash"; 
-        await this.importNamedCosmJsWallet("Default", seed, "password");
-        await this.connectNamedCosmJsWallet("Default", "password");
+        const seed = "public feature teach face federal matrix throw legend bridge brass diary beach typical doll evoke weapon among crane regret trust enact swarm brother outside"; 
+        console.log("creating default wallet");
+        await this.importNamedCosmJsWallet("alice", seed, "password");
+        await this.connectNamedCosmJsWallet("alice", "password");
       }
 
+      // Mark as loaded
+      this.isLoading = false;
     },
 
     // Utilities

@@ -1,6 +1,9 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <style>
+      [x-cloak] { display: none !important; }
+    </style>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light dark" />
@@ -60,7 +63,7 @@
   </head>
 
   <!-- Initialize the wallet store on page load -->
-  <body x-data x-init="$store.walletStore.init()" hx-boost="true" hx-target="main" class="min-h-screen bg-base-100">
+  <body x-data hx-boost="true" hx-target="main" class="min-h-screen bg-base-100" x-cloak>
     <div class="navbar bg-base-200 shadow-lg">
       <div class="navbar-start">
         <a href="/" class="btn btn-ghost normal-case text-xl">
@@ -81,12 +84,17 @@
         </ul>
       </div>
       <div class="navbar-end">
-        <!-- Show "Manage Wallets" if there's no active wallet -->
-        <div x-show="!$store.walletStore.activeWalletMeta">
+        <!-- Show loading spinner while wallet store is initializing -->
+        <div x-show="$store.walletStore.isLoading">
+          <a class="btn btn-primary btn-sm">Loading wallet...</a>
+        </div>
+        
+        <!-- Show "Manage Wallets" if there's no active wallet and store is loaded -->
+        <div x-show="!$store.walletStore.isLoading && !$store.walletStore.activeWalletMeta">
           <a href="/wallet" class="btn btn-primary btn-sm">Manage Wallets</a>
         </div>
-        <!-- Show wallet info if connected -->
-        <div x-show="$store.walletStore.activeWalletMeta" class="dropdown dropdown-end">
+        <!-- Show wallet info if connected and store is loaded -->
+        <div x-show="!$store.walletStore.isLoading && $store.walletStore.activeWalletMeta" class="dropdown dropdown-end">
           <label tabindex="0" class="btn btn-ghost btn-sm normal-case">
             <span>Wallet: <strong x-text="$store.walletStore.activeWalletMeta?.name"></strong></span>
             <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -128,6 +136,6 @@
     </div>
     
     <!-- HTMX will load partials into this main element -->
-    <main x-show="true" style="display: none" class="container mx-auto p-4">{{ main }}</main>
+    <main class="container mx-auto p-4">{{ main }}</main>
   </body>
 </html> 

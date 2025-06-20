@@ -116,7 +116,7 @@
       </div>
       
       <div class="space-y-4">
-        <template x-for="item in $store.walletStore.localCosmJsWallets" :key="item.name">
+        <template x-for="(item, index) in $store.walletStore.localCosmJsWallets" :key="`${item.name}-${item.address}-${index}`">
           <div class="card bg-base-100 shadow-md">
             <div class="card-body">
               <h3 class="font-bold text-lg" x-text="item.name"></h3>

@@ -24,6 +24,7 @@ echo "📦 Installing  build dependencies..."
 sudo apt install -y \
     git \
     make \
+    jq \
     build-essential \
     zlib1g-dev \
     libncurses5-dev \
@@ -35,7 +36,7 @@ sudo apt install -y \
     libsqlite3-dev \
     wget \
     libbz2-dev \
-    liblzma-dev
+    liblzma-dev 
 
 # Install pyenv
 echo "🐍 Installing pyenv..."

@@ -806,6 +806,7 @@ dyslang.WHITELIST_FUNCTIONS.update(
         # re2.Match.re
         "re2._Regexp.match",
         "re2._Match.groupdict",
+        "Match.groupdict",        
         "contains",
         "count",
         "findall",
