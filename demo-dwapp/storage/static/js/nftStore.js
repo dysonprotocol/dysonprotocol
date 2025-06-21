@@ -180,7 +180,7 @@ document.addEventListener('alpine:init', () => {
           nft_id: nft.id,
           'bid_amount': { denom: 'dys', amount: String(nft.newBid).trim() },
         };
-        const res = await Alpine.store('walletStore').sendMsg({ msg, gasLimit: null, memo: 'Place bid' });
+        const res = await Alpine.store('walletStore').sendMsg({ msg, gasLimit: null });
         if (res.success === false) throw new Error(res.rawLog || 'Tx failed');
         nft.bidTxHash = res.raw?.tx_response?.txhash || res.raw?.result?.txhash || '';
         nft.newBid = '';
@@ -225,7 +225,7 @@ document.addEventListener('alpine:init', () => {
           }
           msg.new_valuation = { denom: nft.valuationDenom || 'dys', amount: amountStr };
         }
-        const res = await Alpine.store('walletStore').sendMsg({ msg, gasLimit: null, memo: accept ? 'Accept bid' : 'Reject bid' });
+        const res = await Alpine.store('walletStore').sendMsg({ msg, gasLimit: null });
         if (res.success === false) throw new Error(res.rawLog || 'Tx failed');
         nft.ownerActionTxHash = res.raw?.tx_response?.txhash || res.raw?.result?.txhash || '';
         if (!accept) nft.newValuation = '';
@@ -249,7 +249,7 @@ document.addEventListener('alpine:init', () => {
           nft_id: nft.id,
           listed: nft.listed,
         };
-        const res = await Alpine.store('walletStore').sendMsg({ msg, gasLimit: null, memo: 'Toggle listed' });
+        const res = await Alpine.store('walletStore').sendMsg({ msg, gasLimit: null });
         if (res.success === false) throw new Error(res.rawLog || 'Tx failed');
         nft.ownerActionTxHash = res.raw?.tx_response?.txhash || res.raw?.result?.txhash || '';
       } catch (e) {
@@ -274,11 +274,11 @@ document.addEventListener('alpine:init', () => {
         const msg = {
           '@type': '/dysonprotocol.nameservice.v1.MsgSetValuation',
           owner: this.walletAddress,
-          nft_class_id: nft.class_id,
+          nft_class_id: nft.class_id,n
           nft_id: nft.id,
           valuation: { denom: 'dys', amount: String(nft.newValuationSet).trim() },
         };
-        const res = await Alpine.store('walletStore').sendMsg({ msg, gasLimit: null, memo: 'Set valuation' });
+        const res = await Alpine.store('walletStore').sendMsg({ msg, gasLimit: null });
         if (res.success === false) throw new Error(res.rawLog || 'Tx failed');
         nft.setValTxHash = res.raw?.tx_response?.txhash || res.raw?.result?.txhash || '';
         nft.newValuationSet = '';
