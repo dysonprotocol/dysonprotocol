@@ -56,6 +56,9 @@ type MsgClient interface {
 	Renew(ctx context.Context, in *MsgRenew, opts ...grpc.CallOption) (*MsgRenewResponse, error)
 	PlaceBid(ctx context.Context, in *MsgPlaceBid, opts ...grpc.CallOption) (*MsgPlaceBidResponse, error)
 	AcceptBid(ctx context.Context, in *MsgAcceptBid, opts ...grpc.CallOption) (*MsgAcceptBidResponse, error)
+	// RejectBid is used to reject a bid and set a new valuation for the NFT, to
+	// prevent abuse a rejection fee as a percentage of the new valuation is paid
+	// to the community pool.
 	RejectBid(ctx context.Context, in *MsgRejectBid, opts ...grpc.CallOption) (*MsgRejectBidResponse, error)
 	ClaimBid(ctx context.Context, in *MsgClaimBid, opts ...grpc.CallOption) (*MsgClaimBidResponse, error)
 	SetDestination(ctx context.Context, in *MsgSetDestination, opts ...grpc.CallOption) (*MsgSetDestinationResponse, error)
@@ -328,6 +331,9 @@ type MsgServer interface {
 	Renew(context.Context, *MsgRenew) (*MsgRenewResponse, error)
 	PlaceBid(context.Context, *MsgPlaceBid) (*MsgPlaceBidResponse, error)
 	AcceptBid(context.Context, *MsgAcceptBid) (*MsgAcceptBidResponse, error)
+	// RejectBid is used to reject a bid and set a new valuation for the NFT, to
+	// prevent abuse a rejection fee as a percentage of the new valuation is paid
+	// to the community pool.
 	RejectBid(context.Context, *MsgRejectBid) (*MsgRejectBidResponse, error)
 	ClaimBid(context.Context, *MsgClaimBid) (*MsgClaimBidResponse, error)
 	SetDestination(context.Context, *MsgSetDestination) (*MsgSetDestinationResponse, error)

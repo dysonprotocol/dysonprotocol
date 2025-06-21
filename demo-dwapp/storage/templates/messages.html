@@ -1,3 +1,6 @@
+<!-- Configuration for messagesStore (script address, etc.) -->
+<script type="application/json" class="messages-config">{{ messages_config_json }}</script>
+
 <section x-data="messagesStore" class="space-y-6">
   <h2 class="text-2xl font-bold">Messages</h2>
   
@@ -6,6 +9,14 @@
     <div class="card-body">
       <h3 class="card-title">Send a Message</h3>
       <form @submit.prevent.stop="submitMessage" hx-boost="false" class="space-y-4">
+        <!-- Error Display -->
+        <template x-if="submitError">
+          <div class="alert alert-error">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <span x-text="submitError"></span>
+          </div>
+        </template>
+        
         <div class="form-control">
           <label class="label">
             <span class="label-text">Your Message:</span>
@@ -13,7 +24,7 @@
           <input 
             x-model="message" 
             placeholder="Enter your greeting..." 
-            :disabled="!$store.walletStore.activeWalletMeta"
+            :disabled="!$store.walletStore.activeWalletMeta || submitting"
             required
             class="input input-bordered"
           />
@@ -29,11 +40,11 @@
             min="0"
             step="1"
             placeholder="0 (optional)" 
-            :disabled="!$store.walletStore.activeWalletMeta"
+            :disabled="!$store.walletStore.activeWalletMeta || submitting"
             class="input input-bordered"
           />
           <label class="label">
-            <span class="label-text-alt">Optional: Send DYS coins to sponsor this message and make it stand out!</span>
+            <span class="label-text-alt">Pay this Dwapp to sponsor this message and make it stand out!</span>
           </label>
         </div>
         
@@ -46,12 +57,19 @@
         <template x-if="$store.walletStore.activeWalletMeta">
           <button 
             type="submit" 
-            :disabled="!message.trim()"
+            :disabled="!message.trim() || submitting"
             class="btn w-full"
-            :class="sponsorAmount > 0 ? 'btn-success' : 'btn-primary'"
+            :class="{
+              'loading': submitting,
+              'btn-success': sponsorAmount > 0,
+              'btn-primary': !sponsorAmount || sponsorAmount <= 0
+            }"
           >
-            <span x-show="!sponsorAmount || sponsorAmount == 0">Send Message</span>
-            <span x-show="sponsorAmount > 0">💰 Send Sponsored Message (<span x-text="sponsorAmount"></span> DYS) 💰</span>
+            <span x-show="submitting">Submitting...</span>
+            <span x-show="!submitting">
+              <span x-show="!sponsorAmount || sponsorAmount <= 0">Send Message</span>
+              <span x-show="sponsorAmount > 0">💰 Send Sponsored Message (<span x-text="sponsorAmount"></span> DYS) 💰</span>
+            </span>
           </button>
         </template>
       </form>

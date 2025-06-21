@@ -333,6 +333,7 @@
     },
     "/dysonprotocol.nameservice.v1.Msg/RejectBid": {
       "post": {
+        "summary": "RejectBid is used to reject a bid and set a new valuation for the NFT, to\nprevent abuse a rejection fee as a percentage of the new valuation is paid\nto the community pool.",
         "operationId": "Msg_RejectBid",
         "responses": {
           "200": {
@@ -1081,7 +1082,16 @@
       }
     },
     "dysonprotocol.nameservice.v1.MsgRejectBidResponse": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "rejection_fee": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/cosmos.base.v1beta1.Coin"
+          },
+          "title": "Fee collected by the community pool when a bid is rejected"
+        }
+      }
     },
     "dysonprotocol.nameservice.v1.MsgRenew": {
       "type": "object",

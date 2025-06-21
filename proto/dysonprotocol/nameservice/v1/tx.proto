@@ -20,6 +20,9 @@ service Msg {
   rpc Renew(MsgRenew) returns (MsgRenewResponse);
   rpc PlaceBid(MsgPlaceBid) returns (MsgPlaceBidResponse);
   rpc AcceptBid(MsgAcceptBid) returns (MsgAcceptBidResponse);
+  // RejectBid is used to reject a bid and set a new valuation for the NFT, to
+  // prevent abuse a rejection fee as a percentage of the new valuation is paid
+  // to the community pool.
   rpc RejectBid(MsgRejectBid) returns (MsgRejectBidResponse);
   rpc ClaimBid(MsgClaimBid) returns (MsgClaimBidResponse);
   rpc SetDestination(MsgSetDestination) returns (MsgSetDestinationResponse);
@@ -109,7 +112,11 @@ message MsgRejectBid {
   cosmos.base.v1beta1.Coin new_valuation = 4
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
-message MsgRejectBidResponse {}
+message MsgRejectBidResponse {
+  // Fee collected by the community pool when a bid is rejected
+  repeated cosmos.base.v1beta1.Coin rejection_fee = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
 
 message MsgClaimBid {
   option (cosmos.msg.v1.signer) = "bidder";

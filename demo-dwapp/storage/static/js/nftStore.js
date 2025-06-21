@@ -274,7 +274,7 @@ document.addEventListener('alpine:init', () => {
         const msg = {
           '@type': '/dysonprotocol.nameservice.v1.MsgSetValuation',
           owner: this.walletAddress,
-          nft_class_id: nft.class_id,n
+          nft_class_id: nft.class_id,
           nft_id: nft.id,
           valuation: { denom: 'dys', amount: String(nft.newValuationSet).trim() },
         };

@@ -55,6 +55,9 @@ message EventBidAccepted {
 message EventBidRejected {
   string class_id = 1;
   string nft_id = 2;
+  // Fee collected by the community pool when a bid is rejected
+  repeated cosmos.base.v1beta1.Coin rejection_fee = 3
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
 // EventNameClaimed is emitted when a name is claimed after bid timeout

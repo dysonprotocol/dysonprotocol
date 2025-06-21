@@ -340,7 +340,16 @@ def handle_tasks(environ, start_response):
 def handle_messages(environ, start_response):
     start_response("200 OK", [("Content-Type", "text/html; charset=utf-8")])
 
-    data = {}
+    # Embed the current script address into the messages page so that
+    # frontend code can read it without relying on URL parsing.
+    script_address = get_script_address()
+
+    data = {
+        "messages_config_json": SafeString(
+            json.dumps({"scriptAddress": script_address})
+        )
+    }
+
     messages_template = SafeTemplate(fetch_template("messages.html"))
     main = messages_template.substitute(data)
 

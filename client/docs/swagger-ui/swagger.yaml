@@ -3296,12 +3296,39 @@ paths:
         - Msg
   /dysonprotocol.nameservice.v1.Msg/RejectBid:
     post:
+      summary: >-
+        RejectBid is used to reject a bid and set a new valuation for the NFT,
+        to
+
+        prevent abuse a rejection fee as a percentage of the new valuation is
+        paid
+
+        to the community pool.
       operationId: Msg_RejectBid
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
+            properties:
+              rejection_fee:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+                title: Fee collected by the community pool when a bid is rejected
         default:
           description: An unexpected error response.
           schema:
@@ -35133,6 +35160,22 @@ definitions:
           signatures required by gogoproto.
   dysonprotocol.nameservice.v1.MsgRejectBidResponse:
     type: object
+    properties:
+      rejection_fee:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+        title: Fee collected by the community pool when a bid is rejected
   dysonprotocol.nameservice.v1.MsgRenew:
     type: object
     properties:

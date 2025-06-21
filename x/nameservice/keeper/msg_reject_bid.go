@@ -160,8 +160,9 @@ func (k Keeper) RejectBid(ctx context.Context, msg *nameservicev1.MsgRejectBid) 
 	// Emit an event
 	if evErr := sdkCtx.EventManager().EmitTypedEvent(
 		&nameservicev1.EventBidRejected{
-			ClassId: msg.NftClassId, // Class ID of the NFT
-			NftId:   msg.NftId,      // NFT ID
+			ClassId:      msg.NftClassId, // Class ID of the NFT
+			NftId:        msg.NftId,      // NFT ID
+			RejectionFee: totalFeeCoins,  // Fee paid to the community pool
 		},
 	); evErr != nil {
 		k.Logger.Error("failed to emit bid rejected event", "error", evErr)
@@ -175,5 +176,6 @@ func (k Keeper) RejectBid(ctx context.Context, msg *nameservicev1.MsgRejectBid) 
 		"new_expiry", newExpiryTime.Format(time.RFC3339),
 		"total_fees", totalFeeCoins.String())
 
+	// TODO: after protobuf regeneration, include RejectionFee in response
 	return &nameservicev1.MsgRejectBidResponse{}, nil
 }

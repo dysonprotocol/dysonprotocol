@@ -4,17 +4,30 @@ document.addEventListener("alpine:init", () => {
     message: "",
     sponsorAmount: 0,
     deletingMessageId: null,
+    submitting: false,
+    submitError: null,
 
     init() {
       this.fetchMessages();
     },
 
-    // Get the current script address from the domain
+    // Get the current script address from an embedded JSON <script> tag
     getScriptAddress() {
-      // Extract script address from subdomain (e.g., dys1prvefcdgdnh2cpas6rnnval84n0gv2r28tklr4.localhost:1317)
-      const hostname = window.location.hostname;
-      const parts = hostname.split('.');
-      return parts[0]; // First part should be the script address
+      // Expect a tag like:
+      // <script type="application/json" class="messages-config">{ "scriptAddress": "dys1..." }</script>
+      const cfgTag = document.querySelector('script.messages-config[type="application/json"]');
+      if (cfgTag) {
+        try {
+          const cfg = JSON.parse(cfgTag.textContent.trim());
+          if (cfg && typeof cfg.scriptAddress === 'string' && cfg.scriptAddress.trim() !== '') {
+            return cfg.scriptAddress.trim();
+          }
+        } catch (e) {
+          console.error('Invalid messages-config JSON', e);
+        }
+      }
+      // Fallback: empty string if not provided
+      return '';
     },
 
     async fetchMessages() {
@@ -47,48 +60,35 @@ document.addEventListener("alpine:init", () => {
     },
 
     async submitMessage() {
+      this.submitting = true;
+      this.submitError = null;
+
       try {
-        console.log("Running script...");
         console.log("submitMessage called");
-        
+
         const scriptAddress = this.getScriptAddress();
-        console.log("Script address:", scriptAddress);
-        
         const walletStore = Alpine.store("walletStore");
-        console.log("Wallet store:", walletStore ? "found" : "not found");
-        
-        if (!walletStore) {
-          console.log("Error: Wallet store not found");
-          return;
-        }
-        
-        if (!walletStore.runDysonScript) {
-          console.log("Error: runDysonScript function not found");
+
+        if (!walletStore || !walletStore.runDysonScript) {
+          this.submitError = "Wallet connection not found. Please connect your wallet first.";
           return;
         }
 
-        // Prepare attached messages if sponsor amount is provided
         let attachedMsg = [];
         if (this.sponsorAmount && this.sponsorAmount > 0) {
           const bankSendMsg = {
             "@type": "/cosmos.bank.v1beta1.MsgSend",
             "from_address": walletStore.activeWalletMeta.address,
             "to_address": scriptAddress,
-            "amount": [{
-              "denom": "dys",
-              "amount": this.sponsorAmount.toString()
-            }]
+            "amount": [{ "denom": "dys", "amount": this.sponsorAmount.toString() }]
           };
           attachedMsg.push(bankSendMsg);
-          console.log("Adding bank send message:", bankSendMsg);
         }
 
-        let finalGasLimit = 200000; // Default gas limit
+        let finalGasLimit = 200000;
 
-        // If using CosmJS wallet, simulate first to get gas estimate
         if (walletStore.activeWalletMeta?.type === "cosmjs") {
-          console.log("CosmJS wallet detected, simulating transaction first...");
-          
+          console.log("Simulating transaction for gas estimation...");
           const simulationResult = await walletStore.runDysonScript({
             scriptAddress: scriptAddress,
             functionName: "save_message",
@@ -97,31 +97,20 @@ document.addEventListener("alpine:init", () => {
             gasLimit: finalGasLimit,
             simulate: true
           });
-          
-          console.log("Simulation result:", simulationResult);
-          
+
           if (simulationResult.success && simulationResult.rawSendMsgsResponse?.gasUsed) {
             const simulatedGas = parseInt(simulationResult.rawSendMsgsResponse.gasUsed, 10);
-            // Add 50% buffer to the simulated gas usage
             finalGasLimit = Math.ceil(simulatedGas * 1.5);
-            console.log(`Gas simulation: used ${simulatedGas}, setting limit to ${finalGasLimit}`);
-          } else {
-            console.log("Simulation failed or no gas info, using default gas limit");
-            if (!simulationResult.success) {
-              console.log("Simulation error:", simulationResult.rawSendMsgsResponse?.rawLog);
-              return; // Don't proceed if simulation fails
-            }
+            console.log(`Gas limit set to ${finalGasLimit} after simulation.`);
+          } else if (!simulationResult.success) {
+            const error = simulationResult.rawSendMsgsResponse?.rawLog || "Simulation failed.";
+            this.submitError = `Transaction would fail: ${error}`;
+            console.error("Simulation Error:", error);
+            return;
           }
         }
-        
-        console.log("Calling runDysonScript with:", JSON.stringify({
-          scriptAddress: scriptAddress,
-          functionName: "save_message", 
-          kwargs: JSON.stringify({ message: this.message }),
-          attachedMsg: attachedMsg,
-          gasLimit: finalGasLimit,
-        }));
-        
+
+        console.log("Executing transaction...");
         const result = await walletStore.runDysonScript({
           scriptAddress: scriptAddress,
           functionName: "save_message",
@@ -130,27 +119,27 @@ document.addEventListener("alpine:init", () => {
           gasLimit: finalGasLimit,
           simulate: false
         });
-        
-        console.log("runDysonScript result:", JSON.stringify(result, null, 2));
 
-        // Clear the message input and sponsor amount on successful submission
         if (result.success) {
+          console.log("Transaction successful:", result);
           this.message = "";
           this.sponsorAmount = 0;
-          console.log("Message and sponsor amount cleared after successful submission");
+          await this.fetchMessages();
+          const newMessageIndex = result?.scriptResponse?.result;
+          if (newMessageIndex) {
+            location.hash = newMessageIndex;
+          }
+        } else {
+          const error = result.scriptResponse?.error || result.rawSendMsgsResponse?.rawLog || "Transaction failed.";
+          this.submitError = `Transaction failed: ${error}`;
+          console.error("Execution Error:", error);
         }
 
-        // Refresh the messages list
-        await this.fetchMessages();
-
-        // Optionally scroll to new message index
-        const newMessageIndex = result?.scriptResponse?.result;
-        if (newMessageIndex) {
-          location.hash = newMessageIndex;
-        }
       } catch (error) {
-        console.log("submitMessage error:", error?.message || error);
-        console.log("Script error:", error?.message || error);
+        this.submitError = error?.message || "An unexpected error occurred.";
+        console.error("submitMessage error:", error);
+      } finally {
+        this.submitting = false;
       }
     },
 
