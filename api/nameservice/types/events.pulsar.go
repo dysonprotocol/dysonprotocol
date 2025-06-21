@@ -5959,6 +5959,846 @@ func (x *fastReflection_EventNFTClassExtraDataUpdated) ProtoMethods() *protoifac
 }
 
 var (
+	md_EventNFTClassAlwaysListedUpdated          protoreflect.MessageDescriptor
+	fd_EventNFTClassAlwaysListedUpdated_class_id protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_dysonprotocol_nameservice_v1_events_proto_init()
+	md_EventNFTClassAlwaysListedUpdated = File_dysonprotocol_nameservice_v1_events_proto.Messages().ByName("EventNFTClassAlwaysListedUpdated")
+	fd_EventNFTClassAlwaysListedUpdated_class_id = md_EventNFTClassAlwaysListedUpdated.Fields().ByName("class_id")
+}
+
+var _ protoreflect.Message = (*fastReflection_EventNFTClassAlwaysListedUpdated)(nil)
+
+type fastReflection_EventNFTClassAlwaysListedUpdated EventNFTClassAlwaysListedUpdated
+
+func (x *EventNFTClassAlwaysListedUpdated) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_EventNFTClassAlwaysListedUpdated)(x)
+}
+
+func (x *EventNFTClassAlwaysListedUpdated) slowProtoReflect() protoreflect.Message {
+	mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_EventNFTClassAlwaysListedUpdated_messageType fastReflection_EventNFTClassAlwaysListedUpdated_messageType
+var _ protoreflect.MessageType = fastReflection_EventNFTClassAlwaysListedUpdated_messageType{}
+
+type fastReflection_EventNFTClassAlwaysListedUpdated_messageType struct{}
+
+func (x fastReflection_EventNFTClassAlwaysListedUpdated_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_EventNFTClassAlwaysListedUpdated)(nil)
+}
+func (x fastReflection_EventNFTClassAlwaysListedUpdated_messageType) New() protoreflect.Message {
+	return new(fastReflection_EventNFTClassAlwaysListedUpdated)
+}
+func (x fastReflection_EventNFTClassAlwaysListedUpdated_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_EventNFTClassAlwaysListedUpdated
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_EventNFTClassAlwaysListedUpdated) Descriptor() protoreflect.MessageDescriptor {
+	return md_EventNFTClassAlwaysListedUpdated
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_EventNFTClassAlwaysListedUpdated) Type() protoreflect.MessageType {
+	return _fastReflection_EventNFTClassAlwaysListedUpdated_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_EventNFTClassAlwaysListedUpdated) New() protoreflect.Message {
+	return new(fastReflection_EventNFTClassAlwaysListedUpdated)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_EventNFTClassAlwaysListedUpdated) Interface() protoreflect.ProtoMessage {
+	return (*EventNFTClassAlwaysListedUpdated)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_EventNFTClassAlwaysListedUpdated) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.ClassId != "" {
+		value := protoreflect.ValueOfString(x.ClassId)
+		if !f(fd_EventNFTClassAlwaysListedUpdated_class_id, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_EventNFTClassAlwaysListedUpdated) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "dysonprotocol.nameservice.v1.EventNFTClassAlwaysListedUpdated.class_id":
+		return x.ClassId != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.nameservice.v1.EventNFTClassAlwaysListedUpdated"))
+		}
+		panic(fmt.Errorf("message dysonprotocol.nameservice.v1.EventNFTClassAlwaysListedUpdated does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_EventNFTClassAlwaysListedUpdated) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "dysonprotocol.nameservice.v1.EventNFTClassAlwaysListedUpdated.class_id":
+		x.ClassId = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.nameservice.v1.EventNFTClassAlwaysListedUpdated"))
+		}
+		panic(fmt.Errorf("message dysonprotocol.nameservice.v1.EventNFTClassAlwaysListedUpdated does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_EventNFTClassAlwaysListedUpdated) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "dysonprotocol.nameservice.v1.EventNFTClassAlwaysListedUpdated.class_id":
+		value := x.ClassId
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.nameservice.v1.EventNFTClassAlwaysListedUpdated"))
+		}
+		panic(fmt.Errorf("message dysonprotocol.nameservice.v1.EventNFTClassAlwaysListedUpdated does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_EventNFTClassAlwaysListedUpdated) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "dysonprotocol.nameservice.v1.EventNFTClassAlwaysListedUpdated.class_id":
+		x.ClassId = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.nameservice.v1.EventNFTClassAlwaysListedUpdated"))
+		}
+		panic(fmt.Errorf("message dysonprotocol.nameservice.v1.EventNFTClassAlwaysListedUpdated does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_EventNFTClassAlwaysListedUpdated) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "dysonprotocol.nameservice.v1.EventNFTClassAlwaysListedUpdated.class_id":
+		panic(fmt.Errorf("field class_id of message dysonprotocol.nameservice.v1.EventNFTClassAlwaysListedUpdated is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.nameservice.v1.EventNFTClassAlwaysListedUpdated"))
+		}
+		panic(fmt.Errorf("message dysonprotocol.nameservice.v1.EventNFTClassAlwaysListedUpdated does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_EventNFTClassAlwaysListedUpdated) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "dysonprotocol.nameservice.v1.EventNFTClassAlwaysListedUpdated.class_id":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.nameservice.v1.EventNFTClassAlwaysListedUpdated"))
+		}
+		panic(fmt.Errorf("message dysonprotocol.nameservice.v1.EventNFTClassAlwaysListedUpdated does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_EventNFTClassAlwaysListedUpdated) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in dysonprotocol.nameservice.v1.EventNFTClassAlwaysListedUpdated", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_EventNFTClassAlwaysListedUpdated) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_EventNFTClassAlwaysListedUpdated) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_EventNFTClassAlwaysListedUpdated) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_EventNFTClassAlwaysListedUpdated) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*EventNFTClassAlwaysListedUpdated)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.ClassId)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*EventNFTClassAlwaysListedUpdated)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.ClassId) > 0 {
+			i -= len(x.ClassId)
+			copy(dAtA[i:], x.ClassId)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ClassId)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*EventNFTClassAlwaysListedUpdated)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: EventNFTClassAlwaysListedUpdated: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: EventNFTClassAlwaysListedUpdated: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.ClassId = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_EventNFTClassAnnualPctUpdated          protoreflect.MessageDescriptor
+	fd_EventNFTClassAnnualPctUpdated_class_id protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_dysonprotocol_nameservice_v1_events_proto_init()
+	md_EventNFTClassAnnualPctUpdated = File_dysonprotocol_nameservice_v1_events_proto.Messages().ByName("EventNFTClassAnnualPctUpdated")
+	fd_EventNFTClassAnnualPctUpdated_class_id = md_EventNFTClassAnnualPctUpdated.Fields().ByName("class_id")
+}
+
+var _ protoreflect.Message = (*fastReflection_EventNFTClassAnnualPctUpdated)(nil)
+
+type fastReflection_EventNFTClassAnnualPctUpdated EventNFTClassAnnualPctUpdated
+
+func (x *EventNFTClassAnnualPctUpdated) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_EventNFTClassAnnualPctUpdated)(x)
+}
+
+func (x *EventNFTClassAnnualPctUpdated) slowProtoReflect() protoreflect.Message {
+	mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_EventNFTClassAnnualPctUpdated_messageType fastReflection_EventNFTClassAnnualPctUpdated_messageType
+var _ protoreflect.MessageType = fastReflection_EventNFTClassAnnualPctUpdated_messageType{}
+
+type fastReflection_EventNFTClassAnnualPctUpdated_messageType struct{}
+
+func (x fastReflection_EventNFTClassAnnualPctUpdated_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_EventNFTClassAnnualPctUpdated)(nil)
+}
+func (x fastReflection_EventNFTClassAnnualPctUpdated_messageType) New() protoreflect.Message {
+	return new(fastReflection_EventNFTClassAnnualPctUpdated)
+}
+func (x fastReflection_EventNFTClassAnnualPctUpdated_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_EventNFTClassAnnualPctUpdated
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_EventNFTClassAnnualPctUpdated) Descriptor() protoreflect.MessageDescriptor {
+	return md_EventNFTClassAnnualPctUpdated
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_EventNFTClassAnnualPctUpdated) Type() protoreflect.MessageType {
+	return _fastReflection_EventNFTClassAnnualPctUpdated_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_EventNFTClassAnnualPctUpdated) New() protoreflect.Message {
+	return new(fastReflection_EventNFTClassAnnualPctUpdated)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_EventNFTClassAnnualPctUpdated) Interface() protoreflect.ProtoMessage {
+	return (*EventNFTClassAnnualPctUpdated)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_EventNFTClassAnnualPctUpdated) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.ClassId != "" {
+		value := protoreflect.ValueOfString(x.ClassId)
+		if !f(fd_EventNFTClassAnnualPctUpdated_class_id, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_EventNFTClassAnnualPctUpdated) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "dysonprotocol.nameservice.v1.EventNFTClassAnnualPctUpdated.class_id":
+		return x.ClassId != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.nameservice.v1.EventNFTClassAnnualPctUpdated"))
+		}
+		panic(fmt.Errorf("message dysonprotocol.nameservice.v1.EventNFTClassAnnualPctUpdated does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_EventNFTClassAnnualPctUpdated) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "dysonprotocol.nameservice.v1.EventNFTClassAnnualPctUpdated.class_id":
+		x.ClassId = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.nameservice.v1.EventNFTClassAnnualPctUpdated"))
+		}
+		panic(fmt.Errorf("message dysonprotocol.nameservice.v1.EventNFTClassAnnualPctUpdated does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_EventNFTClassAnnualPctUpdated) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "dysonprotocol.nameservice.v1.EventNFTClassAnnualPctUpdated.class_id":
+		value := x.ClassId
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.nameservice.v1.EventNFTClassAnnualPctUpdated"))
+		}
+		panic(fmt.Errorf("message dysonprotocol.nameservice.v1.EventNFTClassAnnualPctUpdated does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_EventNFTClassAnnualPctUpdated) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "dysonprotocol.nameservice.v1.EventNFTClassAnnualPctUpdated.class_id":
+		x.ClassId = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.nameservice.v1.EventNFTClassAnnualPctUpdated"))
+		}
+		panic(fmt.Errorf("message dysonprotocol.nameservice.v1.EventNFTClassAnnualPctUpdated does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_EventNFTClassAnnualPctUpdated) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "dysonprotocol.nameservice.v1.EventNFTClassAnnualPctUpdated.class_id":
+		panic(fmt.Errorf("field class_id of message dysonprotocol.nameservice.v1.EventNFTClassAnnualPctUpdated is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.nameservice.v1.EventNFTClassAnnualPctUpdated"))
+		}
+		panic(fmt.Errorf("message dysonprotocol.nameservice.v1.EventNFTClassAnnualPctUpdated does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_EventNFTClassAnnualPctUpdated) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "dysonprotocol.nameservice.v1.EventNFTClassAnnualPctUpdated.class_id":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.nameservice.v1.EventNFTClassAnnualPctUpdated"))
+		}
+		panic(fmt.Errorf("message dysonprotocol.nameservice.v1.EventNFTClassAnnualPctUpdated does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_EventNFTClassAnnualPctUpdated) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in dysonprotocol.nameservice.v1.EventNFTClassAnnualPctUpdated", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_EventNFTClassAnnualPctUpdated) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_EventNFTClassAnnualPctUpdated) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_EventNFTClassAnnualPctUpdated) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_EventNFTClassAnnualPctUpdated) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*EventNFTClassAnnualPctUpdated)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.ClassId)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*EventNFTClassAnnualPctUpdated)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.ClassId) > 0 {
+			i -= len(x.ClassId)
+			copy(dAtA[i:], x.ClassId)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ClassId)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*EventNFTClassAnnualPctUpdated)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: EventNFTClassAnnualPctUpdated: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: EventNFTClassAnnualPctUpdated: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.ClassId = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
 	md_EventNFTMetadataUpdated          protoreflect.MessageDescriptor
 	fd_EventNFTMetadataUpdated_class_id protoreflect.FieldDescriptor
 	fd_EventNFTMetadataUpdated_nft_id   protoreflect.FieldDescriptor
@@ -5980,7 +6820,7 @@ func (x *EventNFTMetadataUpdated) ProtoReflect() protoreflect.Message {
 }
 
 func (x *EventNFTMetadataUpdated) slowProtoReflect() protoreflect.Message {
-	mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[12]
+	mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6442,6 +7282,544 @@ func (x *fastReflection_EventNFTMetadataUpdated) ProtoMethods() *protoiface.Meth
 	}
 }
 
+var (
+	md_EventNFTListedUpdated          protoreflect.MessageDescriptor
+	fd_EventNFTListedUpdated_class_id protoreflect.FieldDescriptor
+	fd_EventNFTListedUpdated_nft_id   protoreflect.FieldDescriptor
+	fd_EventNFTListedUpdated_listed   protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_dysonprotocol_nameservice_v1_events_proto_init()
+	md_EventNFTListedUpdated = File_dysonprotocol_nameservice_v1_events_proto.Messages().ByName("EventNFTListedUpdated")
+	fd_EventNFTListedUpdated_class_id = md_EventNFTListedUpdated.Fields().ByName("class_id")
+	fd_EventNFTListedUpdated_nft_id = md_EventNFTListedUpdated.Fields().ByName("nft_id")
+	fd_EventNFTListedUpdated_listed = md_EventNFTListedUpdated.Fields().ByName("listed")
+}
+
+var _ protoreflect.Message = (*fastReflection_EventNFTListedUpdated)(nil)
+
+type fastReflection_EventNFTListedUpdated EventNFTListedUpdated
+
+func (x *EventNFTListedUpdated) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_EventNFTListedUpdated)(x)
+}
+
+func (x *EventNFTListedUpdated) slowProtoReflect() protoreflect.Message {
+	mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_EventNFTListedUpdated_messageType fastReflection_EventNFTListedUpdated_messageType
+var _ protoreflect.MessageType = fastReflection_EventNFTListedUpdated_messageType{}
+
+type fastReflection_EventNFTListedUpdated_messageType struct{}
+
+func (x fastReflection_EventNFTListedUpdated_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_EventNFTListedUpdated)(nil)
+}
+func (x fastReflection_EventNFTListedUpdated_messageType) New() protoreflect.Message {
+	return new(fastReflection_EventNFTListedUpdated)
+}
+func (x fastReflection_EventNFTListedUpdated_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_EventNFTListedUpdated
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_EventNFTListedUpdated) Descriptor() protoreflect.MessageDescriptor {
+	return md_EventNFTListedUpdated
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_EventNFTListedUpdated) Type() protoreflect.MessageType {
+	return _fastReflection_EventNFTListedUpdated_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_EventNFTListedUpdated) New() protoreflect.Message {
+	return new(fastReflection_EventNFTListedUpdated)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_EventNFTListedUpdated) Interface() protoreflect.ProtoMessage {
+	return (*EventNFTListedUpdated)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_EventNFTListedUpdated) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.ClassId != "" {
+		value := protoreflect.ValueOfString(x.ClassId)
+		if !f(fd_EventNFTListedUpdated_class_id, value) {
+			return
+		}
+	}
+	if x.NftId != "" {
+		value := protoreflect.ValueOfString(x.NftId)
+		if !f(fd_EventNFTListedUpdated_nft_id, value) {
+			return
+		}
+	}
+	if x.Listed != false {
+		value := protoreflect.ValueOfBool(x.Listed)
+		if !f(fd_EventNFTListedUpdated_listed, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_EventNFTListedUpdated) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "dysonprotocol.nameservice.v1.EventNFTListedUpdated.class_id":
+		return x.ClassId != ""
+	case "dysonprotocol.nameservice.v1.EventNFTListedUpdated.nft_id":
+		return x.NftId != ""
+	case "dysonprotocol.nameservice.v1.EventNFTListedUpdated.listed":
+		return x.Listed != false
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.nameservice.v1.EventNFTListedUpdated"))
+		}
+		panic(fmt.Errorf("message dysonprotocol.nameservice.v1.EventNFTListedUpdated does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_EventNFTListedUpdated) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "dysonprotocol.nameservice.v1.EventNFTListedUpdated.class_id":
+		x.ClassId = ""
+	case "dysonprotocol.nameservice.v1.EventNFTListedUpdated.nft_id":
+		x.NftId = ""
+	case "dysonprotocol.nameservice.v1.EventNFTListedUpdated.listed":
+		x.Listed = false
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.nameservice.v1.EventNFTListedUpdated"))
+		}
+		panic(fmt.Errorf("message dysonprotocol.nameservice.v1.EventNFTListedUpdated does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_EventNFTListedUpdated) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "dysonprotocol.nameservice.v1.EventNFTListedUpdated.class_id":
+		value := x.ClassId
+		return protoreflect.ValueOfString(value)
+	case "dysonprotocol.nameservice.v1.EventNFTListedUpdated.nft_id":
+		value := x.NftId
+		return protoreflect.ValueOfString(value)
+	case "dysonprotocol.nameservice.v1.EventNFTListedUpdated.listed":
+		value := x.Listed
+		return protoreflect.ValueOfBool(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.nameservice.v1.EventNFTListedUpdated"))
+		}
+		panic(fmt.Errorf("message dysonprotocol.nameservice.v1.EventNFTListedUpdated does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_EventNFTListedUpdated) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "dysonprotocol.nameservice.v1.EventNFTListedUpdated.class_id":
+		x.ClassId = value.Interface().(string)
+	case "dysonprotocol.nameservice.v1.EventNFTListedUpdated.nft_id":
+		x.NftId = value.Interface().(string)
+	case "dysonprotocol.nameservice.v1.EventNFTListedUpdated.listed":
+		x.Listed = value.Bool()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.nameservice.v1.EventNFTListedUpdated"))
+		}
+		panic(fmt.Errorf("message dysonprotocol.nameservice.v1.EventNFTListedUpdated does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_EventNFTListedUpdated) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "dysonprotocol.nameservice.v1.EventNFTListedUpdated.class_id":
+		panic(fmt.Errorf("field class_id of message dysonprotocol.nameservice.v1.EventNFTListedUpdated is not mutable"))
+	case "dysonprotocol.nameservice.v1.EventNFTListedUpdated.nft_id":
+		panic(fmt.Errorf("field nft_id of message dysonprotocol.nameservice.v1.EventNFTListedUpdated is not mutable"))
+	case "dysonprotocol.nameservice.v1.EventNFTListedUpdated.listed":
+		panic(fmt.Errorf("field listed of message dysonprotocol.nameservice.v1.EventNFTListedUpdated is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.nameservice.v1.EventNFTListedUpdated"))
+		}
+		panic(fmt.Errorf("message dysonprotocol.nameservice.v1.EventNFTListedUpdated does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_EventNFTListedUpdated) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "dysonprotocol.nameservice.v1.EventNFTListedUpdated.class_id":
+		return protoreflect.ValueOfString("")
+	case "dysonprotocol.nameservice.v1.EventNFTListedUpdated.nft_id":
+		return protoreflect.ValueOfString("")
+	case "dysonprotocol.nameservice.v1.EventNFTListedUpdated.listed":
+		return protoreflect.ValueOfBool(false)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: dysonprotocol.nameservice.v1.EventNFTListedUpdated"))
+		}
+		panic(fmt.Errorf("message dysonprotocol.nameservice.v1.EventNFTListedUpdated does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_EventNFTListedUpdated) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in dysonprotocol.nameservice.v1.EventNFTListedUpdated", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_EventNFTListedUpdated) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_EventNFTListedUpdated) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_EventNFTListedUpdated) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_EventNFTListedUpdated) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*EventNFTListedUpdated)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.ClassId)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.NftId)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.Listed {
+			n += 2
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*EventNFTListedUpdated)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.Listed {
+			i--
+			if x.Listed {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
+			}
+			i--
+			dAtA[i] = 0x18
+		}
+		if len(x.NftId) > 0 {
+			i -= len(x.NftId)
+			copy(dAtA[i:], x.NftId)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.NftId)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.ClassId) > 0 {
+			i -= len(x.ClassId)
+			copy(dAtA[i:], x.ClassId)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ClassId)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*EventNFTListedUpdated)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: EventNFTListedUpdated: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: EventNFTListedUpdated: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.ClassId = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field NftId", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.NftId = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Listed", wireType)
+				}
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.Listed = bool(v != 0)
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
 var _ protoreflect.List = (*_EventCoinsMinted_2_list)(nil)
 
 type _EventCoinsMinted_2_list struct {
@@ -6513,7 +7891,7 @@ func (x *EventCoinsMinted) ProtoReflect() protoreflect.Message {
 }
 
 func (x *EventCoinsMinted) slowProtoReflect() protoreflect.Message {
-	mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[13]
+	mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7007,7 +8385,7 @@ func (x *EventCoinsBurned) ProtoReflect() protoreflect.Message {
 }
 
 func (x *EventCoinsBurned) slowProtoReflect() protoreflect.Message {
-	mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[14]
+	mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7450,7 +8828,7 @@ func (x *EventClassSaved) ProtoReflect() protoreflect.Message {
 }
 
 func (x *EventClassSaved) slowProtoReflect() protoreflect.Message {
-	mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[15]
+	mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7870,7 +9248,7 @@ func (x *EventClassUpdated) ProtoReflect() protoreflect.Message {
 }
 
 func (x *EventClassUpdated) slowProtoReflect() protoreflect.Message {
-	mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[16]
+	mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8292,7 +9670,7 @@ func (x *EventNFTMinted) ProtoReflect() protoreflect.Message {
 }
 
 func (x *EventNFTMinted) slowProtoReflect() protoreflect.Message {
-	mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[17]
+	mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8776,7 +10154,7 @@ func (x *EventNFTBurned) ProtoReflect() protoreflect.Message {
 }
 
 func (x *EventNFTBurned) slowProtoReflect() protoreflect.Message {
-	mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[18]
+	mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9304,7 +10682,7 @@ func (x *EventCoinsMoved) ProtoReflect() protoreflect.Message {
 }
 
 func (x *EventCoinsMoved) slowProtoReflect() protoreflect.Message {
-	mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[19]
+	mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9744,7 +11122,7 @@ func (x *EventNftMoved) ProtoReflect() protoreflect.Message {
 }
 
 func (x *EventNftMoved) slowProtoReflect() protoreflect.Message {
-	mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[20]
+	mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -10872,6 +12250,80 @@ func (x *EventNFTClassExtraDataUpdated) GetClassId() string {
 	return ""
 }
 
+// EventNFTClassAlwaysListedUpdated is emitted when NFT class always_listed flag
+// is updated
+type EventNFTClassAlwaysListedUpdated struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
+}
+
+func (x *EventNFTClassAlwaysListedUpdated) Reset() {
+	*x = EventNFTClassAlwaysListedUpdated{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *EventNFTClassAlwaysListedUpdated) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EventNFTClassAlwaysListedUpdated) ProtoMessage() {}
+
+// Deprecated: Use EventNFTClassAlwaysListedUpdated.ProtoReflect.Descriptor instead.
+func (*EventNFTClassAlwaysListedUpdated) Descriptor() ([]byte, []int) {
+	return file_dysonprotocol_nameservice_v1_events_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *EventNFTClassAlwaysListedUpdated) GetClassId() string {
+	if x != nil {
+		return x.ClassId
+	}
+	return ""
+}
+
+// EventNFTClassAnnualPctUpdated is emitted when NFT class annual percentage is
+// updated
+type EventNFTClassAnnualPctUpdated struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
+}
+
+func (x *EventNFTClassAnnualPctUpdated) Reset() {
+	*x = EventNFTClassAnnualPctUpdated{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *EventNFTClassAnnualPctUpdated) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EventNFTClassAnnualPctUpdated) ProtoMessage() {}
+
+// Deprecated: Use EventNFTClassAnnualPctUpdated.ProtoReflect.Descriptor instead.
+func (*EventNFTClassAnnualPctUpdated) Descriptor() ([]byte, []int) {
+	return file_dysonprotocol_nameservice_v1_events_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *EventNFTClassAnnualPctUpdated) GetClassId() string {
+	if x != nil {
+		return x.ClassId
+	}
+	return ""
+}
+
 // EventNFTMetadataUpdated is emitted when NFT metadata is updated
 type EventNFTMetadataUpdated struct {
 	state         protoimpl.MessageState
@@ -10885,7 +12337,7 @@ type EventNFTMetadataUpdated struct {
 func (x *EventNFTMetadataUpdated) Reset() {
 	*x = EventNFTMetadataUpdated{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[12]
+		mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -10899,7 +12351,7 @@ func (*EventNFTMetadataUpdated) ProtoMessage() {}
 
 // Deprecated: Use EventNFTMetadataUpdated.ProtoReflect.Descriptor instead.
 func (*EventNFTMetadataUpdated) Descriptor() ([]byte, []int) {
-	return file_dysonprotocol_nameservice_v1_events_proto_rawDescGZIP(), []int{12}
+	return file_dysonprotocol_nameservice_v1_events_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *EventNFTMetadataUpdated) GetClassId() string {
@@ -10916,6 +12368,58 @@ func (x *EventNFTMetadataUpdated) GetNftId() string {
 	return ""
 }
 
+// EventNFTListedUpdated is emitted when NFT listed status is updated
+type EventNFTListedUpdated struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
+	NftId   string `protobuf:"bytes,2,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
+	Listed  bool   `protobuf:"varint,3,opt,name=listed,proto3" json:"listed,omitempty"`
+}
+
+func (x *EventNFTListedUpdated) Reset() {
+	*x = EventNFTListedUpdated{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *EventNFTListedUpdated) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EventNFTListedUpdated) ProtoMessage() {}
+
+// Deprecated: Use EventNFTListedUpdated.ProtoReflect.Descriptor instead.
+func (*EventNFTListedUpdated) Descriptor() ([]byte, []int) {
+	return file_dysonprotocol_nameservice_v1_events_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *EventNFTListedUpdated) GetClassId() string {
+	if x != nil {
+		return x.ClassId
+	}
+	return ""
+}
+
+func (x *EventNFTListedUpdated) GetNftId() string {
+	if x != nil {
+		return x.NftId
+	}
+	return ""
+}
+
+func (x *EventNFTListedUpdated) GetListed() bool {
+	if x != nil {
+		return x.Listed
+	}
+	return false
+}
+
 // EventCoinsMinted is emitted when coins are minted
 type EventCoinsMinted struct {
 	state         protoimpl.MessageState
@@ -10928,7 +12432,7 @@ type EventCoinsMinted struct {
 func (x *EventCoinsMinted) Reset() {
 	*x = EventCoinsMinted{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[13]
+		mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -10942,7 +12446,7 @@ func (*EventCoinsMinted) ProtoMessage() {}
 
 // Deprecated: Use EventCoinsMinted.ProtoReflect.Descriptor instead.
 func (*EventCoinsMinted) Descriptor() ([]byte, []int) {
-	return file_dysonprotocol_nameservice_v1_events_proto_rawDescGZIP(), []int{13}
+	return file_dysonprotocol_nameservice_v1_events_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *EventCoinsMinted) GetAmount() []*v1beta1.Coin {
@@ -10964,7 +12468,7 @@ type EventCoinsBurned struct {
 func (x *EventCoinsBurned) Reset() {
 	*x = EventCoinsBurned{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[14]
+		mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -10978,7 +12482,7 @@ func (*EventCoinsBurned) ProtoMessage() {}
 
 // Deprecated: Use EventCoinsBurned.ProtoReflect.Descriptor instead.
 func (*EventCoinsBurned) Descriptor() ([]byte, []int) {
-	return file_dysonprotocol_nameservice_v1_events_proto_rawDescGZIP(), []int{14}
+	return file_dysonprotocol_nameservice_v1_events_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *EventCoinsBurned) GetAmount() []*v1beta1.Coin {
@@ -11000,7 +12504,7 @@ type EventClassSaved struct {
 func (x *EventClassSaved) Reset() {
 	*x = EventClassSaved{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[15]
+		mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -11014,7 +12518,7 @@ func (*EventClassSaved) ProtoMessage() {}
 
 // Deprecated: Use EventClassSaved.ProtoReflect.Descriptor instead.
 func (*EventClassSaved) Descriptor() ([]byte, []int) {
-	return file_dysonprotocol_nameservice_v1_events_proto_rawDescGZIP(), []int{15}
+	return file_dysonprotocol_nameservice_v1_events_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *EventClassSaved) GetClassId() string {
@@ -11036,7 +12540,7 @@ type EventClassUpdated struct {
 func (x *EventClassUpdated) Reset() {
 	*x = EventClassUpdated{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[16]
+		mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -11050,7 +12554,7 @@ func (*EventClassUpdated) ProtoMessage() {}
 
 // Deprecated: Use EventClassUpdated.ProtoReflect.Descriptor instead.
 func (*EventClassUpdated) Descriptor() ([]byte, []int) {
-	return file_dysonprotocol_nameservice_v1_events_proto_rawDescGZIP(), []int{16}
+	return file_dysonprotocol_nameservice_v1_events_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *EventClassUpdated) GetClassId() string {
@@ -11073,7 +12577,7 @@ type EventNFTMinted struct {
 func (x *EventNFTMinted) Reset() {
 	*x = EventNFTMinted{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[17]
+		mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -11087,7 +12591,7 @@ func (*EventNFTMinted) ProtoMessage() {}
 
 // Deprecated: Use EventNFTMinted.ProtoReflect.Descriptor instead.
 func (*EventNFTMinted) Descriptor() ([]byte, []int) {
-	return file_dysonprotocol_nameservice_v1_events_proto_rawDescGZIP(), []int{17}
+	return file_dysonprotocol_nameservice_v1_events_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *EventNFTMinted) GetClassId() string {
@@ -11117,7 +12621,7 @@ type EventNFTBurned struct {
 func (x *EventNFTBurned) Reset() {
 	*x = EventNFTBurned{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[18]
+		mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -11131,7 +12635,7 @@ func (*EventNFTBurned) ProtoMessage() {}
 
 // Deprecated: Use EventNFTBurned.ProtoReflect.Descriptor instead.
 func (*EventNFTBurned) Descriptor() ([]byte, []int) {
-	return file_dysonprotocol_nameservice_v1_events_proto_rawDescGZIP(), []int{18}
+	return file_dysonprotocol_nameservice_v1_events_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *EventNFTBurned) GetClassId() string {
@@ -11161,7 +12665,7 @@ type EventCoinsMoved struct {
 func (x *EventCoinsMoved) Reset() {
 	*x = EventCoinsMoved{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[19]
+		mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -11175,7 +12679,7 @@ func (*EventCoinsMoved) ProtoMessage() {}
 
 // Deprecated: Use EventCoinsMoved.ProtoReflect.Descriptor instead.
 func (*EventCoinsMoved) Descriptor() ([]byte, []int) {
-	return file_dysonprotocol_nameservice_v1_events_proto_rawDescGZIP(), []int{19}
+	return file_dysonprotocol_nameservice_v1_events_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *EventCoinsMoved) GetNames() []string {
@@ -11200,7 +12704,7 @@ type EventNftMoved struct {
 func (x *EventNftMoved) Reset() {
 	*x = EventNftMoved{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[20]
+		mi := &file_dysonprotocol_nameservice_v1_events_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -11214,7 +12718,7 @@ func (*EventNftMoved) ProtoMessage() {}
 
 // Deprecated: Use EventNftMoved.ProtoReflect.Descriptor instead.
 func (*EventNftMoved) Descriptor() ([]byte, []int) {
-	return file_dysonprotocol_nameservice_v1_events_proto_rawDescGZIP(), []int{20}
+	return file_dysonprotocol_nameservice_v1_events_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *EventNftMoved) GetClassId() string {
@@ -11329,50 +12833,64 @@ var file_dysonprotocol_nameservice_v1_events_proto_rawDesc = []byte{
 	0x43, 0x6c, 0x61, 0x73, 0x73, 0x45, 0x78, 0x74, 0x72, 0x61, 0x44, 0x61, 0x74, 0x61, 0x55, 0x70,
 	0x64, 0x61, 0x74, 0x65, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x5f, 0x69,
 	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x49, 0x64,
-	0x22, 0x4b, 0x0a, 0x17, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x4e, 0x46, 0x54, 0x4d, 0x65, 0x74, 0x61,
-	0x64, 0x61, 0x74, 0x61, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x63,
-	0x6c, 0x61, 0x73, 0x73, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63,
-	0x6c, 0x61, 0x73, 0x73, 0x49, 0x64, 0x12, 0x15, 0x0a, 0x06, 0x6e, 0x66, 0x74, 0x5f, 0x69, 0x64,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6e, 0x66, 0x74, 0x49, 0x64, 0x22, 0x50, 0x0a,
-	0x10, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x4d, 0x69, 0x6e, 0x74, 0x65,
+	0x22, 0x3d, 0x0a, 0x20, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x4e, 0x46, 0x54, 0x43, 0x6c, 0x61, 0x73,
+	0x73, 0x41, 0x6c, 0x77, 0x61, 0x79, 0x73, 0x4c, 0x69, 0x73, 0x74, 0x65, 0x64, 0x55, 0x70, 0x64,
+	0x61, 0x74, 0x65, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x5f, 0x69, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x49, 0x64, 0x22,
+	0x3a, 0x0a, 0x1d, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x4e, 0x46, 0x54, 0x43, 0x6c, 0x61, 0x73, 0x73,
+	0x41, 0x6e, 0x6e, 0x75, 0x61, 0x6c, 0x50, 0x63, 0x74, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x64,
+	0x12, 0x19, 0x0a, 0x08, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x07, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x49, 0x64, 0x22, 0x4b, 0x0a, 0x17, 0x45,
+	0x76, 0x65, 0x6e, 0x74, 0x4e, 0x46, 0x54, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x55,
+	0x70, 0x64, 0x61, 0x74, 0x65, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x5f,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x49,
+	0x64, 0x12, 0x15, 0x0a, 0x06, 0x6e, 0x66, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x05, 0x6e, 0x66, 0x74, 0x49, 0x64, 0x22, 0x61, 0x0a, 0x15, 0x45, 0x76, 0x65, 0x6e,
+	0x74, 0x4e, 0x46, 0x54, 0x4c, 0x69, 0x73, 0x74, 0x65, 0x64, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
+	0x64, 0x12, 0x19, 0x0a, 0x08, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x49, 0x64, 0x12, 0x15, 0x0a, 0x06,
+	0x6e, 0x66, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6e, 0x66,
+	0x74, 0x49, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x6c, 0x69, 0x73, 0x74, 0x65, 0x64, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x08, 0x52, 0x06, 0x6c, 0x69, 0x73, 0x74, 0x65, 0x64, 0x22, 0x50, 0x0a, 0x10, 0x45,
+	0x76, 0x65, 0x6e, 0x74, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x4d, 0x69, 0x6e, 0x74, 0x65, 0x64, 0x12,
+	0x3c, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32,
+	0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31,
+	0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00,
+	0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x50, 0x0a,
+	0x10, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x42, 0x75, 0x72, 0x6e, 0x65,
 	0x64, 0x12, 0x3c, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x03, 0x28,
 	0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e,
 	0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x09, 0xc8, 0xde,
 	0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22,
-	0x50, 0x0a, 0x10, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x42, 0x75, 0x72,
-	0x6e, 0x65, 0x64, 0x12, 0x3c, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20,
-	0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73,
-	0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x09,
-	0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e,
-	0x74, 0x22, 0x2c, 0x0a, 0x0f, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x43, 0x6c, 0x61, 0x73, 0x73, 0x53,
-	0x61, 0x76, 0x65, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x5f, 0x69, 0x64,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x49, 0x64, 0x22,
-	0x2e, 0x0a, 0x11, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x43, 0x6c, 0x61, 0x73, 0x73, 0x55, 0x70, 0x64,
-	0x61, 0x74, 0x65, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x5f, 0x69, 0x64,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x49, 0x64, 0x22,
-	0x42, 0x0a, 0x0e, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x4e, 0x46, 0x54, 0x4d, 0x69, 0x6e, 0x74, 0x65,
-	0x64, 0x12, 0x19, 0x0a, 0x08, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x49, 0x64, 0x12, 0x15, 0x0a, 0x06,
-	0x6e, 0x66, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6e, 0x66,
-	0x74, 0x49, 0x64, 0x22, 0x42, 0x0a, 0x0e, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x4e, 0x46, 0x54, 0x42,
-	0x75, 0x72, 0x6e, 0x65, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x5f, 0x69,
-	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x49, 0x64,
-	0x12, 0x15, 0x0a, 0x06, 0x6e, 0x66, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x05, 0x6e, 0x66, 0x74, 0x49, 0x64, 0x22, 0x27, 0x0a, 0x0f, 0x45, 0x76, 0x65, 0x6e, 0x74,
-	0x43, 0x6f, 0x69, 0x6e, 0x73, 0x4d, 0x6f, 0x76, 0x65, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x6e, 0x61,
-	0x6d, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x05, 0x6e, 0x61, 0x6d, 0x65, 0x73,
-	0x22, 0x83, 0x01, 0x0a, 0x0d, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x4e, 0x66, 0x74, 0x4d, 0x6f, 0x76,
+	0x2c, 0x0a, 0x0f, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x43, 0x6c, 0x61, 0x73, 0x73, 0x53, 0x61, 0x76,
 	0x65, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x5f, 0x69, 0x64, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x49, 0x64, 0x12, 0x15, 0x0a,
-	0x06, 0x6e, 0x66, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6e,
-	0x66, 0x74, 0x49, 0x64, 0x12, 0x21, 0x0a, 0x0c, 0x66, 0x72, 0x6f, 0x6d, 0x5f, 0x61, 0x64, 0x64,
-	0x72, 0x65, 0x73, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x66, 0x72, 0x6f, 0x6d,
-	0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x1d, 0x0a, 0x0a, 0x74, 0x6f, 0x5f, 0x61, 0x64,
-	0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x74, 0x6f, 0x41,
-	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x42, 0x27, 0x5a, 0x25, 0x64, 0x79, 0x73, 0x6f, 0x6e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x78, 0x2f, 0x6e, 0x61,
-	0x6d, 0x65, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x62,
-	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x49, 0x64, 0x22, 0x2e, 0x0a,
+	0x11, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x43, 0x6c, 0x61, 0x73, 0x73, 0x55, 0x70, 0x64, 0x61, 0x74,
+	0x65, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x5f, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x49, 0x64, 0x22, 0x42, 0x0a,
+	0x0e, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x4e, 0x46, 0x54, 0x4d, 0x69, 0x6e, 0x74, 0x65, 0x64, 0x12,
+	0x19, 0x0a, 0x08, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x07, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x49, 0x64, 0x12, 0x15, 0x0a, 0x06, 0x6e, 0x66,
+	0x74, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6e, 0x66, 0x74, 0x49,
+	0x64, 0x22, 0x42, 0x0a, 0x0e, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x4e, 0x46, 0x54, 0x42, 0x75, 0x72,
+	0x6e, 0x65, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x5f, 0x69, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x49, 0x64, 0x12, 0x15,
+	0x0a, 0x06, 0x6e, 0x66, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
+	0x6e, 0x66, 0x74, 0x49, 0x64, 0x22, 0x27, 0x0a, 0x0f, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x43, 0x6f,
+	0x69, 0x6e, 0x73, 0x4d, 0x6f, 0x76, 0x65, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x6e, 0x61, 0x6d, 0x65,
+	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x05, 0x6e, 0x61, 0x6d, 0x65, 0x73, 0x22, 0x83,
+	0x01, 0x0a, 0x0d, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x4e, 0x66, 0x74, 0x4d, 0x6f, 0x76, 0x65, 0x64,
+	0x12, 0x19, 0x0a, 0x08, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x07, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x49, 0x64, 0x12, 0x15, 0x0a, 0x06, 0x6e,
+	0x66, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6e, 0x66, 0x74,
+	0x49, 0x64, 0x12, 0x21, 0x0a, 0x0c, 0x66, 0x72, 0x6f, 0x6d, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65,
+	0x73, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x66, 0x72, 0x6f, 0x6d, 0x41, 0x64,
+	0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x1d, 0x0a, 0x0a, 0x74, 0x6f, 0x5f, 0x61, 0x64, 0x64, 0x72,
+	0x65, 0x73, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x74, 0x6f, 0x41, 0x64, 0x64,
+	0x72, 0x65, 0x73, 0x73, 0x42, 0x27, 0x5a, 0x25, 0x64, 0x79, 0x73, 0x6f, 0x6e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x78, 0x2f, 0x6e, 0x61, 0x6d, 0x65,
+	0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -11387,41 +12905,44 @@ func file_dysonprotocol_nameservice_v1_events_proto_rawDescGZIP() []byte {
 	return file_dysonprotocol_nameservice_v1_events_proto_rawDescData
 }
 
-var file_dysonprotocol_nameservice_v1_events_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
+var file_dysonprotocol_nameservice_v1_events_proto_msgTypes = make([]protoimpl.MessageInfo, 24)
 var file_dysonprotocol_nameservice_v1_events_proto_goTypes = []interface{}{
-	(*EventCommitmentCreated)(nil),        // 0: dysonprotocol.nameservice.v1.EventCommitmentCreated
-	(*EventNameRegistered)(nil),           // 1: dysonprotocol.nameservice.v1.EventNameRegistered
-	(*EventNameRenewed)(nil),              // 2: dysonprotocol.nameservice.v1.EventNameRenewed
-	(*EventNameValuationUpdated)(nil),     // 3: dysonprotocol.nameservice.v1.EventNameValuationUpdated
-	(*EventBidPlaced)(nil),                // 4: dysonprotocol.nameservice.v1.EventBidPlaced
-	(*EventBidAccepted)(nil),              // 5: dysonprotocol.nameservice.v1.EventBidAccepted
-	(*EventBidRejected)(nil),              // 6: dysonprotocol.nameservice.v1.EventBidRejected
-	(*EventBidClaimed)(nil),               // 7: dysonprotocol.nameservice.v1.EventBidClaimed
-	(*EventNameDestinationSet)(nil),       // 8: dysonprotocol.nameservice.v1.EventNameDestinationSet
-	(*EventParamsUpdated)(nil),            // 9: dysonprotocol.nameservice.v1.EventParamsUpdated
-	(*EventDenomMetadataSet)(nil),         // 10: dysonprotocol.nameservice.v1.EventDenomMetadataSet
-	(*EventNFTClassExtraDataUpdated)(nil), // 11: dysonprotocol.nameservice.v1.EventNFTClassExtraDataUpdated
-	(*EventNFTMetadataUpdated)(nil),       // 12: dysonprotocol.nameservice.v1.EventNFTMetadataUpdated
-	(*EventCoinsMinted)(nil),              // 13: dysonprotocol.nameservice.v1.EventCoinsMinted
-	(*EventCoinsBurned)(nil),              // 14: dysonprotocol.nameservice.v1.EventCoinsBurned
-	(*EventClassSaved)(nil),               // 15: dysonprotocol.nameservice.v1.EventClassSaved
-	(*EventClassUpdated)(nil),             // 16: dysonprotocol.nameservice.v1.EventClassUpdated
-	(*EventNFTMinted)(nil),                // 17: dysonprotocol.nameservice.v1.EventNFTMinted
-	(*EventNFTBurned)(nil),                // 18: dysonprotocol.nameservice.v1.EventNFTBurned
-	(*EventCoinsMoved)(nil),               // 19: dysonprotocol.nameservice.v1.EventCoinsMoved
-	(*EventNftMoved)(nil),                 // 20: dysonprotocol.nameservice.v1.EventNftMoved
-	(*v1beta1.Coin)(nil),                  // 21: cosmos.base.v1beta1.Coin
-	(*timestamppb.Timestamp)(nil),         // 22: google.protobuf.Timestamp
-	(*Params)(nil),                        // 23: dysonprotocol.nameservice.v1.Params
+	(*EventCommitmentCreated)(nil),           // 0: dysonprotocol.nameservice.v1.EventCommitmentCreated
+	(*EventNameRegistered)(nil),              // 1: dysonprotocol.nameservice.v1.EventNameRegistered
+	(*EventNameRenewed)(nil),                 // 2: dysonprotocol.nameservice.v1.EventNameRenewed
+	(*EventNameValuationUpdated)(nil),        // 3: dysonprotocol.nameservice.v1.EventNameValuationUpdated
+	(*EventBidPlaced)(nil),                   // 4: dysonprotocol.nameservice.v1.EventBidPlaced
+	(*EventBidAccepted)(nil),                 // 5: dysonprotocol.nameservice.v1.EventBidAccepted
+	(*EventBidRejected)(nil),                 // 6: dysonprotocol.nameservice.v1.EventBidRejected
+	(*EventBidClaimed)(nil),                  // 7: dysonprotocol.nameservice.v1.EventBidClaimed
+	(*EventNameDestinationSet)(nil),          // 8: dysonprotocol.nameservice.v1.EventNameDestinationSet
+	(*EventParamsUpdated)(nil),               // 9: dysonprotocol.nameservice.v1.EventParamsUpdated
+	(*EventDenomMetadataSet)(nil),            // 10: dysonprotocol.nameservice.v1.EventDenomMetadataSet
+	(*EventNFTClassExtraDataUpdated)(nil),    // 11: dysonprotocol.nameservice.v1.EventNFTClassExtraDataUpdated
+	(*EventNFTClassAlwaysListedUpdated)(nil), // 12: dysonprotocol.nameservice.v1.EventNFTClassAlwaysListedUpdated
+	(*EventNFTClassAnnualPctUpdated)(nil),    // 13: dysonprotocol.nameservice.v1.EventNFTClassAnnualPctUpdated
+	(*EventNFTMetadataUpdated)(nil),          // 14: dysonprotocol.nameservice.v1.EventNFTMetadataUpdated
+	(*EventNFTListedUpdated)(nil),            // 15: dysonprotocol.nameservice.v1.EventNFTListedUpdated
+	(*EventCoinsMinted)(nil),                 // 16: dysonprotocol.nameservice.v1.EventCoinsMinted
+	(*EventCoinsBurned)(nil),                 // 17: dysonprotocol.nameservice.v1.EventCoinsBurned
+	(*EventClassSaved)(nil),                  // 18: dysonprotocol.nameservice.v1.EventClassSaved
+	(*EventClassUpdated)(nil),                // 19: dysonprotocol.nameservice.v1.EventClassUpdated
+	(*EventNFTMinted)(nil),                   // 20: dysonprotocol.nameservice.v1.EventNFTMinted
+	(*EventNFTBurned)(nil),                   // 21: dysonprotocol.nameservice.v1.EventNFTBurned
+	(*EventCoinsMoved)(nil),                  // 22: dysonprotocol.nameservice.v1.EventCoinsMoved
+	(*EventNftMoved)(nil),                    // 23: dysonprotocol.nameservice.v1.EventNftMoved
+	(*v1beta1.Coin)(nil),                     // 24: cosmos.base.v1beta1.Coin
+	(*timestamppb.Timestamp)(nil),            // 25: google.protobuf.Timestamp
+	(*Params)(nil),                           // 26: dysonprotocol.nameservice.v1.Params
 }
 var file_dysonprotocol_nameservice_v1_events_proto_depIdxs = []int32{
-	21, // 0: dysonprotocol.nameservice.v1.EventNameRegistered.fee:type_name -> cosmos.base.v1beta1.Coin
-	22, // 1: dysonprotocol.nameservice.v1.EventNameRenewed.new_expiry:type_name -> google.protobuf.Timestamp
-	21, // 2: dysonprotocol.nameservice.v1.EventNameValuationUpdated.new_valuation:type_name -> cosmos.base.v1beta1.Coin
-	21, // 3: dysonprotocol.nameservice.v1.EventBidPlaced.bid_amount:type_name -> cosmos.base.v1beta1.Coin
-	23, // 4: dysonprotocol.nameservice.v1.EventParamsUpdated.params:type_name -> dysonprotocol.nameservice.v1.Params
-	21, // 5: dysonprotocol.nameservice.v1.EventCoinsMinted.amount:type_name -> cosmos.base.v1beta1.Coin
-	21, // 6: dysonprotocol.nameservice.v1.EventCoinsBurned.amount:type_name -> cosmos.base.v1beta1.Coin
+	24, // 0: dysonprotocol.nameservice.v1.EventNameRegistered.fee:type_name -> cosmos.base.v1beta1.Coin
+	25, // 1: dysonprotocol.nameservice.v1.EventNameRenewed.new_expiry:type_name -> google.protobuf.Timestamp
+	24, // 2: dysonprotocol.nameservice.v1.EventNameValuationUpdated.new_valuation:type_name -> cosmos.base.v1beta1.Coin
+	24, // 3: dysonprotocol.nameservice.v1.EventBidPlaced.bid_amount:type_name -> cosmos.base.v1beta1.Coin
+	26, // 4: dysonprotocol.nameservice.v1.EventParamsUpdated.params:type_name -> dysonprotocol.nameservice.v1.Params
+	24, // 5: dysonprotocol.nameservice.v1.EventCoinsMinted.amount:type_name -> cosmos.base.v1beta1.Coin
+	24, // 6: dysonprotocol.nameservice.v1.EventCoinsBurned.amount:type_name -> cosmos.base.v1beta1.Coin
 	7,  // [7:7] is the sub-list for method output_type
 	7,  // [7:7] is the sub-list for method input_type
 	7,  // [7:7] is the sub-list for extension type_name
@@ -11581,7 +13102,7 @@ func file_dysonprotocol_nameservice_v1_events_proto_init() {
 			}
 		}
 		file_dysonprotocol_nameservice_v1_events_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*EventNFTMetadataUpdated); i {
+			switch v := v.(*EventNFTClassAlwaysListedUpdated); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11593,7 +13114,7 @@ func file_dysonprotocol_nameservice_v1_events_proto_init() {
 			}
 		}
 		file_dysonprotocol_nameservice_v1_events_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*EventCoinsMinted); i {
+			switch v := v.(*EventNFTClassAnnualPctUpdated); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11605,7 +13126,7 @@ func file_dysonprotocol_nameservice_v1_events_proto_init() {
 			}
 		}
 		file_dysonprotocol_nameservice_v1_events_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*EventCoinsBurned); i {
+			switch v := v.(*EventNFTMetadataUpdated); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11617,7 +13138,7 @@ func file_dysonprotocol_nameservice_v1_events_proto_init() {
 			}
 		}
 		file_dysonprotocol_nameservice_v1_events_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*EventClassSaved); i {
+			switch v := v.(*EventNFTListedUpdated); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11629,7 +13150,7 @@ func file_dysonprotocol_nameservice_v1_events_proto_init() {
 			}
 		}
 		file_dysonprotocol_nameservice_v1_events_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*EventClassUpdated); i {
+			switch v := v.(*EventCoinsMinted); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11641,7 +13162,7 @@ func file_dysonprotocol_nameservice_v1_events_proto_init() {
 			}
 		}
 		file_dysonprotocol_nameservice_v1_events_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*EventNFTMinted); i {
+			switch v := v.(*EventCoinsBurned); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11653,7 +13174,7 @@ func file_dysonprotocol_nameservice_v1_events_proto_init() {
 			}
 		}
 		file_dysonprotocol_nameservice_v1_events_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*EventNFTBurned); i {
+			switch v := v.(*EventClassSaved); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11665,7 +13186,7 @@ func file_dysonprotocol_nameservice_v1_events_proto_init() {
 			}
 		}
 		file_dysonprotocol_nameservice_v1_events_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*EventCoinsMoved); i {
+			switch v := v.(*EventClassUpdated); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11677,6 +13198,42 @@ func file_dysonprotocol_nameservice_v1_events_proto_init() {
 			}
 		}
 		file_dysonprotocol_nameservice_v1_events_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*EventNFTMinted); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_dysonprotocol_nameservice_v1_events_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*EventNFTBurned); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_dysonprotocol_nameservice_v1_events_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*EventCoinsMoved); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_dysonprotocol_nameservice_v1_events_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*EventNftMoved); i {
 			case 0:
 				return &v.state
@@ -11695,7 +13252,7 @@ func file_dysonprotocol_nameservice_v1_events_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_dysonprotocol_nameservice_v1_events_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   21,
+			NumMessages:   24,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

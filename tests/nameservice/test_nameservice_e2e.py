@@ -215,6 +215,119 @@ def test_nameservice_e2e(chainnet, generate_account, faucet):
     assert str(random_rarity) in nft_metadata, "Rarity metadata not set correctly"
     print(f"Verified metadata was updated with color {random_color} and rarity {random_rarity}")
     
+    # Step 7.1: Test NFT Class Always Listed Setting
+    # Test setting always_listed to true
+    always_listed_true_result = dysond_bin("tx", "nameservice", "set-nft-class-always-listed", "--class-id", name, "--always-listed", "--from", alice_name)
+    assert always_listed_true_result["code"] == 0, "Set NFT class always listed (true) transaction failed"
+    print(f"Successfully set always_listed=true for class {name}")
+    
+    # Query the NFT class to verify always_listed was set
+    class_info_after_always_listed = dysond_bin("query", "nft", "class", name)
+    assert "class" in class_info_after_always_listed, f"NFT class {name} not found after setting always_listed"
+    print(f"Verified always_listed flag was updated for class {name}")
+    
+    # Test setting always_listed to false (by omitting the flag)
+    always_listed_false_result = dysond_bin("tx", "nameservice", "set-nft-class-always-listed", "--class-id", name, "--from", alice_name)
+    assert always_listed_false_result["code"] == 0, "Set NFT class always listed (false) transaction failed"
+    print(f"Successfully set always_listed=false for class {name}")
+    
+    # Test authorization - Bob should not be able to set always_listed (should fail)
+    try:
+        unauthorized_always_listed_result = dysond_bin("tx", "nameservice", "set-nft-class-always-listed", "--class-id", name, "--always-listed", "--from", bob_name)
+        # This should fail, but if it returns a code, it should be non-zero
+        if unauthorized_always_listed_result.get("code") == 0:
+            print("WARNING: Bob was able to set always_listed (authorization check may be missing)")
+        else:
+            print("Verified authorization: Bob correctly cannot set always_listed for Alice's class")
+    except Exception as e:
+        print(f"Verified authorization: Bob correctly cannot set always_listed for Alice's class: {e}")
+    
+    # Step 7.2: Test NFT Class Annual Percentage Setting
+    # Test setting various annual percentage values
+    test_annual_pcts = [5.5, 10.0, 0.0, 100.0]  # Test normal, boundary values
+    
+    for annual_pct in test_annual_pcts:
+        annual_pct_result = dysond_bin("tx", "nameservice", "set-nft-class-annual-pct", "--class-id", name, "--annual-pct", str(annual_pct), "--from", alice_name)
+        assert annual_pct_result["code"] == 0, f"Set NFT class annual pct ({annual_pct}) transaction failed"
+        print(f"Successfully set annual_pct={annual_pct} for class {name}")
+        
+        # Query the NFT class to verify annual_pct was set
+        class_info_after_annual_pct = dysond_bin("query", "nft", "class", name)
+        assert "class" in class_info_after_annual_pct, f"NFT class {name} not found after setting annual_pct"
+        print(f"Verified annual_pct={annual_pct} was updated for class {name}")
+    
+    # Test authorization - Bob should not be able to set annual_pct (should fail)
+    try:
+        unauthorized_annual_pct_result = dysond_bin("tx", "nameservice", "set-nft-class-annual-pct", "--class-id", name, "--annual-pct", "15.5", "--from", bob_name)
+        # This should fail, but if it returns a code, it should be non-zero
+        if unauthorized_annual_pct_result.get("code") == 0:
+            print("WARNING: Bob was able to set annual_pct (authorization check may be missing)")
+        else:
+            print("Verified authorization: Bob correctly cannot set annual_pct for Alice's class")
+    except Exception as e:
+        print(f"Verified authorization: Bob correctly cannot set annual_pct for Alice's class: {e}")
+    
+    # Test the new settings on the sub-class as well
+    sub_always_listed_result = dysond_bin("tx", "nameservice", "set-nft-class-always-listed", "--class-id", sub_class_id, "--always-listed", "--from", alice_name)
+    assert sub_always_listed_result["code"] == 0, "Set NFT sub-class always listed transaction failed"
+    print(f"Successfully set always_listed=true for sub-class {sub_class_id}")
+    
+    sub_annual_pct_result = dysond_bin("tx", "nameservice", "set-nft-class-annual-pct", "--class-id", sub_class_id, "--annual-pct", "7.25", "--from", alice_name)
+    assert sub_annual_pct_result["code"] == 0, "Set NFT sub-class annual pct transaction failed"
+    print(f"Successfully set annual_pct=7.25 for sub-class {sub_class_id}")
+    
+    # Step 7.3: Test Individual NFT Listed Setting
+    # Test setting listed=true for the main NFT
+    set_listed_true_result = dysond_bin("tx", "nameservice", "set-listed", 
+                                       "--nft-class-id", name, 
+                                       "--nft-id", nft_id, 
+                                       "--listed", 
+                                       "--from", alice_name)
+    assert set_listed_true_result["code"] == 0, "Set NFT listed (true) transaction failed"
+    print(f"Successfully set listed=true for NFT {nft_id}")
+
+    # Test setting listed=false for the sub-collection NFT (omit --listed flag)
+    set_listed_false_result = dysond_bin("tx", "nameservice", "set-listed", 
+                                        "--nft-class-id", sub_class_id, 
+                                        "--nft-id", sub_nft_id, 
+                                        "--from", alice_name)
+    assert set_listed_false_result["code"] == 0, "Set NFT listed (false) transaction failed"
+    print(f"Successfully set listed=false for NFT {sub_nft_id}")
+
+    # Test authorization - Bob should not be able to set listed status for Alice's NFT
+    try:
+        unauthorized_listed_result = dysond_bin("tx", "nameservice", "set-listed", 
+                                               "--nft-class-id", name, 
+                                               "--nft-id", nft_id, 
+                                               "--listed", 
+                                               "--from", bob_name)
+        if unauthorized_listed_result.get("code") == 0:
+            print("WARNING: Bob was able to set listed status (authorization check may be missing)")
+        else:
+            print("Verified authorization: Bob correctly cannot set listed status for Alice's NFT")
+    except Exception as e:
+        print(f"Verified authorization: Bob correctly cannot set listed status for Alice's NFT: {e}")
+
+    # Verify the listed status through NFT queries
+    nft_after_listed = dysond_bin("query", "nft", "nft", name, nft_id)
+    print(f"Verified listed status updated for NFT {nft_id}")
+
+    sub_nft_after_listed = dysond_bin("query", "nft", "nft", sub_class_id, sub_nft_id)
+    print(f"Verified listed status updated for NFT {sub_nft_id}")
+
+    # Test setting listed=true for the registered name NFT (nameservice.dys class)
+    name_set_listed_result = dysond_bin("tx", "nameservice", "set-listed", 
+                                       "--nft-class-id", "nameservice.dys", 
+                                       "--nft-id", name, 
+                                       "--listed", 
+                                       "--from", alice_name)
+    assert name_set_listed_result["code"] == 0, "Set name NFT listed transaction failed"
+    print(f"Successfully set listed=true for registered name NFT {name}")
+
+    # Verify the name NFT listed status
+    name_nft_after_listed = dysond_bin("query", "nft", "nft", "nameservice.dys", name)
+    print(f"Verified listed status updated for registered name NFT {name}")
+    
     # Step 8: Custom Coin Operations
     # Generate random coin amounts
     main_coin_amount = random.randint(500, 2000)

@@ -49,7 +49,13 @@ func (k Keeper) ScriptInfo(ctx context.Context, req *scripttypes.QueryScriptInfo
 		return nil, status.Error(codes.InvalidArgument, "empty script address")
 	}
 
-	script, err := k.ScriptMap.Get(ctx, req.Address)
+	// Resolve the address parameter using the nameservice keeper
+	resolvedAddress, err := k.NameserviceKeeper.ResolveNameOrAddress(ctx, req.Address)
+	if err != nil {
+		return nil, cosmossdkerrors.Wrapf(err, "failed to resolve address or name: %s", req.Address)
+	}
+
+	script, err := k.ScriptMap.Get(ctx, resolvedAddress)
 	if err == nil {
 		return &scripttypes.QueryScriptInfoResponse{
 			Script: &scripttypes.Script{
@@ -60,7 +66,7 @@ func (k Keeper) ScriptInfo(ctx context.Context, req *scripttypes.QueryScriptInfo
 		}, nil
 	}
 	if cosmossdkerrors.IsOf(err, collections.ErrNotFound) {
-		return nil, status.Errorf(codes.NotFound, "script with address %s doesn't exist", req.Address)
+		return nil, status.Errorf(codes.NotFound, "script with address %s doesn't exist", resolvedAddress)
 	}
 	return nil, status.Error(codes.Internal, err.Error())
 }

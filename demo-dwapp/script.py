@@ -1,6 +1,7 @@
 """
 This is a demo script for the Dyson Protocol.
-""" 
+"""
+
 import re2 as re
 
 import ast
@@ -257,26 +258,9 @@ def handle_script(environ, start_response):
     # Get current script info
     script_address = get_script_address()
 
-    # Query current script info
-    script_info = {}
-    try:
-        result = _query(
-            {
-                "@type": "/dysonprotocol.script.v1.QueryScriptInfoRequest",
-                "address": script_address,
-            }
-        )
-        script_info = result.get("script", {})
-    except Exception as e:
-        script_info = {"error": str(e)}
-
     # Prepare script data as JSON
     script_data = {
         "script_address": script_address,
-        "script_info": script_info if script_info else {},
-        "current_code": (
-            script_info.get("code", "") if isinstance(script_info, dict) else ""
-        ),
     }
 
     data = {"script_data_json": json.dumps(script_data)}
@@ -492,6 +476,58 @@ def handle_names(environ, start_response):
     return [_render_base(main)]
 
 
+@route(r"^/nftclasses$")
+def handle_nftclasses(environ, start_response):
+    """Handle the NFT classes list page"""
+    start_response("200 OK", [("Content-Type", "text/html; charset=utf-8")])
+
+    data = {}
+    template = SafeTemplate(fetch_template("nftclasses.html"))
+    main = template.substitute(data)
+
+    if environ.get("HTTP_HX_REQUEST") == "true":
+        return [main.encode()]
+
+    return [_render_base(main)]
+
+
+@route(r"^/nfts/class/(?P<class_id>[^/]+)$")
+def handle_nfts_by_class(environ, start_response, class_id=None):
+    """Handle NFTs by class page"""
+    start_response("200 OK", [("Content-Type", "text/html; charset=utf-8")])
+
+    # Pass class_id to the template so the JS store can fetch data
+    data = {
+        "class_id": class_id or "",
+        "owner_address": "",
+    }
+    template = SafeTemplate(fetch_template("nfts.html"))
+    main = template.substitute(data)
+
+    if environ.get("HTTP_HX_REQUEST") == "true":
+        return [main.encode()]
+
+    return [_render_base(main)]
+
+
+@route(r"^/nfts/owner/(?P<address>[^/]+)$")
+def handle_nfts_by_owner(environ, start_response, address=None):
+    """Handle NFTs by owner page"""
+    start_response("200 OK", [("Content-Type", "text/html; charset=utf-8")])
+
+    data = {
+        "owner_address": address or "",
+        "class_id": "",
+    }
+    template = SafeTemplate(fetch_template("nfts.html"))
+    main = template.substitute(data)
+
+    if environ.get("HTTP_HX_REQUEST") == "true":
+        return [main.encode()]
+
+    return [_render_base(main)]
+
+
 def wsgi(environ, start_response):
     path_info = environ["PATH_INFO"]
     for pattern, func in routes:
@@ -501,9 +537,11 @@ def wsgi(environ, start_response):
     start_response("404 Not Found", [("Content-Type", "text/plain; charset=utf-8")])
     return [b"404 Not Found"]
 
+
 ####
 # Tests for coverage report
 ####
+
 
 def memoize(func):
     """
@@ -532,55 +570,69 @@ def fib(n: int = 3) -> int:
 def test_fib(n: int = 3):
     fib(n)
 
+
 @memoize
 def fib2(n: int = 3) -> int:
     if n <= 1:
         return n
     return fib2(n - 1) + fib2(n - 2) + 1
 
+
 def test_fib2(n: int = 3):
     fib2(n)
+
 
 # Legacy functions removed - now using render_script_tags() instead
 
 
 def _render_base(main: str) -> bytes:
     """Render base.html with integrity context and supplied main HTML."""
-    base_tpl = SafeTemplate(fetch_template("base.html"))
-    
-    # Load importmap.json content
-    importmap_res = _query({
-        "@type": "/dysonprotocol.storage.v1.QueryStorageGetRequest",
-        "owner": get_script_address(),
-        "index": "static/importmap.json",
-    })
-    importmap_content = importmap_res["entry"]["data"]
 
-    ctx = {
-        "main": SafeString(main), 
-        "static_scripts": render_script_tags(),
-        "importmap_json": SafeString(importmap_content),
-        "css_integrity": get_css_integrity(),
-    }
-    return base_tpl.substitute(ctx).encode()
+    return (
+        SafeTemplate(fetch_template("base.html"))
+        .substitute(
+            {
+                "main": SafeString(main),
+                "static_scripts": render_script_tags(),
+                "importmap_json": SafeString(
+                    _query(
+                        {
+                            "@type": "/dysonprotocol.storage.v1.QueryStorageGetRequest",
+                            "owner": get_script_address(),
+                            "index": "static/importmap.json",
+                        }
+                    )["entry"]["data"]
+                ),
+                "css_integrity": get_css_integrity(),
+            }
+        )
+        .encode()
+    )
 
 
 def render_script_tags() -> SafeString:
     """List all scripts in static/js directory and output script tags with proper integrity hash."""
     # Query all storage entries with prefix "static/js/"
-    storage_list = _query({
-        "@type": "/dysonprotocol.storage.v1.QueryStorageListRequest",
-        "owner": get_script_address(),
-        "index_prefix": "static/js/",
-        "extract": "false", # don't extract the data, just list the entries
-    })
-    
-    tags = []
-    for entry in storage_list["entries"]:
-        index = entry["index"]
-        hash_value = entry["hash"]
-        tags.append(f'<script defer type="module" src="/{index}" integrity="{hash_value}"></script>')
-    
+    script_address = get_script_address()
+    storage_list = _query(
+        {
+            "@type": "/dysonprotocol.storage.v1.QueryStorageListRequest",
+            "owner": script_address,
+            "index_prefix": "static/js/",
+            "extract": "false",  # don't extract the data, just list the entries
+        }
+    )
+
+    # tags = []
+    # for entry in storage_list["entries"]:
+    #    index = entry["index"]
+    #    hash_value = entry["hash"]
+    #    tags.append()
+
+    tags = [
+        f'<script defer type="module" src="/{entry["index"]}" integrity="{entry["hash"]}"></script>'
+        for entry in storage_list["entries"]
+    ]
     # Join with newline and indentation for readability
     return SafeString("\n    ".join(tags))
 
@@ -588,15 +640,16 @@ def render_script_tags() -> SafeString:
 def get_css_integrity() -> SafeString:
     """Get integrity attribute for style.css file."""
     try:
-        css_res = _query({
-            "@type": "/dysonprotocol.storage.v1.QueryStorageGetRequest",
-            "owner": get_script_address(),
-            "index": "static/css/style.css",
-        })
+        css_res = _query(
+            {
+                "@type": "/dysonprotocol.storage.v1.QueryStorageGetRequest",
+                "owner": get_script_address(),
+                "index": "static/css/style.css",
+            }
+        )
         hash_value = css_res["entry"]["hash"]
         if isinstance(hash_value, str) and hash_value.startswith("sha256-"):
             return SafeString(f' integrity="{hash_value}"')
     except Exception:
         pass  # No hash available, return empty
     return SafeString("")
-    

@@ -9,26 +9,31 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-// MoveNft transfers an NFT if signer owns the class and both accounts are non-module
+// MoveNft transfers an NFT if signer owns the class and current owner is non-module
 func (k Keeper) MoveNft(ctx context.Context, msg *nameservicev1.MsgMoveNft) (*nameservicev1.MsgMoveNftResponse, error) {
 	// validate addresses
 	if _, err := sdk.AccAddressFromBech32(msg.Owner); err != nil {
 		return nil, cosmossdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address: %s", msg.Owner)
-	}
-	fromAddr, err := sdk.AccAddressFromBech32(msg.FromAddress)
-	if err != nil {
-		return nil, cosmossdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid from address: %s", msg.FromAddress)
 	}
 	toAddr, err := sdk.AccAddressFromBech32(msg.ToAddress)
 	if err != nil {
 		return nil, cosmossdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid to address: %s", msg.ToAddress)
 	}
 
+	// Get the current owner of the NFT
+	fromAddr := k.nftKeeper.GetOwner(ctx, msg.ClassId, msg.NftId)
+	if fromAddr.Empty() {
+		return nil, cosmossdkerrors.Wrapf(sdkerrors.ErrNotFound, "NFT not found: class %s, id %s", msg.ClassId, msg.NftId)
+	}
+
+	// Verify current owner is not a module account
 	if fromAcc := k.accountKeeper.GetAccount(sdk.UnwrapSDKContext(ctx), fromAddr); fromAcc != nil {
 		if _, ok := fromAcc.(sdk.ModuleAccountI); ok {
-			return nil, cosmossdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "from_address is a module account")
+			return nil, cosmossdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "current NFT owner is a module account")
 		}
 	}
+
+	// Verify destination is not a module account
 	if acc := k.accountKeeper.GetAccount(sdk.UnwrapSDKContext(ctx), toAddr); acc != nil {
 		if _, ok := acc.(sdk.ModuleAccountI); ok {
 			return nil, cosmossdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "to_address is a module account")
@@ -50,7 +55,7 @@ func (k Keeper) MoveNft(ctx context.Context, msg *nameservicev1.MsgMoveNft) (*na
 		&nameservicev1.EventNftMoved{
 			ClassId:     msg.ClassId,
 			NftId:       msg.NftId,
-			FromAddress: msg.FromAddress,
+			FromAddress: fromAddr.String(),
 			ToAddress:   msg.ToAddress,
 		},
 	); evErr != nil {

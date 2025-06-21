@@ -39,9 +39,8 @@ func (k Keeper) BurnCoins(ctx context.Context, msg *nameservicev1.MsgBurnCoins) 
 		return nil, cosmossdkerrors.Wrap(err, "failed to transfer coins to module")
 	}
 
-	// Get module address and burn the coins
-	moduleAddr := k.accountKeeper.GetModuleAddress(nameservice.ModuleName)
-	if err := k.bankKeeper.BurnCoins(ctx, moduleAddr.String(), msg.Amount); err != nil {
+	// Burn the coins from the module account
+	if err := k.bankKeeper.BurnCoins(ctx, nameservice.ModuleName, msg.Amount); err != nil {
 		k.Logger.Error("BurnCoins: Failed to burn coins", "error", err)
 		return nil, cosmossdkerrors.Wrap(err, "failed to burn coins")
 	}

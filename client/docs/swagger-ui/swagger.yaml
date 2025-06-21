@@ -3220,16 +3220,17 @@ paths:
                 title: Signer owning class root name
               class_id:
                 type: string
+                title: NFT class ID
               nft_id:
                 type: string
-              from_address:
-                type: string
-                title: Current holder (must match NFT owner, non-module)
+                title: NFT ID
               to_address:
                 type: string
                 title: Destination holder (non-module)
             description: >-
-              MsgMoveNft moves an NFT between accounts when signer owns the NFT
+              MsgMoveNft force moves an NFT between accounts when signer owns
+              the NFT
+
               class.
       tags:
         - Msg
@@ -3683,6 +3684,188 @@ paths:
                 type: string
       tags:
         - Msg
+  /dysonprotocol.nameservice.v1.Msg/SetListed:
+    post:
+      summary: SetListed sets the listed status for a specific NFT
+      operationId: Msg_SetListed
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            title: MsgSetListedResponse defines the response for MsgSetListed
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              nft_owner:
+                type: string
+                title: nft_owner is the address of the NFT owner
+              nft_class_id:
+                type: string
+                title: nft_class_id is the identifier of the NFT class
+              nft_id:
+                type: string
+                title: nft_id is the identifier of the specific NFT
+              listed:
+                type: boolean
+                description: >-
+                  listed determines if the NFT should be listed for sale but is
+                  overridden by
+
+                  the NFTClass.always_listed parameter.
+            description: |-
+              MsgSetListed sets the listed status for a specific NFT.
+              Only the owner of the NFT can update this setting.
+      tags:
+        - Msg
+  /dysonprotocol.nameservice.v1.Msg/SetNFTClassAlwaysListed:
+    post:
+      summary: SetNFTClassAlwaysListed sets the always_listed flag for an NFT class
+      operationId: Msg_SetNFTClassAlwaysListed
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            title: |-
+              MsgSetNFTClassAlwaysListedResponse defines the response for
+              MsgSetNFTClassAlwaysListed
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              owner:
+                type: string
+                title: owner is the address of the NFT class root name owner
+              class_id:
+                type: string
+                title: class_id is the identifier of the NFT class to update
+              always_listed:
+                type: boolean
+                title: >-
+                  always_listed determines if NFTs in this class should always
+                  be listed for
+
+                  sale and override the listed status of the individual NFTs
+            description: >-
+              MsgSetNFTClassAlwaysListed sets the always_listed flag for an NFT
+              class.
+
+              Only the owner of the NFT class root name can update this setting.
+      tags:
+        - Msg
+  /dysonprotocol.nameservice.v1.Msg/SetNFTClassAnnualPct:
+    post:
+      summary: SetNFTClassAnnualPct sets the annual percentage rate for an NFT class
+      operationId: Msg_SetNFTClassAnnualPct
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            title: |-
+              MsgSetNFTClassAnnualPctResponse defines the response for
+              MsgSetNFTClassAnnualPct
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              owner:
+                type: string
+                title: owner is the address of the NFT class root name owner
+              class_id:
+                type: string
+                title: class_id is the identifier of the NFT class to update
+              annual_pct:
+                type: string
+                title: >-
+                  annual_pct is the annual percentage rate as a string (e.g.
+                  "5.5" for 5.5%)
+
+                  representing the yearly rate for this NFT class
+            description: >-
+              MsgSetNFTClassAnnualPct sets the annual percentage rate for an NFT
+              class.
+
+              Only the owner of the NFT class root name can update this setting.
+      tags:
+        - Msg
   /dysonprotocol.nameservice.v1.Msg/SetNFTClassExtraData:
     post:
       operationId: Msg_SetNFTClassExtraData
@@ -3772,6 +3955,8 @@ paths:
               nft_id:
                 type: string
               metadata:
+                type: string
+              uri:
                 type: string
       tags:
         - Msg
@@ -34890,15 +35075,16 @@ definitions:
         title: Signer owning class root name
       class_id:
         type: string
+        title: NFT class ID
       nft_id:
         type: string
-      from_address:
-        type: string
-        title: Current holder (must match NFT owner, non-module)
+        title: NFT ID
       to_address:
         type: string
         title: Destination holder (non-module)
-    description: MsgMoveNft moves an NFT between accounts when signer owns the NFT class.
+    description: |-
+      MsgMoveNft force moves an NFT between accounts when signer owns the NFT
+      class.
   dysonprotocol.nameservice.v1.MsgMoveNftResponse:
     type: object
   dysonprotocol.nameservice.v1.MsgPlaceBid:
@@ -35096,6 +35282,79 @@ definitions:
         type: string
   dysonprotocol.nameservice.v1.MsgSetDestinationResponse:
     type: object
+  dysonprotocol.nameservice.v1.MsgSetListed:
+    type: object
+    properties:
+      nft_owner:
+        type: string
+        title: nft_owner is the address of the NFT owner
+      nft_class_id:
+        type: string
+        title: nft_class_id is the identifier of the NFT class
+      nft_id:
+        type: string
+        title: nft_id is the identifier of the specific NFT
+      listed:
+        type: boolean
+        description: >-
+          listed determines if the NFT should be listed for sale but is
+          overridden by
+
+          the NFTClass.always_listed parameter.
+    description: |-
+      MsgSetListed sets the listed status for a specific NFT.
+      Only the owner of the NFT can update this setting.
+  dysonprotocol.nameservice.v1.MsgSetListedResponse:
+    type: object
+    title: MsgSetListedResponse defines the response for MsgSetListed
+  dysonprotocol.nameservice.v1.MsgSetNFTClassAlwaysListed:
+    type: object
+    properties:
+      owner:
+        type: string
+        title: owner is the address of the NFT class root name owner
+      class_id:
+        type: string
+        title: class_id is the identifier of the NFT class to update
+      always_listed:
+        type: boolean
+        title: >-
+          always_listed determines if NFTs in this class should always be listed
+          for
+
+          sale and override the listed status of the individual NFTs
+    description: |-
+      MsgSetNFTClassAlwaysListed sets the always_listed flag for an NFT class.
+      Only the owner of the NFT class root name can update this setting.
+  dysonprotocol.nameservice.v1.MsgSetNFTClassAlwaysListedResponse:
+    type: object
+    title: |-
+      MsgSetNFTClassAlwaysListedResponse defines the response for
+      MsgSetNFTClassAlwaysListed
+  dysonprotocol.nameservice.v1.MsgSetNFTClassAnnualPct:
+    type: object
+    properties:
+      owner:
+        type: string
+        title: owner is the address of the NFT class root name owner
+      class_id:
+        type: string
+        title: class_id is the identifier of the NFT class to update
+      annual_pct:
+        type: string
+        title: >-
+          annual_pct is the annual percentage rate as a string (e.g. "5.5" for
+          5.5%)
+
+          representing the yearly rate for this NFT class
+    description: |-
+      MsgSetNFTClassAnnualPct sets the annual percentage rate for an NFT class.
+      Only the owner of the NFT class root name can update this setting.
+  dysonprotocol.nameservice.v1.MsgSetNFTClassAnnualPctResponse:
+    type: object
+    title: |-
+      MsgSetNFTClassAnnualPctResponse defines the response for
+      MsgSetNFTClassAnnualPct
   dysonprotocol.nameservice.v1.MsgSetNFTClassExtraData:
     type: object
     properties:
@@ -35117,6 +35376,8 @@ definitions:
       nft_id:
         type: string
       metadata:
+        type: string
+      uri:
         type: string
   dysonprotocol.nameservice.v1.MsgSetNFTMetadataResponse:
     type: object

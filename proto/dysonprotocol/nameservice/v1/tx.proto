@@ -26,6 +26,14 @@ service Msg {
   rpc SetNFTMetadata(MsgSetNFTMetadata) returns (MsgSetNFTMetadataResponse);
   rpc SetNFTClassExtraData(MsgSetNFTClassExtraData)
       returns (MsgSetNFTClassExtraDataResponse);
+  // SetNFTClassAlwaysListed sets the always_listed flag for an NFT class
+  rpc SetNFTClassAlwaysListed(MsgSetNFTClassAlwaysListed)
+      returns (MsgSetNFTClassAlwaysListedResponse);
+  // SetNFTClassAnnualPct sets the annual percentage rate for an NFT class
+  rpc SetNFTClassAnnualPct(MsgSetNFTClassAnnualPct)
+      returns (MsgSetNFTClassAnnualPctResponse);
+  // SetListed sets the listed status for a specific NFT
+  rpc SetListed(MsgSetListed) returns (MsgSetListedResponse);
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
   rpc MintCoins(MsgMintCoins) returns (MsgMintCoinsResponse);
   rpc BurnCoins(MsgBurnCoins) returns (MsgBurnCoinsResponse);
@@ -125,6 +133,7 @@ message MsgSetNFTMetadata {
   string class_id = 2;
   string nft_id = 3;
   string metadata = 4;
+  string uri = 5; // optional, if not empty will update NFT URI
 }
 message MsgSetNFTMetadataResponse {}
 
@@ -135,6 +144,58 @@ message MsgSetNFTClassExtraData {
   string extra_data = 3;
 }
 message MsgSetNFTClassExtraDataResponse {}
+
+// MsgSetNFTClassAlwaysListed sets the always_listed flag for an NFT class.
+// Only the owner of the NFT class root name can update this setting.
+message MsgSetNFTClassAlwaysListed {
+  option (cosmos.msg.v1.signer) = "owner";
+  // owner is the address of the NFT class root name owner
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  // class_id is the identifier of the NFT class to update
+  string class_id = 2;
+  // always_listed determines if NFTs in this class should always be listed for
+  // sale and override the listed status of the individual NFTs
+  bool always_listed = 3;
+}
+
+// MsgSetNFTClassAlwaysListedResponse defines the response for
+// MsgSetNFTClassAlwaysListed
+message MsgSetNFTClassAlwaysListedResponse {}
+
+// MsgSetNFTClassAnnualPct sets the annual percentage rate for an NFT class.
+// Only the owner of the NFT class root name can update this setting.
+message MsgSetNFTClassAnnualPct {
+  option (cosmos.msg.v1.signer) = "owner";
+  // owner is the address of the NFT class root name owner
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  // class_id is the identifier of the NFT class to update
+  string class_id = 2;
+  // annual_pct is the annual percentage rate as a string (e.g. "5.5" for 5.5%)
+  // representing the yearly rate for this NFT class
+  string annual_pct = 3;
+}
+
+// MsgSetNFTClassAnnualPctResponse defines the response for
+// MsgSetNFTClassAnnualPct
+message MsgSetNFTClassAnnualPctResponse {}
+
+// MsgSetListed sets the listed status for a specific NFT.
+// Only the owner of the NFT can update this setting.
+message MsgSetListed {
+  option (cosmos.msg.v1.signer) = "nft_owner";
+  // nft_owner is the address of the NFT owner
+  string nft_owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  // nft_class_id is the identifier of the NFT class
+  string nft_class_id = 2;
+  // nft_id is the identifier of the specific NFT
+  string nft_id = 3;
+  // listed determines if the NFT should be listed for sale but is overridden by
+  // the NFTClass.always_listed parameter.
+  bool listed = 4;
+}
+
+// MsgSetListedResponse defines the response for MsgSetListed
+message MsgSetListedResponse {}
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
 message MsgUpdateParams {
@@ -266,19 +327,19 @@ message MsgMoveCoins {
 
 message MsgMoveCoinsResponse {}
 
-// MsgMoveNft moves an NFT between accounts when signer owns the NFT class.
+// MsgMoveNft force moves an NFT between accounts when signer owns the NFT
+// class.
 message MsgMoveNft {
   option (cosmos.msg.v1.signer) = "owner";
   // Signer owning class root name
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-
+  // NFT class ID
   string class_id = 2;
+  // NFT ID
   string nft_id = 3;
 
-  // Current holder (must match NFT owner, non-module)
-  string from_address = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   // Destination holder (non-module)
-  string to_address = 5 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string to_address = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
 message MsgMoveNftResponse {}

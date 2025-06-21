@@ -2,6 +2,7 @@ package types
 
 import (
 	"regexp"
+	"strings"
 
 	sdkerrors "cosmossdk.io/errors"
 )
@@ -29,9 +30,18 @@ func ValidateName(name string) error {
 		return sdkerrors.Wrap(ErrInvalidName, "name cannot be empty")
 	}
 
+	// must only contain ".dys" at the end
+	if !strings.HasSuffix(name, ".dys") {
+		return sdkerrors.Wrap(ErrInvalidName, "name must end with .dys")
+	}
 	// Check name format
 	if !NameRegex.MatchString(name) {
 		return sdkerrors.Wrap(ErrInvalidName, "invalid name format: must be lowercase, start with a letter, contain only alphanumeric and dash characters, and end with .dys")
+	}
+
+	// must not contain "dys" anywhere else after stripping the .dys suffix
+	if strings.Contains(strings.TrimSuffix(name, ".dys"), "dys") {
+		return sdkerrors.Wrap(ErrInvalidName, "name cannot contain 'dys'")
 	}
 
 	return nil

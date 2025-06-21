@@ -89,8 +89,16 @@
         </div>
       </div>
       <div x-show="$store.registerNameStore.error" class="text-error mt-2 text-center" x-text="$store.registerNameStore.error"></div>
-       <div x-show="$store.registerNameStore.txHash" class="text-success mt-2 text-center">
-        Commit Tx: <code class="text-xs" x-text="$store.registerNameStore.txHash"></code>
+       <div x-show="$store.registerNameStore.txHash" class="alert alert-success shadow-lg text-sm mt-2">
+        <div class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div class="flex-1">
+            <span class="font-semibold">✅ Commitment Submitted!</span>
+            <div class="text-xs opacity-80 mt-1">Transaction: <code class="text-xs" x-text="$store.registerNameStore.txHash"></code></div>
+          </div>
+        </div>
       </div>
     </div>
     
@@ -101,8 +109,16 @@
         </svg>
         <h4 class="text-lg font-semibold mt-4">Registration Complete!</h4>
         <p class="opacity-80">The name <strong x-text="$store.registerNameStore.name"></strong> has been successfully registered.</p>
-        <div x-show="$store.registerNameStore.txHash" class="text-success text-sm mt-2">
-            Reveal Tx: <code class="text-xs" x-text="$store.registerNameStore.txHash"></code>
+        <div x-show="$store.registerNameStore.txHash" class="alert alert-success shadow-lg text-sm mt-2">
+            <div class="flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div class="flex-1">
+                <span class="font-semibold">🎊 Name Revealed Successfully!</span>
+                <div class="text-xs opacity-80 mt-1">Transaction: <code class="text-xs" x-text="$store.registerNameStore.txHash"></code></div>
+              </div>
+            </div>
         </div>
         <div class="mt-6">
             <button class="btn btn-secondary" @click="$store.registerNameStore.reset()">Register Another Name</button>
@@ -193,9 +209,17 @@
                   Connect a wallet to update destination.
                 </div>
                 <div x-show="n.update.destinationError" class="text-error text-sm" x-text="n.update.destinationError"></div>
-                <div x-show="n.update.destinationTxHash" class="text-success text-sm">
-                  Success! Tx: <code x-text="n.update.destinationTxHash"></code>
+                              <div x-show="n.update.destinationTxHash" class="alert alert-success shadow-lg text-sm">
+                <div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div class="flex-1">
+                    <span class="font-semibold">🌐 Destination Updated Successfully!</span>
+                    <div class="text-xs opacity-80 mt-1">Transaction: <code class="text-xs" x-text="n.update.destinationTxHash"></code></div>
+                  </div>
                 </div>
+              </div>
               </div>
             </fieldset>
 
@@ -237,9 +261,17 @@
                   Connect a wallet to update valuation.
                 </div>
                 <div x-show="n.update.valuationError" class="text-error text-sm" x-text="n.update.valuationError"></div>
-                <div x-show="n.update.valuationTxHash" class="text-success text-sm">
-                  Success! Tx: <code x-text="n.update.valuationTxHash"></code>
+                              <div x-show="n.update.valuationTxHash" class="alert alert-success shadow-lg text-sm">
+                <div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div class="flex-1">
+                    <span class="font-semibold">💰 Valuation Updated Successfully!</span>
+                    <div class="text-xs opacity-80 mt-1">Transaction: <code class="text-xs" x-text="n.update.valuationTxHash"></code></div>
+                  </div>
                 </div>
+              </div>
               </div>
             </fieldset>
           </div>
@@ -256,7 +288,7 @@
               <form class="space-y-4" @submit.prevent="mintCoins(n)">
                 <div>
                   <label class="label" :for="'mint-amount-' + n.id">
-                    <span class="label-text">Amount</span>
+                    <span class="label-text">Amount to Mint</span>
                   </label>
                   <input 
                     :id="'mint-amount-' + n.id"
@@ -264,22 +296,31 @@
                     min="1" 
                     class="input input-bordered w-full" 
                     x-model="n.mint.amount"
-                    placeholder="Enter amount"
+                    placeholder="Enter amount to mint"
                     :disabled="!walletConnected || n.mint.creating"
                   />
                 </div>
                 
-                <div x-init="if (!n.mint.denom) n.mint.denom = n.id">
-                  <label class="label" :for="'mint-denom-' + n.id">
-                    <span class="label-text">Denomination</span>
+                <div>
+                  <label class="label" :for="'mint-subpath-' + n.id">
+                    <span class="label-text">Denom Subpath (optional)</span>
                   </label>
                   <input 
-                    :id="'mint-denom-' + n.id"
+                    :id="'mint-subpath-' + n.id"
                     type="text" 
-                    class="input input-bordered w-full font-mono"
-                    x-model="n.mint.denom"
+                    class="input input-bordered w-full" 
+                    x-model="n.mint.denomSubpath"
+                    placeholder="e.g., tokens, gold/bars, some/deep/path"
                     :disabled="!walletConnected || n.mint.creating"
                   />
+                  <div class="label">
+                    <span class="label-text-alt font-mono text-xs">
+                      Final denomination: <span x-text="n.mint.denomSubpath.trim() ? n.id + '/' + n.mint.denomSubpath.trim() : n.id"></span>
+                    </span>
+                  </div>
+                  <div class="text-xs text-base-content/70 mt-1">
+                    💡 Denominations can be just your name (e.g., <code>alice.dys</code>) or include subpaths (e.g., <code>alice.dys/tokens</code>, <code>alice.dys/gold/bars</code>). You can only mint/burn coins for names you own.
+                  </div>
                 </div>
                 
                 <div>
@@ -297,8 +338,16 @@
               <!-- Mint Status Messages -->
               <div class="mt-2 space-y-1">
                 <div x-show="n.mint.error" class="text-error text-sm" x-text="n.mint.error"></div>
-                <div x-show="n.mint.txHash" class="text-success text-sm">
-                  Success! Tx: <code x-text="n.mint.txHash"></code>
+                <div x-show="n.mint.txHash" class="alert alert-success shadow-lg text-sm">
+                  <div class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div class="flex-1">
+                      <span class="font-semibold">🎉 Coins Minted Successfully!</span>
+                      <div class="text-xs opacity-80 mt-1">Transaction: <code class="text-xs" x-text="n.mint.txHash"></code></div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </fieldset>
@@ -306,20 +355,7 @@
             <!-- Burn Coins Form -->
             <fieldset class="fieldset bg-base-50 border border-base-300 rounded-lg p-4">
               <legend class="fieldset-legend">Burn Coins</legend>
-              <form class="space-y-4" @submit.prevent="burnCoins(n, {denom: n.burn.denom, burn: n.burn})">
-                <div>
-                  <label class="label" :for="'burn-denom-' + n.id">
-                    <span class="label-text">Denomination</span>
-                  </label>
-                  <input 
-                    :id="'burn-denom-' + n.id"
-                    type="text" 
-                    class="input input-bordered w-full font-mono"
-                    x-model="n.burn.denom"
-                    placeholder="Enter denomination"
-                  />
-                </div>
-                
+              <form class="space-y-4" @submit.prevent="burnCoin(n)">
                 <div>
                   <label class="label" :for="'burn-amount-' + n.id">
                     <span class="label-text">Amount to Burn</span>
@@ -334,12 +370,36 @@
                     :disabled="!walletConnected || n.burn.processing"
                   />
                 </div>
+
+                <div>
+                  <label class="label" :for="'burn-subpath-' + n.id">
+                    <span class="label-text">Denom Subpath (optional)</span>
+                  </label>
+                  <input 
+                    :id="'burn-subpath-' + n.id"
+                    type="text" 
+                    class="input input-bordered w-full"
+                    x-model="n.burn.denomSubpath"
+                    placeholder="e.g., tokens, gold/bars, some/deep/path"
+                    :disabled="!walletConnected || n.burn.processing"
+                  />
+                  <div class="label">
+                    <span class="label-text-alt font-mono text-xs">
+                      Final denomination: <span x-text="n.burn.denomSubpath.trim() ? n.id + '/' + n.burn.denomSubpath.trim() : n.id"></span>
+                    </span>
+                  </div>
+                  <div class="text-xs text-base-content/70 mt-1">
+                    💡 Denominations can be just your name (e.g., <code>alice.dys</code>) or include subpaths (e.g., <code>alice.dys/tokens</code>, <code>alice.dys/gold/bars</code>). You can only mint/burn coins for names you own.
+                  </div>
+                </div>
+                
+
                 
                 <div>
                   <button 
                     type="submit" 
                     class="btn btn-error w-full"
-                    :disabled="!walletConnected || n.burn.processing || !n.burn.denom || !n.burn.amount"
+                    :disabled="!walletConnected || n.burn.processing || !n.burn.amount"
                   >
                     <span x-show="!n.burn.processing">Burn Coins</span>
                     <span x-show="n.burn.processing" class="loading loading-spinner loading-sm"></span>
@@ -353,8 +413,16 @@
                   Connect wallet to burn coins.
                 </div>
                 <div x-show="n.burn.error" class="text-error text-sm" x-text="n.burn.error"></div>
-                <div x-show="n.burn.txHash" class="text-success text-sm">
-                  Success! Tx: <code x-text="n.burn.txHash"></code>
+                <div x-show="n.burn.txHash" class="alert alert-success shadow-lg text-sm">
+                  <div class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div class="flex-1">
+                      <span class="font-semibold">🔥 Coins Burned Successfully!</span>
+                      <div class="text-xs opacity-80 mt-1">Transaction: <code class="text-xs" x-text="n.burn.txHash"></code></div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </fieldset>
@@ -368,65 +436,77 @@
                 <div class="border border-base-300 rounded-lg p-3 bg-base-50">
                   <div class="flex flex-wrap gap-2 items-center mb-3">
                     <span class="font-mono font-semibold" x-text="c.denom"></span>
-                    <span class="badge badge-neutral">Balance: <span x-text="c.amount"></span></span>
-                    <span class="badge badge-ghost text-xs">Supply: <span x-text="c.supply"></span></span>
+                    <span class="badge badge-neutral">My Balance: <span x-text="c.amount"></span></span>
+                    <span class="badge badge-ghost text-xs">Total Supply: <span x-text="c.supply"></span></span>
                   </div>
 
-                  <!-- Move Coins Form -->
-                  <form class="grid grid-cols-1 md:grid-cols-4 gap-2 items-end mb-2" @submit.prevent="moveCoins(n, c)">
-                    <div>
-                      <label class="label">
-                        <span class="label-text text-xs">From Address</span>
-                      </label>
-                      <input 
-                        type="text" 
-                        class="input input-bordered input-sm w-full" 
-                        x-model="c.move.from" 
-                        placeholder="From address"
-                        :disabled="!walletConnected || c.processing" 
-                      />
-                    </div>
-                    <div>
-                      <label class="label">
-                        <span class="label-text text-xs">To Address</span>
-                      </label>
-                      <input 
-                        type="text" 
-                        class="input input-bordered input-sm w-full" 
-                        x-model="c.move.to" 
-                        placeholder="To address"
-                        :disabled="!walletConnected || c.processing" 
-                      />
-                    </div>
-                    <div>
-                      <label class="label">
-                        <span class="label-text text-xs">Amount</span>
-                      </label>
-                      <input 
-                        type="number" 
-                        min="1" 
-                        class="input input-bordered input-sm w-full" 
-                        x-model="c.move.amount" 
-                        placeholder="Amount"
-                        :disabled="!walletConnected || c.processing" 
-                      />
-                    </div>
-                    <button 
-                      type="submit" 
-                      class="btn btn-primary btn-sm" 
-                      :disabled="!walletConnected || c.processing"
-                    >
-                      Move
-                    </button>
-                  </form>
+                  <!-- Force Move Coins Form -->
+                  <fieldset class="fieldset bg-base-50 border border-base-300 rounded-lg p-4 mb-2">
+                    <legend class="fieldset-legend">Force Move Coins</legend>
+                    <form class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end" @submit.prevent="moveCoins(n, c)">
+                      <div>
+                        <label class="label">
+                          <span class="label-text">From Address</span>
+                        </label>
+                        <input 
+                          type="text" 
+                          class="input input-bordered w-full" 
+                          x-model="c.move.from" 
+                          placeholder="From address"
+                          :disabled="!walletConnected || c.processing" 
+                        />
+                      </div>
+                      <div>
+                        <label class="label">
+                          <span class="label-text">To Address</span>
+                        </label>
+                        <input 
+                          type="text" 
+                          class="input input-bordered w-full" 
+                          x-model="c.move.to" 
+                          placeholder="To address"
+                          :disabled="!walletConnected || c.processing" 
+                        />
+                      </div>
+                      <div>
+                        <label class="label">
+                          <span class="label-text">Amount</span>
+                        </label>
+                        <input 
+                          type="number" 
+                          min="1" 
+                          class="input input-bordered w-full" 
+                          x-model="c.move.amount" 
+                          placeholder="Amount"
+                          :disabled="!walletConnected || c.processing" 
+                        />
+                      </div>
+                      <button 
+                        type="submit" 
+                        class="btn btn-primary w-full" 
+                        :disabled="!walletConnected || c.processing"
+                      >
+                        <span x-show="!c.processing">Force Move</span>
+                        <span x-show="c.processing" class="loading loading-spinner loading-sm"></span>
+                      </button>
+                    </form>
+                  </fieldset>
 
 
 
                   <!-- Coin Status Messages -->
                   <div class="mt-2 space-y-1">
                     <div x-show="c.error" class="text-error text-xs" x-text="c.error"></div>
-                    <div x-show="c.txHash" class="text-success text-xs">
-                      Tx: <code x-text="c.txHash"></code>
+                    <div x-show="c.txHash" class="alert alert-success shadow-lg text-xs py-2">
+                      <div class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div class="flex-1">
+                          <span class="font-semibold">✅ Operation Successful!</span>
+                          <div class="text-xs opacity-80 mt-1">Tx: <code class="text-xs" x-text="c.txHash"></code></div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -507,8 +587,16 @@
                 Connect wallet to create NFT class.
               </div>
               <div x-show="n.newClass.error" class="text-error text-sm" x-text="n.newClass.error"></div>
-              <div x-show="n.newClass.txHash" class="text-success text-sm">
-                Success! Tx: <code x-text="n.newClass.txHash"></code>
+              <div x-show="n.newClass.txHash" class="alert alert-success shadow-lg text-sm">
+                <div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div class="flex-1">
+                    <span class="font-semibold">🏆 NFT Class Created Successfully!</span>
+                    <div class="text-xs opacity-80 mt-1">Transaction: <code class="text-xs" x-text="n.newClass.txHash"></code></div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -518,169 +606,520 @@
             <legend class="fieldset-legend">Existing NFT Classes</legend>
             <div class="space-y-4">
               <template x-for="cls in n.classes" :key="cls.class_id">
-                <div class="border border-base-300 rounded-lg p-4 bg-base-50" :id="cls.class_id">
+                <div class="border border-base-300 rounded-lg p-4 bg-base-50 space-y-4" :id="cls.class_id">
                   <h5 class="font-semibold mb-3" x-text="cls.class_id"></h5>
 
-                  <!-- Update Class Form -->
-                  <form class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end mb-4" @submit.prevent="updateClass(n, cls)">
-                    <div>
-                      <label class="label">
-                        <span class="label-text">Symbol</span>
-                      </label>
-                      <input 
-                        type="text" 
-                        class="input input-bordered input-sm w-full" 
-                        x-model="cls.symbol" 
-                        placeholder="Symbol"
-                        :disabled="!walletConnected || cls.updating"
-                      />
+                  <!-- Update NFT Class Extra Data Form -->
+                  <fieldset class="fieldset bg-base-25 border border-base-300 rounded-lg p-4">
+                    <legend class="fieldset-legend">Update NFT Class Extra Data</legend>
+                    <form class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end" @submit.prevent="updateClassExtraData(n, cls)">
+                      <div>
+                        <label class="label">
+                          <span class="label-text">Extra Data</span>
+                        </label>
+                        <textarea 
+                          class="textarea textarea-bordered w-full" 
+                          rows="3"
+                          x-model="cls.extra_data" 
+                          placeholder="Enter extra data (JSON, text, etc.)"
+                          :disabled="!walletConnected || cls.updatingExtraData"
+                        ></textarea>
+                      </div>
+                      
+                      <button 
+                        type="submit" 
+                        class="btn btn-primary btn-sm" 
+                        :disabled="!walletConnected || cls.updatingExtraData || !cls.extra_data"
+                      >
+                        <span x-show="!cls.updatingExtraData">Update Extra Data</span>
+                        <span x-show="cls.updatingExtraData" class="loading loading-spinner loading-sm"></span>
+                      </button>
+                    </form>
+
+                    <!-- Update Extra Data Status Messages -->
+                    <div class="mt-3 space-y-1">
+                      <div x-show="!walletConnected" class="text-error text-sm">
+                        Connect wallet to update NFT class extra data.
+                      </div>
+                      <div x-show="cls.extraDataError" class="text-error text-sm" x-text="cls.extraDataError"></div>
+                      <div x-show="cls.extraDataTxHash" class="alert alert-success shadow-lg text-sm">
+                        <div class="flex items-center gap-2">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <div class="flex-1">
+                            <span class="font-semibold">📝 NFT Class Extra Data Updated Successfully!</span>
+                            <div class="text-xs opacity-80 mt-1">Transaction: <code class="text-xs" x-text="cls.extraDataTxHash"></code></div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    
-                    <div>
-                      <label class="label">
-                        <span class="label-text">Description</span>
-                      </label>
-                      <input 
-                        type="text" 
-                        class="input input-bordered input-sm w-full" 
-                        x-model="cls.description" 
-                        placeholder="Description"
-                        :disabled="!walletConnected || cls.updating"
-                      />
+                  </fieldset>
+
+                  <!-- Set NFT Class Always Listed Form -->
+                  <fieldset class="fieldset bg-base-25 border border-base-300 rounded-lg p-4">
+                    <legend class="fieldset-legend">Set NFT Class Always Listed</legend>
+                    <form class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end" @submit.prevent="setClassAlwaysListed(n, cls)">
+                      <div>
+                        <label class="label cursor-pointer">
+                          <span class="label-text">Always Listed</span>
+                          <input 
+                            type="checkbox" 
+                            class="checkbox checkbox-primary" 
+                            x-model="cls.always_listed" 
+                            :disabled="!walletConnected || cls.updatingAlwaysListed"
+                          />
+                        </label>
+                        <div class="text-xs text-base-content/70 mt-1">
+                          💡 When enabled, all NFTs in this class will always be listed in marketplace searches regardless of the listed status of the individual NFTs.
+                        </div>
+                      </div>
+                      
+                      <button 
+                        type="submit" 
+                        class="btn btn-primary btn-sm" 
+                        :disabled="!walletConnected || cls.updatingAlwaysListed"
+                      >
+                        <span x-show="!cls.updatingAlwaysListed">Set Always Listed</span>
+                        <span x-show="cls.updatingAlwaysListed" class="loading loading-spinner loading-sm"></span>
+                      </button>
+                    </form>
+
+                    <!-- Always Listed Status Messages -->
+                    <div class="mt-3 space-y-1">
+                      <div x-show="!walletConnected" class="text-error text-sm">
+                        Connect wallet to set NFT class always listed.
+                      </div>
+                      <div x-show="cls.alwaysListedError" class="text-error text-sm" x-text="cls.alwaysListedError"></div>
+                      <div x-show="cls.alwaysListedTxHash" class="alert alert-success shadow-lg text-sm">
+                        <div class="flex items-center gap-2">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <div class="flex-1">
+                            <span class="font-semibold">📌 NFT Class Always Listed Updated Successfully!</span>
+                            <div class="text-xs opacity-80 mt-1">Transaction: <code class="text-xs" x-text="cls.alwaysListedTxHash"></code></div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    
-                    <button 
-                      type="submit" 
-                      class="btn btn-primary btn-sm" 
-                      :disabled="!walletConnected || cls.updating"
-                    >
-                      <span x-show="!cls.updating">Update Class</span>
-                      <span x-show="cls.updating" class="loading loading-spinner loading-sm"></span>
-                    </button>
-                  </form>
+                  </fieldset>
+
+                  <!-- Set NFT Class Annual Percentage Form -->
+                  <fieldset class="fieldset bg-base-25 border border-base-300 rounded-lg p-4">
+                    <legend class="fieldset-legend">Set NFT Class Annual Percentage</legend>
+                    <form class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end" @submit.prevent="setClassAnnualPct(n, cls)">
+                      <div>
+                        <label class="label">
+                          <span class="label-text">Annual Percentage (%)</span>
+                        </label>
+                        <input 
+                          type="number" 
+                          step="0.01"
+                          min="0"
+                          max="100"
+                          class="input input-bordered w-full" 
+                          x-model="cls.annual_pct" 
+                          placeholder="e.g., 5.25"
+                          :disabled="!walletConnected || cls.updatingAnnualPct"
+                        />
+                        <div class="text-xs text-base-content/70 mt-1">
+                          💡 Set the annual percentage rate for this NFT class (0.0 to 100.0).
+                        </div>
+                      </div>
+                      
+                      <button 
+                        type="submit" 
+                        class="btn btn-primary btn-sm" 
+                        :disabled="!walletConnected || cls.updatingAnnualPct || !cls.annual_pct"
+                      >
+                        <span x-show="!cls.updatingAnnualPct">Set Annual Percentage</span>
+                        <span x-show="cls.updatingAnnualPct" class="loading loading-spinner loading-sm"></span>
+                      </button>
+                    </form>
+
+                    <!-- Annual Percentage Status Messages -->
+                    <div class="mt-3 space-y-1">
+                      <div x-show="!walletConnected" class="text-error text-sm">
+                        Connect wallet to set NFT class annual percentage.
+                      </div>
+                      <div x-show="cls.annualPctError" class="text-error text-sm" x-text="cls.annualPctError"></div>
+                      <div x-show="cls.annualPctTxHash" class="alert alert-success shadow-lg text-sm">
+                        <div class="flex items-center gap-2">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <div class="flex-1">
+                            <span class="font-semibold">📊 NFT Class Annual Percentage Updated Successfully!</span>
+                            <div class="text-xs opacity-80 mt-1">Transaction: <code class="text-xs" x-text="cls.annualPctTxHash"></code></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </fieldset>
+
+                  <!-- Update NFT Class Form -->
+                  <fieldset class="fieldset bg-base-25 border border-base-300 rounded-lg p-4">
+                    <legend class="fieldset-legend">Update NFT Class</legend>
+                    <form class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end" @submit.prevent="updateClass(n, cls)">
+                      <div>
+                        <label class="label">
+                          <span class="label-text">Symbol</span>
+                        </label>
+                        <input 
+                          type="text" 
+                          class="input input-bordered input-sm w-full" 
+                          x-model="cls.symbol" 
+                          placeholder="Symbol"
+                          :disabled="!walletConnected || cls.updating"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label class="label">
+                          <span class="label-text">Description</span>
+                        </label>
+                        <input 
+                          type="text" 
+                          class="input input-bordered input-sm w-full" 
+                          x-model="cls.description" 
+                          placeholder="Description"
+                          :disabled="!walletConnected || cls.updating"
+                        />
+                      </div>
+                      
+                      <button 
+                        type="submit" 
+                        class="btn btn-primary btn-sm" 
+                        :disabled="!walletConnected || cls.updating"
+                      >
+                        <span x-show="!cls.updating">Update Class</span>
+                        <span x-show="cls.updating" class="loading loading-spinner loading-sm"></span>
+                      </button>
+                    </form>
+
+                    <!-- Update Class Status Messages -->
+                    <div class="mt-3 space-y-1">
+                      <div x-show="!walletConnected" class="text-error text-sm">
+                        Connect wallet to update NFT class.
+                      </div>
+                      <div x-show="cls.updateError" class="text-error text-sm" x-text="cls.updateError"></div>
+                      <div x-show="cls.updateTxHash" class="alert alert-success shadow-lg text-sm">
+                        <div class="flex items-center gap-2">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <div class="flex-1">
+                            <span class="font-semibold">📝 NFT Class Updated Successfully!</span>
+                            <div class="text-xs opacity-80 mt-1">Transaction: <code class="text-xs" x-text="cls.updateTxHash"></code></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </fieldset>
 
                   <!-- Mint NFT Form -->
-                  <form class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end mb-4" @submit.prevent="mintNft(n, cls)">
-                    <div>
-                      <label class="label">
-                        <span class="label-text">NFT ID</span>
-                      </label>
-                      <input 
-                        type="text" 
-                        class="input input-bordered input-sm w-full" 
-                        x-model="cls.newNftId" 
-                        placeholder="Unique NFT ID"
+                  <fieldset class="fieldset bg-base-25 border border-base-300 rounded-lg p-4">
+                    <legend class="fieldset-legend">Mint New NFT</legend>
+                    <form class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end" @submit.prevent="mintNft(n, cls)">
+                      <div>
+                        <label class="label">
+                          <span class="label-text">NFT ID</span>
+                        </label>
+                        <input 
+                          type="text" 
+                          class="input input-bordered input-sm w-full" 
+                          x-model="cls.newNftId" 
+                          placeholder="Unique NFT ID"
+                          :disabled="!walletConnected || cls.minting"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label class="label">
+                          <span class="label-text">URI (optional)</span>
+                        </label>
+                        <input 
+                          type="text" 
+                          class="input input-bordered input-sm w-full" 
+                          x-model="cls.newNftUri" 
+                          placeholder="Metadata URI"
+                          :disabled="!walletConnected || cls.minting"
+                        />
+                      </div>
+                      
+                      <button 
+                        type="submit" 
+                        class="btn btn-secondary btn-sm" 
                         :disabled="!walletConnected || cls.minting"
-                      />
+                      >
+                        <span x-show="!cls.minting">Mint NFT</span>
+                        <span x-show="cls.minting" class="loading loading-spinner loading-sm"></span>
+                      </button>
+                    </form>
+
+                    <!-- Mint NFT Status Messages -->
+                    <div class="mt-3 space-y-1">
+                      <div x-show="!walletConnected" class="text-error text-sm">
+                        Connect wallet to mint NFT.
+                      </div>
+                      <div x-show="cls.mintError" class="text-error text-sm" x-text="cls.mintError"></div>
+                      <div x-show="cls.mintTxHash" class="alert alert-success shadow-lg text-sm">
+                        <div class="flex items-center gap-2">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <div class="flex-1">
+                            <span class="font-semibold">🎨 NFT Minted Successfully!</span>
+                            <div class="text-xs opacity-80 mt-1">Transaction: <code class="text-xs" x-text="cls.mintTxHash"></code></div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    
-                    <div>
-                      <label class="label">
-                        <span class="label-text">URI (optional)</span>
-                      </label>
-                      <input 
-                        type="text" 
-                        class="input input-bordered input-sm w-full" 
-                        x-model="cls.newNftUri" 
-                        placeholder="Metadata URI"
-                        :disabled="!walletConnected || cls.minting"
-                      />
-                    </div>
-                    
-                    <button 
-                      type="submit" 
-                      class="btn btn-secondary btn-sm" 
-                      :disabled="!walletConnected || cls.minting"
-                    >
-                      <span x-show="!cls.minting">Mint NFT</span>
-                      <span x-show="cls.minting" class="loading loading-spinner loading-sm"></span>
-                    </button>
-                  </form>
+                  </fieldset>
 
                   <!-- NFTs in this Class -->
                   <fieldset class="fieldset bg-base-25 border border-dashed border-base-300 rounded-lg p-3">
                     <legend class="fieldset-legend text-sm">NFTs in this class</legend>
                     <template x-for="nf in cls.nfts" :key="nf.uniqueKey">
-                      <div class="border border-dashed border-base-300 rounded p-3 bg-base-25 mb-3">
-                        <div class="flex flex-wrap gap-2 items-center mb-2">
-                          <span class="font-mono font-semibold text-sm" x-text="nf.id"></span>
-                          <span class="badge badge-ghost badge-xs" x-text="nf.owner"></span>
-                        </div>
-                        
-                        <!-- Update NFT Form -->
-                        <form class="flex gap-2 items-end mb-2" @submit.prevent="updateNft(cls, nf)">
-                          <div class="flex-1">
-                            <label class="label">
-                              <span class="label-text text-xs">URI</span>
-                            </label>
-                            <input 
-                              type="text" 
-                              class="input input-bordered input-xs w-full" 
-                              x-model="nf.uri" 
-                              placeholder="Metadata URI"
-                              :disabled="!walletConnected"
-                            />
+                                              <div class="border border-dashed border-base-300 rounded p-3 bg-base-25 mb-3">
+                        <div class="flex flex-wrap gap-2 items-center justify-between mb-2">
+                          <div class="flex flex-wrap gap-2 items-center">
+                            <span class="font-mono font-semibold text-sm" x-text="nf.id"></span>
+                            <span class="badge badge-ghost badge-xs" x-text="nf.owner"></span>
                           </div>
-                          <button 
-                            type="submit" 
-                            class="btn btn-primary btn-xs"
-                            :disabled="!walletConnected"
-                          >
-                            Save
-                          </button>
-                        </form>
-                        
-                        <!-- Move NFT Form -->
-                        <form class="grid grid-cols-1 md:grid-cols-3 gap-2 items-end mb-2" @submit.prevent="moveNft(cls, nf)">
-                          <div>
-                            <label class="label">
-                              <span class="label-text text-xs">From Address</span>
-                            </label>
-                            <input 
-                              type="text" 
-                              class="input input-bordered input-xs w-full" 
-                              x-model="nf.moveFrom" 
-                              placeholder="From address"
-                              :disabled="!walletConnected" 
-                            />
-                          </div>
-                          <div>
-                            <label class="label">
-                              <span class="label-text text-xs">To Address</span>
-                            </label>
-                            <input 
-                              type="text" 
-                              class="input input-bordered input-xs w-full" 
-                              x-model="nf.moveTo" 
-                              placeholder="To address"
-                              :disabled="!walletConnected" 
-                            />
-                          </div>
-                          <button 
-                            type="submit" 
-                            class="btn btn-secondary btn-xs" 
-                            :disabled="!walletConnected"
-                          >
-                            Move
-                          </button>
-                        </form>
-                        
-                        <!-- Burn NFT Button -->
-                        <div class="flex justify-between items-center">
                           <button 
                             class="btn btn-error btn-xs" 
                             @click="burnNft(cls, nf)"
-                            :disabled="!walletConnected"
+                            :disabled="!walletConnected || nf.burning"
                           >
-                            Burn NFT
+                            <span x-show="!nf.burning">🔥 Burn NFT</span>
+                            <span x-show="nf.burning" class="loading loading-spinner loading-xs"></span>
                           </button>
-                          <span class="text-xs opacity-70" x-text="nf.tx"></span>
+                        </div>
+
+                        <!-- Current NFT Data Display (Readonly) -->
+                        <fieldset class="fieldset bg-base-50 border border-base-300 rounded-lg p-4 mb-2">
+                          <legend class="fieldset-legend">Current NFT Data</legend>
+                          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div>
+                              <div class="mb-2">
+                                <span class="font-semibold">Owner:</span>
+                                <span class="font-mono text-xs" x-text="nf.owner || 'None'"></span>
+                              </div>
+                              <div class="mb-2">
+                                <span class="font-semibold">Listed:</span>
+                                <span class="badge badge-sm" :class="nf.nftData?.listed ? 'badge-success' : 'badge-neutral'" x-text="nf.nftData?.listed ? 'Yes' : 'No'"></span>
+                              </div>
+                              <div class="mb-2">
+                                <span class="font-semibold">Valuation:</span>
+                                <span x-text="nf.nftData?.valuation ? `${nf.nftData.valuation.amount} ${nf.nftData.valuation.denom}` : 'None'"></span>
+                              </div>
+                              <div class="mb-2">
+                                <span class="font-semibold">Valuation Expiry:</span>
+                                <span class="text-xs" x-text="nf.nftData?.valuation_expiry ? new Date(nf.nftData.valuation_expiry).toLocaleString() : 'None'"></span>
+                              </div>
+                            </div>
+                            <div>
+                              <div class="mb-2">
+                                <span class="font-semibold">Current Bidder:</span>
+                                <span class="font-mono text-xs" x-text="nf.nftData?.current_bidder || 'None'"></span>
+                              </div>
+                              <div class="mb-2">
+                                <span class="font-semibold">Current Bid:</span>
+                                <span x-text="nf.nftData?.current_bid ? `${nf.nftData.current_bid.amount} ${nf.nftData.current_bid.denom}` : 'None'"></span>
+                              </div>
+                              <div class="mb-2">
+                                <span class="font-semibold">Bid Timestamp:</span>
+                                <span class="text-xs" x-text="nf.nftData?.bid_timestamp ? new Date(nf.nftData.bid_timestamp).toLocaleString() : 'None'"></span>
+                              </div>
+                              <div class="mb-2">
+                                <span class="font-semibold">Stored Metadata:</span>
+                                <div class="text-xs bg-base-100 p-2 rounded border max-h-20 overflow-y-auto">
+                                  <pre x-text="nf.nftData?.metadata || 'None'"></pre>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </fieldset>
+                        
+                        <!-- Burn NFT Status Messages -->
+                        <div class="mb-2 space-y-1">
+                          <div x-show="!walletConnected && nf.burnError" class="text-error text-xs">
+                            Connect wallet to burn NFT.
+                          </div>
+                          <div x-show="nf.burnError" class="text-error text-xs" x-text="nf.burnError"></div>
+                          <div x-show="nf.burnTxHash" class="alert alert-success shadow-lg text-xs py-2">
+                            <div class="flex items-center gap-2">
+                              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              <div class="flex-1">
+                                <span class="font-semibold">🔥 NFT Burned Successfully!</span>
+                                <div class="text-xs opacity-80 mt-1">Transaction: <code class="text-xs" x-text="nf.burnTxHash"></code></div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                         
-                        <!-- NFT Status Messages -->
-                        <div class="mt-2 space-y-1">
-                          <div x-show="nf.error" class="text-error text-xs" x-text="nf.error"></div>
-                        </div>
+                        <!-- Update NFT URI & Metadata Form -->
+                        <fieldset class="fieldset bg-base-50 border border-base-300 rounded-lg p-4 mb-2">
+                          <legend class="fieldset-legend">Update NFT URI & Metadata</legend>
+                          <form class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end" @submit.prevent="updateNFTData(cls, nf)">
+                            <div>
+                              <label class="label">
+                                <span class="label-text">URI</span>
+                              </label>
+                              <input 
+                                type="text" 
+                                class="input input-bordered input-sm w-full" 
+                                x-model="nf.uri" 
+                                placeholder="Metadata URI"
+                                :disabled="!walletConnected || nf.updatingData"
+                              />
+                            </div>
+                            <div>
+                              <label class="label">
+                                <span class="label-text">Metadata</span>
+                              </label>
+                              <input 
+                                type="text" 
+                                class="input input-bordered input-sm w-full" 
+                                x-model="nf.metadata" 
+                                placeholder="JSON metadata or custom text"
+                                :disabled="!walletConnected || nf.updatingData"
+                              />
+                            </div>
+                            <button 
+                              type="submit" 
+                              class="btn btn-primary btn-sm"
+                              :disabled="!walletConnected || nf.updatingData || (!nf.uri && !nf.metadata)"
+                            >
+                              <span x-show="!nf.updatingData">Update NFT Data</span>
+                              <span x-show="nf.updatingData" class="loading loading-spinner loading-sm"></span>
+                            </button>
+                          </form>
+                          
+                          <!-- NFT Data Update Status Messages -->
+                          <div class="mt-2 space-y-1">
+                            <div x-show="!walletConnected" class="text-error text-sm">
+                              Connect wallet to update NFT data.
+                            </div>
+                            <div x-show="nf.dataError" class="text-error text-sm" x-text="nf.dataError"></div>
+                            <div x-show="nf.dataTxHash" class="alert alert-success shadow-lg text-sm">
+                              <div class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <div class="flex-1">
+                                  <span class="font-semibold">✨ NFT Data Updated Successfully!</span>
+                                  <div class="text-xs opacity-80 mt-1">Transaction: <code class="text-xs" x-text="nf.dataTxHash"></code></div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </fieldset>
+                        
+                        <!-- Set NFT Listed Status Form -->
+                        <fieldset class="fieldset bg-base-50 border border-base-300 rounded-lg p-4 mb-2">
+                          <legend class="fieldset-legend">Set NFT Listed Status</legend>
+                          <form class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end" @submit.prevent="setNftListed(cls, nf)">
+                            <div>
+                              <label class="label cursor-pointer">
+                                <span class="label-text">Listed for Sale</span>
+                                <input 
+                                  type="checkbox" 
+                                  class="checkbox checkbox-primary" 
+                                  x-model="nf.listed" 
+                                  :disabled="!walletConnected || nf.updatingListed || (nf.owner && nf.owner !== $store.walletStore.activeWalletMeta?.address)"
+                                />
+                              </label>
+                              <div class="text-xs text-base-content/70 mt-1">
+                                💡 Set whether this NFT is listed for sale in the marketplace. Note, that the NFTClass.always_listed flag takes precedence over this setting.
+                              </div>
+                            </div>
+                            
+                            <button 
+                              type="submit" 
+                              class="btn btn-primary btn-sm" 
+                              :disabled="!walletConnected || nf.updatingListed || (nf.owner && nf.owner !== $store.walletStore.activeWalletMeta?.address)"
+                            >
+                              <span x-show="!nf.updatingListed">Set Listed Status</span>
+                              <span x-show="nf.updatingListed" class="loading loading-spinner loading-sm"></span>
+                            </button>
+                          </form>
+
+                          <!-- Set Listed Status Messages -->
+                          <div class="mt-3 space-y-1">
+                            <div x-show="!walletConnected" class="text-error text-sm">
+                              Connect wallet to set NFT listed status.
+                            </div>
+                            <div x-show="walletConnected && nf.owner && nf.owner !== $store.walletStore.activeWalletMeta?.address" class="text-warning text-sm">
+                              ⚠️ Only the NFT owner can modify the listed status. You are not the owner of this NFT.
+                            </div>
+                            <div x-show="nf.listedError" class="text-error text-sm" x-text="nf.listedError"></div>
+                            <div x-show="nf.listedTxHash" class="alert alert-success shadow-lg text-sm">
+                              <div class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <div class="flex-1">
+                                  <span class="font-semibold">🏷️ NFT Listed Status Updated Successfully!</span>
+                                  <div class="text-xs opacity-80 mt-1">Transaction: <code class="text-xs" x-text="nf.listedTxHash"></code></div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </fieldset>
+
+                        <!-- Move NFT Form -->
+                        <fieldset class="fieldset bg-base-50 border border-base-300 rounded-lg p-4 mb-2">
+                          <legend class="fieldset-legend">Force Move NFT</legend>
+                          <form class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end" @submit.prevent="moveNft(cls, nf)">
+                            <div>
+                              <label class="label">
+                                <span class="label-text">To Address</span>
+                              </label>
+                              <input 
+                                type="text" 
+                                class="input input-bordered w-full" 
+                                x-model="nf.moveTo" 
+                                placeholder="Destination address"
+                                :disabled="!walletConnected || nf.moving" 
+                              />
+                            </div>
+                            <div>
+                              <button 
+                                type="submit" 
+                                class="btn btn-secondary w-full" 
+                                :disabled="!walletConnected || nf.moving || !nf.moveTo"
+                              >
+                                <span x-show="!nf.moving">Move NFT</span>
+                                <span x-show="nf.moving" class="loading loading-spinner loading-sm"></span>
+                              </button>
+                            </div>
+                          </form>
+                          
+                          <!-- Move Status Messages -->
+                          <div class="mt-2 space-y-1">
+                            <div x-show="!walletConnected" class="text-error text-sm">
+                              Connect wallet to move NFT.
+                            </div>
+                            <div x-show="nf.moveError" class="text-error text-sm" x-text="nf.moveError"></div>
+                            <div x-show="nf.moveTxHash" class="alert alert-success shadow-lg text-sm">
+                              <div class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <div class="flex-1">
+                                  <span class="font-semibold">📦 NFT Moved Successfully!</span>
+                                  <div class="text-xs opacity-80 mt-1">Transaction: <code class="text-xs" x-text="nf.moveTxHash"></code></div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </fieldset>
+
                       </div>
                     </template>
                     
@@ -689,13 +1128,7 @@
                     </div>
                   </fieldset>
 
-                  <!-- Class Status Messages -->
-                  <div class="mt-3 space-y-1">
-                    <div x-show="cls.error" class="text-error text-sm" x-text="cls.error"></div>
-                    <div x-show="cls.txHash" class="text-success text-sm">
-                      Tx: <code x-text="cls.txHash"></code>
-                    </div>
-                  </div>
+
                 </div>
               </template>
               

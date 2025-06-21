@@ -553,11 +553,19 @@ document.addEventListener('alpine:init', () => {
             destinationTxHash: '',
             valuationTxHash: ''
           },
-          mint:{amount:'', error:'', txHash:'', creating:false}
+          mint:{amount:'', denomSubpath:'', error:'', txHash:'', creating:false, denom:n.id},
+          burn:{denom:n.id, denomSubpath:'', amount:'', error:'', txHash:'', processing:false}
         }));
         
         // Load current data for each name to pre-populate forms
         await this.loadCurrentDataForNames();
+        
+        // Pre-populate mint denomination with name ID
+        this.names.forEach(n => {
+          if (!n.mint.denom) {
+            n.mint.denom = n.id;
+          }
+        });
       }catch(e){ console.error(e);}finally{ this.loading=false; }
     },
 
@@ -611,54 +619,94 @@ document.addEventListener('alpine:init', () => {
         }
       }catch(_){}
       
-      // Load NFT classes
-      try{
-        // fetch all classes once (pagination limit reasonable)
-        const clsRes=await fetch(`/cosmos/nft/v1beta1/classes?pagination.limit=1000`);
-        if(clsRes.ok){
-          const clsJson=await clsRes.json();
-          const classes=(clsJson.classes||[]).filter(cl=>cl.id===obj.id || cl.id.startsWith(`${obj.id}/`));
-          obj.classes=classes.map(cl=>({
-            class_id:cl.id, 
-            symbol: cl.symbol||'', 
-            description: cl.description||'', 
-            nfts:[],
-            // Pre-populate update form with current class data
-            originalSymbol: cl.symbol||'',
-            originalDescription: cl.description||'',
-            newNftId: '',
-            newNftUri: '',
-            error: '',
-            txHash: '',
-            updating: false,
-            minting: false
-          }));
+              // Load NFT classes
+        try{
+          // fetch all classes once (pagination limit reasonable)
+          const clsRes=await fetch(`/cosmos/nft/v1beta1/classes?pagination.limit=1000`);
+          if(clsRes.ok){
+            const clsJson=await clsRes.json();
+            const classes=(clsJson.classes||[]).filter(cl=>cl.id===obj.id || cl.id.startsWith(`${obj.id}/`));
+            obj.classes=classes.map(cl=>({
+              class_id:cl.id, 
+              symbol: cl.symbol||'', 
+              description: cl.description||'', 
+              extra_data: '', // Will be loaded from class data
+              always_listed: false, // Will be loaded from class data
+              annual_pct: '', // Will be loaded from class data
+              nfts:[],
+              // Pre-populate update form with current class data
+              originalSymbol: cl.symbol||'',
+              originalDescription: cl.description||'',
+              originalExtraData: '',
+              originalAlwaysListed: false,
+              originalAnnualPct: '',
+              newNftId: '',
+              newNftUri: '',
+              error: '',
+              txHash: '',
+              updating: false,
+              minting: false,
+              // Extra data update states
+              updatingExtraData: false,
+              extraDataError: '',
+              extraDataTxHash: '',
+              // Always listed update states
+              updatingAlwaysListed: false,
+              alwaysListedError: '',
+              alwaysListedTxHash: '',
+              // Annual percentage update states
+              updatingAnnualPct: false,
+              annualPctError: '',
+              annualPctTxHash: ''
+            }));
         }
         
-        // fetch NFTs owned by user to attach to classes
-        const nftRes=await fetch(`/cosmos/nft/v1beta1/nfts?owner=${addr}`);
-        if(nftRes.ok){
-          const nftJson=await nftRes.json();
-          for(const nft of nftJson.nfts||[]){
-            const target=obj.classes.find(c=>c.class_id===nft.class_id);
-            if(target){
-              // Create unique key to prevent Alpine duplicate key warnings
-              const uniqueKey = `${nft.class_id}-${nft.id}`;
-              // Check if NFT already exists to prevent duplicates
-              if (!target.nfts.find(existing => existing.uniqueKey === uniqueKey)) {
-                target.nfts.push({
-                  id:nft.id,
-                  uniqueKey: uniqueKey, // Add unique key for Alpine x-for
-                  owner:nft.owner||'',
-                  uri:nft.uri||'',
-                  // Initialize 'moveFrom' for NFT move operation. Default to current NFT owner or connected wallet.
-                  moveFrom:nft.owner||addr||'',
-                  moveTo:'',
-                  tx:'',
-                  error:''
-                });
+        // fetch all NFTs of the classes regardless of owner
+        for(const cls of obj.classes){
+          try{
+            const nftRes=await fetch(`/cosmos/nft/v1beta1/nfts?class_id=${encodeURIComponent(cls.class_id)}`);
+            if(nftRes.ok){
+              const nftJson=await nftRes.json();
+              for(const nft of nftJson.nfts||[]){
+                // Create unique key to prevent Alpine duplicate key warnings
+                const uniqueKey = `${nft.class_id}-${nft.id}`;
+                // Check if NFT already exists to prevent duplicates
+                if (!cls.nfts.find(existing => existing.uniqueKey === uniqueKey)) {
+                  cls.nfts.push({
+                    id:nft.id,
+                    uniqueKey: uniqueKey, // Add unique key for Alpine x-for
+                    owner:nft.owner||'',
+                    uri:nft.uri||'',
+                    metadata:'', // Will be loaded from NFT data
+                    nftData: null, // Will be loaded from NFT data
+                    listed: false, // Will be loaded from NFT data
+                    // Initialize 'moveFrom' for NFT move operation. Default to current NFT owner or connected wallet.
+                    moveFrom:nft.owner||addr||'',
+                    moveTo:'',
+                    tx:'',
+                    error:'',
+                    // Combined NFT data update states
+                    updatingData: false,
+                    dataError: '',
+                    dataTxHash: '',
+                    // Move NFT states
+                    moving: false,
+                    moveError: '',
+                    moveTxHash: '',
+                    // Burn NFT states
+                    burning: false,
+                    burnError: '',
+                    burnTxHash: '',
+                    // Set Listed states
+                    updatingListed: false,
+                    listedError: '',
+                    listedTxHash: ''
+                  });
+                }
               }
             }
+          }catch(e){
+            console.error(`Failed to fetch NFTs for class ${cls.class_id}:`, e);
           }
         }
       }catch(e){ console.error(e); }
@@ -693,12 +741,103 @@ document.addEventListener('alpine:init', () => {
             }
         }
       }
-      obj._details=true;
+      
+              // Load metadata for each NFT
+        for(const cls of obj.classes){
+          for(const nft of cls.nfts){
+            await this.loadNFTMetadata(cls.class_id, nft);
+          }
+        }
+        
+        // Load class data for extra_data
+        for(const cls of obj.classes){
+          await this.loadClassData(cls);
+        }
+        
+        obj._details=true;
     },
     
     async ensureAllDetails(){
       const promises=this.names.map(n=>this.loadDetails(n));
       await Promise.all(promises);
+    },
+
+    async loadNFTMetadata(classId, nft){
+      try{
+        // Fetch the NFT owner from the owner endpoint
+        try{
+          const ownerRes = await fetch(`/cosmos/nft/v1beta1/owner/${encodeURIComponent(classId)}/${encodeURIComponent(nft.id)}`);
+          if(ownerRes.ok){
+            const ownerJson = await ownerRes.json();
+            nft.owner = ownerJson?.owner || '';
+          }
+        }catch(e){
+          console.log(`Could not fetch owner for NFT ${classId}/${nft.id}:`, e);
+          nft.owner = '';
+        }
+        
+        // Fetch the full NFT data to get the complete NFTData structure
+        const nftRes = await fetch(`/cosmos/nft/v1beta1/nfts/${encodeURIComponent(classId)}/${encodeURIComponent(nft.id)}`);
+        if(nftRes.ok){
+          const nftJson = await nftRes.json();
+          const nftData = nftJson?.nft?.data;
+          if(nftData){
+            // Store the complete NFT data structure
+            nft.nftData = nftData;
+            
+            // Extract specific fields for form usage
+            nft.metadata = nftData.metadata || '';
+            nft.listed = nftData.listed || false;
+          } else {
+            // Initialize with defaults if no data
+            nft.nftData = {
+              listed: false,
+              valuation: null,
+              valuation_expiry: null,
+              current_bidder: '',
+              current_bid: null,
+              bid_timestamp: null,
+              metadata: ''
+            };
+            nft.metadata = '';
+            nft.listed = false;
+          }
+        }
+      }catch(e){
+        console.error(`Failed to load metadata for NFT ${classId}/${nft.id}:`, e);
+        nft.metadata = '';
+        nft.listed = false;
+        nft.nftData = null;
+        nft.owner = '';
+      }
+    },
+
+    async loadClassData(cls){
+      try{
+        // Fetch the NFT class data to get extra_data, always_listed, and annual_pct
+        const classRes = await fetch(`/cosmos/nft/v1beta1/classes/${encodeURIComponent(cls.class_id)}`);
+        if(classRes.ok){
+          const classJson = await classRes.json();
+          const classData = classJson?.class?.data;
+          if(classData && typeof classData === 'object'){
+            // Extract data from the class data
+            cls.extra_data = classData.extra_data || '';
+            cls.originalExtraData = cls.extra_data;
+            cls.always_listed = classData.always_listed || false;
+            cls.originalAlwaysListed = cls.always_listed;
+            cls.annual_pct = classData.annual_pct || '';
+            cls.originalAnnualPct = cls.annual_pct;
+          }
+        }
+      }catch(e){
+        console.error(`Failed to load class data for ${cls.class_id}:`, e);
+        cls.extra_data = '';
+        cls.originalExtraData = '';
+        cls.always_listed = false;
+        cls.originalAlwaysListed = false;
+        cls.annual_pct = '';
+        cls.originalAnnualPct = '';
+      }
     },
     
     async updateDestination(obj){
@@ -799,9 +938,9 @@ document.addEventListener('alpine:init', () => {
     },
     
     async mintNft(nameObj, cls){
-      cls.error=''; cls.txHash='';
-      if(!this.walletConnected){ cls.error='Connect wallet.'; return; }
-      if(!cls.newNftId){ cls.error='NFT ID required'; return; }
+      cls.mintError=''; cls.mintTxHash='';
+      if(!this.walletConnected){ cls.mintError='Connect wallet.'; return; }
+      if(!cls.newNftId){ cls.mintError='NFT ID required'; return; }
       try{
         cls.minting=true;
         const addr=Alpine.store('walletStore').activeWalletMeta.address;
@@ -815,7 +954,7 @@ document.addEventListener('alpine:init', () => {
         };
         const res= await Alpine.store('walletStore').sendMsg({msg, gasLimit:null, memo:''});
         if(res.success===false) throw new Error(res.rawLog||'Mint failed');
-        cls.txHash = res.raw?.tx_response?.txhash || res.raw?.result?.txhash || '';
+        cls.mintTxHash = res.raw?.tx_response?.txhash || res.raw?.result?.txhash || '';
         const newNftId = cls.newNftId.trim();
         const uniqueKey = `${cls.class_id}-${newNftId}`;
         cls.nfts.push({
@@ -823,21 +962,48 @@ document.addEventListener('alpine:init', () => {
           uniqueKey: uniqueKey, // Add unique key for Alpine x-for
           owner:addr,
           uri:cls.newNftUri||'',
+          metadata:'', // Empty for newly minted NFTs
+          nftData: { // Initialize with default NFT data structure
+            listed: false,
+            valuation: null,
+            valuation_expiry: null,
+            current_bidder: '',
+            current_bid: null,
+            bid_timestamp: null,
+            metadata: ''
+          },
+          listed: false, // Default to not listed
           // Initialize 'moveFrom' for NFT move operation
           moveFrom:addr,
           moveTo:'',
           tx:'',
-          error:''
+          error:'',
+          // Combined NFT data update states
+          updatingData: false,
+          dataError: '',
+          dataTxHash: '',
+          // Move NFT states
+          moving: false,
+          moveError: '',
+          moveTxHash: '',
+          // Burn NFT states
+          burning: false,
+          burnError: '',
+          burnTxHash: '',
+          // Set Listed states
+          updatingListed: false,
+          listedError: '',
+          listedTxHash: ''
         });
         cls.newNftId=''; cls.newNftUri='';
-      }catch(e){ cls.error=e.message||'Error'; }
+      }catch(e){ cls.mintError=e.message||'Error'; }
       finally{ cls.minting=false; }
     },
     
     async updateClass(nameObj, cls){
-      cls.error=''; cls.txHash='';
-      if(!this.walletConnected){ cls.error='Connect wallet.'; return; }
-      if(!cls.symbol && !cls.description){ cls.error='Provide symbol and/or description'; return; }
+      cls.updateError=''; cls.updateTxHash='';
+      if(!this.walletConnected){ cls.updateError='Connect wallet.'; return; }
+      if(!cls.symbol && !cls.description){ cls.updateError='Provide symbol and/or description'; return; }
       try{
         cls.updating=true;
         const addr=Alpine.store('walletStore').activeWalletMeta.address;
@@ -852,31 +1018,107 @@ document.addEventListener('alpine:init', () => {
         };
         const res= await Alpine.store('walletStore').sendMsg({msg, gasLimit:null, memo:''});
         if(res.success===false) throw new Error(res.rawLog||'Update failed');
-        cls.txHash = res.raw?.tx_response?.txhash || res.raw?.result?.txhash || '';
+        cls.updateTxHash = res.raw?.tx_response?.txhash || res.raw?.result?.txhash || '';
         // Update original values for future pre-population
         cls.originalSymbol = cls.symbol;
         cls.originalDescription = cls.description;
-      }catch(e){ cls.error=e.message||'Error'; }
+      }catch(e){ cls.updateError=e.message||'Error'; }
       finally{ cls.updating=false; }
+    },
+
+    async updateClassExtraData(nameObj, cls){
+      cls.extraDataError=''; cls.extraDataTxHash='';
+      if(!this.walletConnected){ cls.extraDataError='Connect wallet.'; return; }
+      if(!cls.extra_data){ cls.extraDataError='Extra data is required'; return; }
+      try{
+        cls.updatingExtraData=true;
+        const addr=Alpine.store('walletStore').activeWalletMeta.address;
+        const msg={
+          '@type':'/dysonprotocol.nameservice.v1.MsgSetNFTClassExtraData',
+          owner: addr,
+          class_id: cls.class_id,
+          extra_data: cls.extra_data
+        };
+        const res= await Alpine.store('walletStore').sendMsg({msg, gasLimit:null, memo:''});
+        if(res.success===false) throw new Error(res.rawLog||'Update failed');
+        cls.extraDataTxHash = res.raw?.tx_response?.txhash || res.raw?.result?.txhash || '';
+        // Update original value for future pre-population
+        cls.originalExtraData = cls.extra_data;
+      }catch(e){ cls.extraDataError=e.message||'Error'; }
+      finally{ cls.updatingExtraData=false; }
+    },
+    
+    async setClassAlwaysListed(nameObj, cls){
+      cls.alwaysListedError=''; cls.alwaysListedTxHash='';
+      if(!this.walletConnected){ cls.alwaysListedError='Connect wallet.'; return; }
+      try{
+        cls.updatingAlwaysListed=true;
+        const addr=Alpine.store('walletStore').activeWalletMeta.address;
+        const msg={
+          '@type':'/dysonprotocol.nameservice.v1.MsgSetNFTClassAlwaysListed',
+          owner: addr,
+          class_id: cls.class_id,
+          always_listed: cls.always_listed
+        };
+        const res= await Alpine.store('walletStore').sendMsg({msg, gasLimit:null, memo:''});
+        if(res.success===false) throw new Error(res.rawLog||'Set always listed failed');
+        cls.alwaysListedTxHash = res.raw?.tx_response?.txhash || res.raw?.result?.txhash || '';
+        // Update original value for future pre-population
+        cls.originalAlwaysListed = cls.always_listed;
+      }catch(e){ cls.alwaysListedError=e.message||'Error'; }
+      finally{ cls.updatingAlwaysListed=false; }
+    },
+    
+    async setClassAnnualPct(nameObj, cls){
+      cls.annualPctError=''; cls.annualPctTxHash='';
+      if(!this.walletConnected){ cls.annualPctError='Connect wallet.'; return; }
+      if(!cls.annual_pct){ cls.annualPctError='Annual percentage is required'; return; }
+      
+      // Validate percentage range (0.0 to 100.0)
+      const pctFloat = parseFloat(cls.annual_pct);
+      if(isNaN(pctFloat) || pctFloat < 0.0 || pctFloat > 100.0){
+        cls.annualPctError='Annual percentage must be between 0.0 and 100.0'; 
+        return;
+      }
+      
+      try{
+        cls.updatingAnnualPct=true;
+        const addr=Alpine.store('walletStore').activeWalletMeta.address;
+        const msg={
+          '@type':'/dysonprotocol.nameservice.v1.MsgSetNFTClassAnnualPct',
+          owner: addr,
+          class_id: cls.class_id,
+          annual_pct: String(cls.annual_pct)
+        };
+        const res= await Alpine.store('walletStore').sendMsg({msg, gasLimit:null, memo:''});
+        if(res.success===false) throw new Error(res.rawLog||'Set annual percentage failed');
+        cls.annualPctTxHash = res.raw?.tx_response?.txhash || res.raw?.result?.txhash || '';
+        // Update original value for future pre-population
+        cls.originalAnnualPct = cls.annual_pct;
+      }catch(e){ cls.annualPctError=e.message||'Error'; }
+      finally{ cls.updatingAnnualPct=false; }
     },
     
     async mintCoins(nameObj){
-      nameObj.mint = nameObj.mint || {amount:'', error:'', txHash:'', creating:false};
+      nameObj.mint = nameObj.mint || {amount:'', denomSubpath:'', error:'', txHash:'', creating:false};
       nameObj.mint.error=''; nameObj.mint.txHash='';
       if(!this.walletConnected){ nameObj.mint.error='Connect wallet.'; return; }
       if(!nameObj.mint.amount){ nameObj.mint.error='Amount required'; return; }
       try{
         nameObj.mint.creating=true;
         const addr=Alpine.store('walletStore').activeWalletMeta.address;
+        const denomSubpath = nameObj.mint.denomSubpath.trim();
+        const denom = denomSubpath ? `${nameObj.id}/${denomSubpath}` : nameObj.id;
         const msg={
           '@type':'/dysonprotocol.nameservice.v1.MsgMintCoins',
           owner: addr,
-          amount:[{denom:nameObj.id, amount:String(nameObj.mint.amount)}]
+          amount:[{denom: denom, amount:String(nameObj.mint.amount)}]
         };
         const res=await Alpine.store('walletStore').sendMsg({msg, gasLimit:null, memo:''});
         if(res.success===false) throw new Error(res.rawLog||'Mint failed');
         nameObj.mint.txHash=res.raw?.tx_response?.txhash || res.raw?.result?.txhash || '';
         nameObj.mint.amount='';
+        nameObj.mint.denomSubpath='';
         await this.loadDetails(nameObj);
       }catch(e){ nameObj.mint.error=e.message||'Error'; }
       finally{ nameObj.mint.creating=false; }
@@ -941,8 +1183,7 @@ document.addEventListener('alpine:init', () => {
         const msg={
           '@type':'/dysonprotocol.nameservice.v1.MsgBurnCoins',
           owner: addr,
-          denom: coin.denom,
-          amount:String(coin.burn.amount)
+          amount: [{denom: coin.denom, amount: String(coin.burn.amount)}]
         };
         const res=await Alpine.store('walletStore').sendMsg({msg, gasLimit:null, memo:''});
         if(res.success===false) throw new Error(res.rawLog||'Burn failed');
@@ -953,56 +1194,85 @@ document.addEventListener('alpine:init', () => {
       finally{ coin.processing=false; }
     },
     
-    async updateNft(cls, nf){
-      nf.error=''; nf.tx='';
-      if(!this.walletConnected){ nf.error='Connect wallet.'; return; }
+    async burnCoin(nameObj){
+      nameObj.burn.error=''; nameObj.burn.txHash='';
+      if(!this.walletConnected){ nameObj.burn.error='Connect wallet.'; return; }
+      if(!nameObj.burn.amount){ nameObj.burn.error='Amount required'; return; }
       try{
+        nameObj.burn.processing=true;
+        const addr=Alpine.store('walletStore').activeWalletMeta.address;
+        const denomSubpath = nameObj.burn.denomSubpath.trim();
+        const denom = denomSubpath ? `${nameObj.id}/${denomSubpath}` : nameObj.id;
+        const msg={
+          '@type':'/dysonprotocol.nameservice.v1.MsgBurnCoins',
+          owner: addr,
+          amount: [{denom: denom, amount: String(nameObj.burn.amount).trim()}]
+        };
+        const res=await Alpine.store('walletStore').sendMsg({msg, gasLimit:null, memo:''});
+        if(res.success===false) throw new Error(res.rawLog||'Burn failed');
+        nameObj.burn.txHash=res.raw?.tx_response?.txhash || res.raw?.result?.txhash || '';
+        nameObj.burn.amount='';
+        nameObj.burn.denomSubpath='';
+        await this.loadDetails(nameObj);
+      }catch(e){ nameObj.burn.error=e.message||'Error'; }
+      finally{ nameObj.burn.processing=false; }
+    },
+    
+    async updateNFTData(cls, nf){
+      nf.dataError=''; nf.dataTxHash='';
+      if(!this.walletConnected){ nf.dataError='Connect wallet.'; return; }
+      if(!nf.uri && !nf.metadata){ nf.dataError='Please provide URI and/or metadata to update.'; return; }
+      try{
+        nf.updatingData=true;
         const addr=Alpine.store('walletStore').activeWalletMeta.address;
         const msg={
           '@type':'/dysonprotocol.nameservice.v1.MsgSetNFTMetadata',
           owner: addr,
           class_id: cls.class_id,
           nft_id: nf.id,
-          metadata: nf.uri||''
+          metadata: nf.metadata||'',
+          uri: nf.uri||''
         };
         const res=await Alpine.store('walletStore').sendMsg({msg, gasLimit:null, memo:''});
         if(res.success===false) throw new Error(res.rawLog||'Update failed');
-        nf.tx = res.raw?.tx_response?.txhash || res.raw?.result?.txhash || '';
-      }catch(e){ nf.error=e.message||'Error'; }
+        nf.dataTxHash = res.raw?.tx_response?.txhash || res.raw?.result?.txhash || '';
+      }catch(e){ nf.dataError=e.message||'Error'; }
+      finally{ nf.updatingData=false; }
     },
     
     async moveNft(cls, nf){
-      nf.error=''; nf.tx='';
+      nf.moveError=''; nf.moveTxHash='';
       // Validate all required fields for MsgMoveNft
-      if(!this.walletConnected){ nf.error='Connect wallet.'; return; }
-      if(!nf.moveFrom || !nf.moveTo){ // Check for both from and to addresses
-        nf.error='From & To addresses required';
+      if(!this.walletConnected){ nf.moveError='Connect wallet.'; return; }
+      if(!nf.moveTo){ // Check for to address
+        nf.moveError='To address required';
         return;
       }
       try{
+        nf.moving=true;
         const addr=Alpine.store('walletStore').activeWalletMeta.address;
         const msg={
           '@type':'/dysonprotocol.nameservice.v1.MsgMoveNft',
           owner: addr, // The connected wallet address (signer)
           class_id: cls.class_id,
           nft_id: nf.id,
-          from_address: nf.moveFrom.trim(), // Use the value from the new input field
           to_address: nf.moveTo.trim()
         };
         const res=await Alpine.store('walletStore').sendMsg({msg, gasLimit:null, memo:''});
         if(res.success===false) throw new Error(res.rawLog||'Move failed');
-        nf.tx = res.raw?.tx_response?.txhash || res.raw?.result?.txhash || '';
+        nf.moveTxHash = res.raw?.tx_response?.txhash || res.raw?.result?.txhash || '';
         // Update local state and clear input
         nf.owner=nf.moveTo.trim(); // Update the displayed owner to the new owner
-        nf.moveFrom=nf.owner; // Reset 'from' to the new owner for convenience
         nf.moveTo=''; // Clear 'to' address
-      }catch(e){ nf.error=e.message||'Error'; }
+      }catch(e){ nf.moveError=e.message||'Error'; }
+      finally{ nf.moving=false; }
     },
     
     async burnNft(cls, nf){
-      nf.error=''; nf.tx='';
-      if(!this.walletConnected){ nf.error='Connect wallet.'; return; }
+      nf.burnError=''; nf.burnTxHash='';
+      if(!this.walletConnected){ nf.burnError='Connect wallet.'; return; }
       try{
+        nf.burning=true;
         const addr=Alpine.store('walletStore').activeWalletMeta.address;
         const msg={
           '@type':'/dysonprotocol.nameservice.v1.MsgBurnNFT',
@@ -1012,10 +1282,35 @@ document.addEventListener('alpine:init', () => {
         };
         const res=await Alpine.store('walletStore').sendMsg({msg, gasLimit:null, memo:''});
         if(res.success===false) throw new Error(res.rawLog||'Burn failed');
-        nf.tx = res.raw?.tx_response?.txhash || res.raw?.result?.txhash || '';
-        // remove from list
+        nf.burnTxHash = res.raw?.tx_response?.txhash || res.raw?.result?.txhash || '';
+        // remove from list after successful burn
         cls.nfts = cls.nfts.filter(x=>x.id!==nf.id);
-      }catch(e){ nf.error=e.message||'Error'; }
+      }catch(e){ nf.burnError=e.message||'Error'; }
+      finally{ nf.burning=false; }
+    },
+    
+    async setNftListed(cls, nf){
+      nf.listedError=''; nf.listedTxHash='';
+      if(!this.walletConnected){ nf.listedError='Connect wallet.'; return; }
+      try{
+        nf.updatingListed=true;
+        const addr=Alpine.store('walletStore').activeWalletMeta.address;
+        const msg={
+          '@type':'/dysonprotocol.nameservice.v1.MsgSetListed',
+          nft_owner: addr,
+          nft_class_id: cls.class_id,
+          nft_id: nf.id,
+          listed: nf.listed
+        };
+        const res=await Alpine.store('walletStore').sendMsg({msg, gasLimit:null, memo:''});
+        if(res.success===false) throw new Error(res.rawLog||'Set listed failed');
+        nf.listedTxHash = res.raw?.tx_response?.txhash || res.raw?.result?.txhash || '';
+        // Update the NFT data to reflect the change
+        if(nf.nftData){
+          nf.nftData.listed = nf.listed;
+        }
+      }catch(e){ nf.listedError=e.message||'Error'; }
+      finally{ nf.updatingListed=false; }
     },
   }));
 

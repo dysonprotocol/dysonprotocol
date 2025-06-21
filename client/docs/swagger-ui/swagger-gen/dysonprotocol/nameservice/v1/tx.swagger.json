@@ -523,6 +523,105 @@
         ]
       }
     },
+    "/dysonprotocol.nameservice.v1.Msg/SetListed": {
+      "post": {
+        "summary": "SetListed sets the listed status for a specific NFT",
+        "operationId": "Msg_SetListed",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dysonprotocol.nameservice.v1.MsgSetListedResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dysonprotocol.nameservice.v1.MsgSetListed"
+            }
+          }
+        ],
+        "tags": [
+          "Msg"
+        ]
+      }
+    },
+    "/dysonprotocol.nameservice.v1.Msg/SetNFTClassAlwaysListed": {
+      "post": {
+        "summary": "SetNFTClassAlwaysListed sets the always_listed flag for an NFT class",
+        "operationId": "Msg_SetNFTClassAlwaysListed",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dysonprotocol.nameservice.v1.MsgSetNFTClassAlwaysListedResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dysonprotocol.nameservice.v1.MsgSetNFTClassAlwaysListed"
+            }
+          }
+        ],
+        "tags": [
+          "Msg"
+        ]
+      }
+    },
+    "/dysonprotocol.nameservice.v1.Msg/SetNFTClassAnnualPct": {
+      "post": {
+        "summary": "SetNFTClassAnnualPct sets the annual percentage rate for an NFT class",
+        "operationId": "Msg_SetNFTClassAnnualPct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dysonprotocol.nameservice.v1.MsgSetNFTClassAnnualPctResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dysonprotocol.nameservice.v1.MsgSetNFTClassAnnualPct"
+            }
+          }
+        ],
+        "tags": [
+          "Msg"
+        ]
+      }
+    },
     "/dysonprotocol.nameservice.v1.Msg/SetNFTClassExtraData": {
       "post": {
         "operationId": "Msg_SetNFTClassExtraData",
@@ -927,21 +1026,19 @@
           "title": "Signer owning class root name"
         },
         "class_id": {
-          "type": "string"
+          "type": "string",
+          "title": "NFT class ID"
         },
         "nft_id": {
-          "type": "string"
-        },
-        "from_address": {
           "type": "string",
-          "title": "Current holder (must match NFT owner, non-module)"
+          "title": "NFT ID"
         },
         "to_address": {
           "type": "string",
           "title": "Destination holder (non-module)"
         }
       },
-      "description": "MsgMoveNft moves an NFT between accounts when signer owns the NFT class."
+      "description": "MsgMoveNft force moves an NFT between accounts when signer owns the NFT\nclass."
     },
     "dysonprotocol.nameservice.v1.MsgMoveNftResponse": {
       "type": "object"
@@ -1091,6 +1188,76 @@
     "dysonprotocol.nameservice.v1.MsgSetDestinationResponse": {
       "type": "object"
     },
+    "dysonprotocol.nameservice.v1.MsgSetListed": {
+      "type": "object",
+      "properties": {
+        "nft_owner": {
+          "type": "string",
+          "title": "nft_owner is the address of the NFT owner"
+        },
+        "nft_class_id": {
+          "type": "string",
+          "title": "nft_class_id is the identifier of the NFT class"
+        },
+        "nft_id": {
+          "type": "string",
+          "title": "nft_id is the identifier of the specific NFT"
+        },
+        "listed": {
+          "type": "boolean",
+          "description": "listed determines if the NFT should be listed for sale but is overridden by\nthe NFTClass.always_listed parameter."
+        }
+      },
+      "description": "MsgSetListed sets the listed status for a specific NFT.\nOnly the owner of the NFT can update this setting."
+    },
+    "dysonprotocol.nameservice.v1.MsgSetListedResponse": {
+      "type": "object",
+      "title": "MsgSetListedResponse defines the response for MsgSetListed"
+    },
+    "dysonprotocol.nameservice.v1.MsgSetNFTClassAlwaysListed": {
+      "type": "object",
+      "properties": {
+        "owner": {
+          "type": "string",
+          "title": "owner is the address of the NFT class root name owner"
+        },
+        "class_id": {
+          "type": "string",
+          "title": "class_id is the identifier of the NFT class to update"
+        },
+        "always_listed": {
+          "type": "boolean",
+          "title": "always_listed determines if NFTs in this class should always be listed for\nsale and override the listed status of the individual NFTs"
+        }
+      },
+      "description": "MsgSetNFTClassAlwaysListed sets the always_listed flag for an NFT class.\nOnly the owner of the NFT class root name can update this setting."
+    },
+    "dysonprotocol.nameservice.v1.MsgSetNFTClassAlwaysListedResponse": {
+      "type": "object",
+      "title": "MsgSetNFTClassAlwaysListedResponse defines the response for\nMsgSetNFTClassAlwaysListed"
+    },
+    "dysonprotocol.nameservice.v1.MsgSetNFTClassAnnualPct": {
+      "type": "object",
+      "properties": {
+        "owner": {
+          "type": "string",
+          "title": "owner is the address of the NFT class root name owner"
+        },
+        "class_id": {
+          "type": "string",
+          "title": "class_id is the identifier of the NFT class to update"
+        },
+        "annual_pct": {
+          "type": "string",
+          "title": "annual_pct is the annual percentage rate as a string (e.g. \"5.5\" for 5.5%)\nrepresenting the yearly rate for this NFT class"
+        }
+      },
+      "description": "MsgSetNFTClassAnnualPct sets the annual percentage rate for an NFT class.\nOnly the owner of the NFT class root name can update this setting."
+    },
+    "dysonprotocol.nameservice.v1.MsgSetNFTClassAnnualPctResponse": {
+      "type": "object",
+      "title": "MsgSetNFTClassAnnualPctResponse defines the response for\nMsgSetNFTClassAnnualPct"
+    },
     "dysonprotocol.nameservice.v1.MsgSetNFTClassExtraData": {
       "type": "object",
       "properties": {
@@ -1121,6 +1288,9 @@
           "type": "string"
         },
         "metadata": {
+          "type": "string"
+        },
+        "uri": {
           "type": "string"
         }
       }

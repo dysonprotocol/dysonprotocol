@@ -8,6 +8,20 @@ import { SignMode } from "cosmjs-types/cosmos/tx/signing/v1beta1/signing.js";
 
 const DISABLE_CHECK_LEADING_ZERO_AMOUNTS = false;
 
+const escapeHTML = str =>
+  str.replace(
+    /[&<>'"]/g,
+    tag =>
+      ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&#39;',
+        '"': '&quot;'
+      }[tag] || tag)
+  );
+
+
 /** Fetch chain info for address. */
 export async function getChainInfo({ apiUrl, address }) {
   const nodeInfoResp = await fetch(`${apiUrl}/cosmos/base/tendermint/v1beta1/node_info`);
@@ -345,6 +359,8 @@ async function submitTx({ apiUrl, txRawBytesBase64, msgTypes, mode }) {
  */
 function showTransactionModal(msgs, memo, fee, chainId, address) {
   return new Promise((resolve, reject) => {
+    //escape html
+
     // Create modal HTML
     const modalHtml = `
       <div id="txModal" style="
@@ -416,7 +432,7 @@ function showTransactionModal(msgs, memo, fee, chainId, address) {
               white-space: pre-wrap;
               font-family: 'Courier New', monospace;
               font-size: 12px;
-            ">${JSON.stringify(msgs, null, 2)}</pre>
+            "><code>${escapeHTML(JSON.stringify(msgs, null, 2))}</code></pre>
           </div>
           
           <div style="margin-bottom: 20px;">
@@ -432,7 +448,7 @@ function showTransactionModal(msgs, memo, fee, chainId, address) {
               white-space: pre-wrap;
               font-family: 'Courier New', monospace;
               font-size: 12px;
-            ">${JSON.stringify(fee || { amount: [], gas_limit: "200000" }, null, 2)}</pre>
+            "><code>${escapeHTML(JSON.stringify(fee || { amount: [], gas_limit: "200000" }, null, 2))}</code></pre>
           </div>
           
           <div style="margin-bottom: 15px;">
@@ -448,7 +464,7 @@ function showTransactionModal(msgs, memo, fee, chainId, address) {
               white-space: pre-wrap;
               font-family: 'Courier New', monospace;
               font-size: 12px;
-            ">${memo || ''}</pre>
+            ">${escapeHTML(memo || '')}</pre>
           </div>
           
           <div style="text-align: right;">

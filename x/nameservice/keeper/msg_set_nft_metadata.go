@@ -5,6 +5,7 @@ import (
 
 	cosmossdkerrors "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	nameservicev1 "dysonprotocol.com/x/nameservice/types"
 )
@@ -36,6 +37,31 @@ func (k Keeper) SetNFTMetadata(ctx context.Context, msg *nameservicev1.MsgSetNFT
 	k.Logger.Info("SetNFTMetadata: setting metadata", "class_id", msg.ClassId, "nft_id", msg.NftId, "nftData", nftData)
 	// Update the metadata field
 	nftData.Metadata = msg.Metadata
+
+	// Update the URI field if provided (not empty)
+	if msg.Uri != "" {
+		// Get the current NFT from the nft module to update its URI
+		nft, found := k.nftKeeper.GetNFT(ctx, msg.ClassId, msg.NftId)
+		if !found {
+			return nil, cosmossdkerrors.Wrapf(
+				sdkerrors.ErrNotFound,
+				"NFT not found in nft module: class %s, id %s",
+				msg.ClassId,
+				msg.NftId,
+			)
+		}
+
+		// Update the URI and save it back
+		nft.Uri = msg.Uri
+
+		// Get the owner of the NFT and update it
+		owner := k.nftKeeper.GetOwner(ctx, msg.ClassId, msg.NftId)
+		if err := k.nftKeeper.Update(ctx, nft); err != nil {
+			return nil, cosmossdkerrors.Wrapf(err, "failed to update NFT URI for class %s, id %s", msg.ClassId, msg.NftId)
+		}
+
+		k.Logger.Info("SetNFTMetadata: updated URI", "class_id", msg.ClassId, "nft_id", msg.NftId, "uri", msg.Uri, "owner", owner.String())
+	}
 
 	k.Logger.Info("SetNFTMetadata: Validate Basic")
 	// Validate the updated NFT data

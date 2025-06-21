@@ -141,7 +141,7 @@ func (k Keeper) GetNFTData(ctx context.Context, classId string, nftId string) (n
 
 	k.Logger.Info("GetNFTData: Found NFT", "class_id", classId, "nft_id", nftId, "has_data", nft.Data != nil)
 
-	var nftData nameservicev1.NFTData
+	nftData := nameservicev1.NFTData{}
 
 	// Instead of using GetCachedValue() or UnpackAny, directly unmarshal the Value bytes
 	k.Logger.Info("GetNFTData: Directly unmarshaling data", "class_id", classId, "nft_id", nftId)

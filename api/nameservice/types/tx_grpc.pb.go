@@ -19,26 +19,29 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Msg_Commit_FullMethodName               = "/dysonprotocol.nameservice.v1.Msg/Commit"
-	Msg_Reveal_FullMethodName               = "/dysonprotocol.nameservice.v1.Msg/Reveal"
-	Msg_SetValuation_FullMethodName         = "/dysonprotocol.nameservice.v1.Msg/SetValuation"
-	Msg_Renew_FullMethodName                = "/dysonprotocol.nameservice.v1.Msg/Renew"
-	Msg_PlaceBid_FullMethodName             = "/dysonprotocol.nameservice.v1.Msg/PlaceBid"
-	Msg_AcceptBid_FullMethodName            = "/dysonprotocol.nameservice.v1.Msg/AcceptBid"
-	Msg_RejectBid_FullMethodName            = "/dysonprotocol.nameservice.v1.Msg/RejectBid"
-	Msg_ClaimBid_FullMethodName             = "/dysonprotocol.nameservice.v1.Msg/ClaimBid"
-	Msg_SetDestination_FullMethodName       = "/dysonprotocol.nameservice.v1.Msg/SetDestination"
-	Msg_SetNFTMetadata_FullMethodName       = "/dysonprotocol.nameservice.v1.Msg/SetNFTMetadata"
-	Msg_SetNFTClassExtraData_FullMethodName = "/dysonprotocol.nameservice.v1.Msg/SetNFTClassExtraData"
-	Msg_UpdateParams_FullMethodName         = "/dysonprotocol.nameservice.v1.Msg/UpdateParams"
-	Msg_MintCoins_FullMethodName            = "/dysonprotocol.nameservice.v1.Msg/MintCoins"
-	Msg_BurnCoins_FullMethodName            = "/dysonprotocol.nameservice.v1.Msg/BurnCoins"
-	Msg_SetDenomMetadata_FullMethodName     = "/dysonprotocol.nameservice.v1.Msg/SetDenomMetadata"
-	Msg_SaveClass_FullMethodName            = "/dysonprotocol.nameservice.v1.Msg/SaveClass"
-	Msg_MintNFT_FullMethodName              = "/dysonprotocol.nameservice.v1.Msg/MintNFT"
-	Msg_BurnNFT_FullMethodName              = "/dysonprotocol.nameservice.v1.Msg/BurnNFT"
-	Msg_MoveCoins_FullMethodName            = "/dysonprotocol.nameservice.v1.Msg/MoveCoins"
-	Msg_MoveNft_FullMethodName              = "/dysonprotocol.nameservice.v1.Msg/MoveNft"
+	Msg_Commit_FullMethodName                  = "/dysonprotocol.nameservice.v1.Msg/Commit"
+	Msg_Reveal_FullMethodName                  = "/dysonprotocol.nameservice.v1.Msg/Reveal"
+	Msg_SetValuation_FullMethodName            = "/dysonprotocol.nameservice.v1.Msg/SetValuation"
+	Msg_Renew_FullMethodName                   = "/dysonprotocol.nameservice.v1.Msg/Renew"
+	Msg_PlaceBid_FullMethodName                = "/dysonprotocol.nameservice.v1.Msg/PlaceBid"
+	Msg_AcceptBid_FullMethodName               = "/dysonprotocol.nameservice.v1.Msg/AcceptBid"
+	Msg_RejectBid_FullMethodName               = "/dysonprotocol.nameservice.v1.Msg/RejectBid"
+	Msg_ClaimBid_FullMethodName                = "/dysonprotocol.nameservice.v1.Msg/ClaimBid"
+	Msg_SetDestination_FullMethodName          = "/dysonprotocol.nameservice.v1.Msg/SetDestination"
+	Msg_SetNFTMetadata_FullMethodName          = "/dysonprotocol.nameservice.v1.Msg/SetNFTMetadata"
+	Msg_SetNFTClassExtraData_FullMethodName    = "/dysonprotocol.nameservice.v1.Msg/SetNFTClassExtraData"
+	Msg_SetNFTClassAlwaysListed_FullMethodName = "/dysonprotocol.nameservice.v1.Msg/SetNFTClassAlwaysListed"
+	Msg_SetNFTClassAnnualPct_FullMethodName    = "/dysonprotocol.nameservice.v1.Msg/SetNFTClassAnnualPct"
+	Msg_SetListed_FullMethodName               = "/dysonprotocol.nameservice.v1.Msg/SetListed"
+	Msg_UpdateParams_FullMethodName            = "/dysonprotocol.nameservice.v1.Msg/UpdateParams"
+	Msg_MintCoins_FullMethodName               = "/dysonprotocol.nameservice.v1.Msg/MintCoins"
+	Msg_BurnCoins_FullMethodName               = "/dysonprotocol.nameservice.v1.Msg/BurnCoins"
+	Msg_SetDenomMetadata_FullMethodName        = "/dysonprotocol.nameservice.v1.Msg/SetDenomMetadata"
+	Msg_SaveClass_FullMethodName               = "/dysonprotocol.nameservice.v1.Msg/SaveClass"
+	Msg_MintNFT_FullMethodName                 = "/dysonprotocol.nameservice.v1.Msg/MintNFT"
+	Msg_BurnNFT_FullMethodName                 = "/dysonprotocol.nameservice.v1.Msg/BurnNFT"
+	Msg_MoveCoins_FullMethodName               = "/dysonprotocol.nameservice.v1.Msg/MoveCoins"
+	Msg_MoveNft_FullMethodName                 = "/dysonprotocol.nameservice.v1.Msg/MoveNft"
 )
 
 // MsgClient is the client API for Msg service.
@@ -58,6 +61,12 @@ type MsgClient interface {
 	SetDestination(ctx context.Context, in *MsgSetDestination, opts ...grpc.CallOption) (*MsgSetDestinationResponse, error)
 	SetNFTMetadata(ctx context.Context, in *MsgSetNFTMetadata, opts ...grpc.CallOption) (*MsgSetNFTMetadataResponse, error)
 	SetNFTClassExtraData(ctx context.Context, in *MsgSetNFTClassExtraData, opts ...grpc.CallOption) (*MsgSetNFTClassExtraDataResponse, error)
+	// SetNFTClassAlwaysListed sets the always_listed flag for an NFT class
+	SetNFTClassAlwaysListed(ctx context.Context, in *MsgSetNFTClassAlwaysListed, opts ...grpc.CallOption) (*MsgSetNFTClassAlwaysListedResponse, error)
+	// SetNFTClassAnnualPct sets the annual percentage rate for an NFT class
+	SetNFTClassAnnualPct(ctx context.Context, in *MsgSetNFTClassAnnualPct, opts ...grpc.CallOption) (*MsgSetNFTClassAnnualPctResponse, error)
+	// SetListed sets the listed status for a specific NFT
+	SetListed(ctx context.Context, in *MsgSetListed, opts ...grpc.CallOption) (*MsgSetListedResponse, error)
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	MintCoins(ctx context.Context, in *MsgMintCoins, opts ...grpc.CallOption) (*MsgMintCoinsResponse, error)
 	BurnCoins(ctx context.Context, in *MsgBurnCoins, opts ...grpc.CallOption) (*MsgBurnCoinsResponse, error)
@@ -187,6 +196,36 @@ func (c *msgClient) SetNFTClassExtraData(ctx context.Context, in *MsgSetNFTClass
 	return out, nil
 }
 
+func (c *msgClient) SetNFTClassAlwaysListed(ctx context.Context, in *MsgSetNFTClassAlwaysListed, opts ...grpc.CallOption) (*MsgSetNFTClassAlwaysListedResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MsgSetNFTClassAlwaysListedResponse)
+	err := c.cc.Invoke(ctx, Msg_SetNFTClassAlwaysListed_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) SetNFTClassAnnualPct(ctx context.Context, in *MsgSetNFTClassAnnualPct, opts ...grpc.CallOption) (*MsgSetNFTClassAnnualPctResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MsgSetNFTClassAnnualPctResponse)
+	err := c.cc.Invoke(ctx, Msg_SetNFTClassAnnualPct_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) SetListed(ctx context.Context, in *MsgSetListed, opts ...grpc.CallOption) (*MsgSetListedResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MsgSetListedResponse)
+	err := c.cc.Invoke(ctx, Msg_SetListed_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(MsgUpdateParamsResponse)
@@ -294,6 +333,12 @@ type MsgServer interface {
 	SetDestination(context.Context, *MsgSetDestination) (*MsgSetDestinationResponse, error)
 	SetNFTMetadata(context.Context, *MsgSetNFTMetadata) (*MsgSetNFTMetadataResponse, error)
 	SetNFTClassExtraData(context.Context, *MsgSetNFTClassExtraData) (*MsgSetNFTClassExtraDataResponse, error)
+	// SetNFTClassAlwaysListed sets the always_listed flag for an NFT class
+	SetNFTClassAlwaysListed(context.Context, *MsgSetNFTClassAlwaysListed) (*MsgSetNFTClassAlwaysListedResponse, error)
+	// SetNFTClassAnnualPct sets the annual percentage rate for an NFT class
+	SetNFTClassAnnualPct(context.Context, *MsgSetNFTClassAnnualPct) (*MsgSetNFTClassAnnualPctResponse, error)
+	// SetListed sets the listed status for a specific NFT
+	SetListed(context.Context, *MsgSetListed) (*MsgSetListedResponse, error)
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	MintCoins(context.Context, *MsgMintCoins) (*MsgMintCoinsResponse, error)
 	BurnCoins(context.Context, *MsgBurnCoins) (*MsgBurnCoinsResponse, error)
@@ -345,6 +390,15 @@ func (UnimplementedMsgServer) SetNFTMetadata(context.Context, *MsgSetNFTMetadata
 }
 func (UnimplementedMsgServer) SetNFTClassExtraData(context.Context, *MsgSetNFTClassExtraData) (*MsgSetNFTClassExtraDataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetNFTClassExtraData not implemented")
+}
+func (UnimplementedMsgServer) SetNFTClassAlwaysListed(context.Context, *MsgSetNFTClassAlwaysListed) (*MsgSetNFTClassAlwaysListedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetNFTClassAlwaysListed not implemented")
+}
+func (UnimplementedMsgServer) SetNFTClassAnnualPct(context.Context, *MsgSetNFTClassAnnualPct) (*MsgSetNFTClassAnnualPctResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetNFTClassAnnualPct not implemented")
+}
+func (UnimplementedMsgServer) SetListed(context.Context, *MsgSetListed) (*MsgSetListedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetListed not implemented")
 }
 func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
@@ -592,6 +646,60 @@ func _Msg_SetNFTClassExtraData_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_SetNFTClassAlwaysListed_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSetNFTClassAlwaysListed)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).SetNFTClassAlwaysListed(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_SetNFTClassAlwaysListed_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).SetNFTClassAlwaysListed(ctx, req.(*MsgSetNFTClassAlwaysListed))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_SetNFTClassAnnualPct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSetNFTClassAnnualPct)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).SetNFTClassAnnualPct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_SetNFTClassAnnualPct_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).SetNFTClassAnnualPct(ctx, req.(*MsgSetNFTClassAnnualPct))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_SetListed_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSetListed)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).SetListed(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_SetListed_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).SetListed(ctx, req.(*MsgSetListed))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgUpdateParams)
 	if err := dec(in); err != nil {
@@ -804,6 +912,18 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetNFTClassExtraData",
 			Handler:    _Msg_SetNFTClassExtraData_Handler,
+		},
+		{
+			MethodName: "SetNFTClassAlwaysListed",
+			Handler:    _Msg_SetNFTClassAlwaysListed_Handler,
+		},
+		{
+			MethodName: "SetNFTClassAnnualPct",
+			Handler:    _Msg_SetNFTClassAnnualPct_Handler,
+		},
+		{
+			MethodName: "SetListed",
+			Handler:    _Msg_SetListed_Handler,
 		},
 		{
 			MethodName: "UpdateParams",

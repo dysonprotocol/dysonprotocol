@@ -14,8 +14,9 @@ const (
 	SecondsInYear = 31536000
 )
 
-// Minimum valuation is 10 DYS
-const MinValuationAmount = 10
+// Minimum valuation amount is dynamically computed as 1 / annual_pct for the
+// NFT class. This ties the minimum valuation to the economic parameters of the
+// class instead of a hard-coded constant.
 
 // SetValuation implements the MsgServer.SetValuation method
 func (k Keeper) SetValuation(ctx context.Context, msg *nameservicev1.MsgSetValuation) (*nameservicev1.MsgSetValuationResponse, error) {
@@ -51,14 +52,55 @@ func (k Keeper) SetValuation(ctx context.Context, msg *nameservicev1.MsgSetValua
 		return nil, err
 	}
 
-	// Validate minimum valuation amount
-	if msg.Valuation.Amount.LT(math.NewInt(MinValuationAmount)) {
+	// -------------------------------------------------------------------
+	// Active Bid Check: Disallow valuation change if a bid exists
+	// -------------------------------------------------------------------
+	if nftData.CurrentBidder != "" {
 		return nil, cosmossdkerrors.Wrapf(sdkerrors.ErrInvalidRequest,
-			"valuation amount must be at least %d %s", MinValuationAmount, msg.Valuation.Denom)
+			"cannot set valuation while there is an active bid, use MsgRejectBid to reject the bid with a new valuation")
+	}
+
+	// -------------------------------------------------------------------
+	// Dynamic Minimum Valuation Check
+	// -------------------------------------------------------------------
+
+	// Fetch NFT class data to obtain annual_pct
+	classData, err := k.GetNFTClassData(ctx, msg.NftClassId)
+	if err != nil {
+		return nil, cosmossdkerrors.Wrap(err, "failed to get NFT class data for minimum valuation check")
+	}
+
+	if classData.AnnualPct == "" {
+		return nil, cosmossdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "NFT class has no annual_pct set; cannot compute minimum valuation")
+	}
+
+	// Convert annual_pct to decimal. Expecting a value like "0.05" for 5%.
+	pctDec, err := math.LegacyNewDecFromStr(classData.AnnualPct)
+	if err != nil {
+		return nil, cosmossdkerrors.Wrap(err, "invalid annual_pct in NFT class data")
+	}
+
+	if pctDec.IsZero() {
+		return nil, cosmossdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "annual_pct cannot be zero when computing minimum valuation")
+	}
+
+	// minVal = ceil(1 / annual_pct)
+	minValDec := math.LegacyOneDec().Quo(pctDec)
+	minValInt := minValDec.Ceil().TruncateInt()
+
+	if msg.Valuation.Amount.LT(minValInt) {
+		return nil, cosmossdkerrors.Wrapf(sdkerrors.ErrInvalidRequest,
+			"valuation amount must be at least %s %s (computed from 1/%s [annual_pct])",
+			minValInt.String(), msg.Valuation.Denom, classData.AnnualPct)
 	}
 
 	// Calculate the incremental valuation (only if increasing)
-	oldValuation := sdk.NewCoins(nftData.Valuation)
+	var oldValuation sdk.Coins
+	if nftData.Valuation.Amount.IsNil() || nftData.Valuation.Denom == "" {
+		oldValuation = sdk.NewCoins()
+	} else {
+		oldValuation = sdk.NewCoins(nftData.Valuation)
+	}
 	newValuation := sdk.NewCoins(msg.Valuation)
 
 	// Only charge fee if there's an incremental valuation increase
@@ -72,6 +114,10 @@ func (k Keeper) SetValuation(ctx context.Context, msg *nameservicev1.MsgSetValua
 
 		// Calculate time proportion - using LegacyDec for decimal precision
 		remainingSeconds := expiryTime.Unix() - currentTime.Unix()
+		if remainingSeconds <= 0 {
+			k.Logger.Info("SetValuation: Valuation already expired, skipping fee calculation")
+			remainingSeconds = 0
+		}
 		portionRemaining := math.LegacyNewDecFromInt(math.NewInt(remainingSeconds)).
 			Quo(math.LegacyNewDecFromInt(math.NewInt(SecondsInYear)))
 

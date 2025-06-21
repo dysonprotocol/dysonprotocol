@@ -35,26 +35,27 @@ document.addEventListener("alpine:init", () => {
       this.loadScriptInfo();
     },
     
-    // Get the current script address from the domain
-    getScriptAddress() {
-      // Extract script address from subdomain (e.g., dys1prvefcdgdnh2cpas6rnnval84n0gv2r28tklr4.localhost:1317)
-      const hostname = window.location.hostname;
-      const parts = hostname.split('.');
-      return parts[0]; // First part should be the script address
-    },
-    
-    async loadScriptInfo() {
+        async loadScriptInfo() {
       try {
-        this.scriptAddress = this.getScriptAddress();
-              const apiUrl = window.location.origin;
-      const queryUrl = `${apiUrl}/dysonprotocol/script/v1/script_info/${this.scriptAddress}`;
-      
-      const resp = await fetch(queryUrl);
-      if (!resp.ok) {
-        throw new Error(`Failed to fetch script info: ${resp.status}`);
-      }
-      
-      const data = await resp.json();
+        // Read script address from embedded JSON
+        const scriptDataElement = document.getElementById('script-data');
+        if (!scriptDataElement) {
+          throw new Error('Script data not found in page');
+        }
+        
+        const scriptData = JSON.parse(scriptDataElement.textContent);
+        this.scriptAddress = scriptData.script_address;
+        
+        // Query for script info using API
+        const apiUrl = window.location.origin;
+        const queryUrl = `${apiUrl}/dysonprotocol/script/v1/script_info/${this.scriptAddress}`;
+        
+        const resp = await fetch(queryUrl);
+        if (!resp.ok) {
+          throw new Error(`Failed to fetch script info: ${resp.status}`);
+        }
+        
+        const data = await resp.json();
         
         if (data?.script) {
           this.scriptInfo = data.script;
@@ -71,6 +72,7 @@ document.addEventListener("alpine:init", () => {
         } else {
           console.log("No script data found");
         }
+        
       } catch (error) {
         console.error("Error loading script info:", error);
         this.scriptInfo = { error: error.message };

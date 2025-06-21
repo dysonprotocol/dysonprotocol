@@ -28,6 +28,13 @@ func (k Keeper) PlaceBid(ctx context.Context, msg *nameservicev1.MsgPlaceBid) (*
 		return nil, cosmossdkerrors.Wrapf(err, "failed to get NFT data for class %s, ID %s", msg.NftClassId, msg.NftId)
 	}
 
+	// Ensure the NFT is currently listed for sale either directly or via the class-level always_listed flag
+	classData, _ := k.GetNFTClassData(ctx, msg.NftClassId) // ignore error; if not found treated as zero value
+	if !(nftData.Listed || classData.AlwaysListed) {
+		k.Logger.Error("PlaceBid: NFT not listed for sale", "nft_class_id", msg.NftClassId, "nft_id", msg.NftId)
+		return nil, cosmossdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "NFT is not listed for sale")
+	}
+
 	// Get the current owner of the NFT
 	nftOwnerAddr := k.nftKeeper.GetOwner(ctx, msg.NftClassId, msg.NftId)
 
@@ -38,6 +45,16 @@ func (k Keeper) PlaceBid(ctx context.Context, msg *nameservicev1.MsgPlaceBid) (*
 			"nft_class_id", msg.NftClassId, "nft_id", msg.NftId,
 			"nft_owner", nftOwnerAddr.String())
 		return nil, cosmossdkerrors.Wrap(sdkerrors.ErrUnauthorized, "cannot place bid on NFT owned by the authority")
+	}
+
+	// Disallow bids on NFTs owned by module accounts
+	if ownerAcc := k.accountKeeper.GetAccount(sdkCtx, nftOwnerAddr); ownerAcc != nil {
+		if _, ok := ownerAcc.(sdk.ModuleAccountI); ok {
+			k.Logger.Error("PlaceBid: Cannot place bid on NFT owned by module account",
+				"nft_class_id", msg.NftClassId, "nft_id", msg.NftId,
+				"nft_owner", nftOwnerAddr.String())
+			return nil, cosmossdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "cannot place bid on NFT owned by a module account")
+		}
 	}
 
 	// Get module parameters
@@ -150,7 +167,7 @@ func (k Keeper) PlaceBid(ctx context.Context, msg *nameservicev1.MsgPlaceBid) (*
 			k.Logger.Error("PlaceBid: First bid amount must be >= valuation",
 				"bid_amount", msg.BidAmount, "valuation", nftData.Valuation)
 			return nil, cosmossdkerrors.Wrap(sdkerrors.ErrInvalidRequest,
-				"first bid amount must be greater than or equal to name valuation")
+				fmt.Sprintf("first bid amount must be greater than or equal to current valuation: %s", nftData.Valuation.String()))
 		}
 		k.Logger.Info("PlaceBid: First bid meets or exceeds valuation",
 			"bid_amount", msg.BidAmount, "valuation", nftData.Valuation)

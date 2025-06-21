@@ -1,0 +1,198 @@
+<h1 class="text-2xl font-bold mb-6">NFTs</h1>
+
+<section x-data="nftsComponent()" class="space-y-6">
+  <script type="application/json" class="nfts-config">
+    {"classId": "{{ class_id }}", "ownerAddress": "{{ owner_address }}"}
+  </script>
+
+  <!-- Class Details -->
+  <template x-if="classMeta">
+    <div class="card bg-base-100 shadow-lg mb-6 p-4">
+      <h2 class="text-xl font-semibold mb-2" x-text="classMeta.id"></h2>
+      <p class="opacity-70 mb-2" x-text="classMeta.description"></p>
+      <div class="flex gap-2 items-center">
+        <span class="badge" :class="classAlwaysListed ? 'badge-success' : 'badge-neutral'" x-text="classAlwaysListed ? 'Always Listed' : 'Not Always Listed'"></span>
+      </div>
+    </div>
+  </template>
+
+  <!-- Loading -->
+  <template x-if="loading">
+    <div class="flex justify-center my-10">
+      <span class="loading loading-spinner loading-lg"></span>
+    </div>
+  </template>
+
+  <!-- Error -->
+  <template x-if="error">
+    <div class="alert alert-error shadow-lg" x-text="error"></div>
+  </template>
+
+  <!-- NFT Cards -->
+  <template x-for="n in nfts" :key="n.uniqueKey">
+    <div class="card bg-base-200 shadow-lg" :id="n.uniqueKey">
+      <div class="card-body space-y-4">
+        <div class="flex justify-between items-start">
+          <div class="flex flex-col">
+            <h2 class="card-title" x-text="n.id"></h2>
+            <span class="badge badge-outline text-xs mt-1" x-text="n.owner ? `Owner: ${n.owner}` : 'Unowned'"></span>
+            <template x-if="n.listed">
+                <div class="text-xs opacity-70 mt-1">Listed</div>
+            </template>
+            <template x-if="!n.listed">
+                <div class="text-xs opacity-70 mt-1">Not Listed</div>
+            </template>
+            <template x-if="n.valuationAmount">
+              <div class="text-xs opacity-70 mt-1">Valuation: <span x-text="`${n.valuationAmount} ${n.valuationDenom}`"></span></div>
+            </template>
+            <template x-if="n.hasActiveBid">
+              <div class="text-xs opacity-70">Current Bid: <span x-text="`${n.currentBidAmount} ${n.currentBidDenom}`"></span></div>
+            </template>
+            <template x-if="n.hasActiveBid && n.currentBidder">
+              <div class="text-xs opacity-70">Current Bidder: <code x-text="n.currentBidder"></code></div>
+            </template>
+            <template x-if="n.valuationExpiry">
+              <div class="text-xs opacity-70">Valuation Expiry: <span x-text="n.valuationExpiry"></span></div>
+            </template>
+            <template x-if="n.bidTimestamp">
+              <div class="text-xs opacity-70">Bid Time: <span x-text="n.bidTimestamp"></span></div>
+            </template>
+            <template x-if="n.metadata">
+              <div class="text-xs opacity-70 mt-1">Metadata: <span x-text="n.metadata"></span></div>
+            </template>
+            <template x-if="n.uri">
+              <div class="text-xs opacity-70 mt-1">URI: <a :href="n.uri" target="_blank" class="link link-primary" x-text="n.uri"></a></div>
+            </template>
+            <template x-if="n.uriHash">
+              <div class="text-xs opacity-70 mt-1">URI Hash: <span x-text="n.uriHash"></span></div>
+            </template>
+          </div>
+          <div class="badge badge-neutral self-start" x-show="n.listed">Listed</div>
+        </div>
+
+        <!-- Bid Form -->
+        <template x-if="canBid(n)">
+          <fieldset class="fieldset bg-base-100 border border-base-300 rounded-lg p-4">
+            <legend class="fieldset-legend">Place Bid</legend>
+            <form class="flex flex-col md:flex-row gap-4 items-end" @submit.prevent="placeBid(n)">
+              <div class="flex-1">
+                <label class="label">
+                  <span class="label-text">Bid Amount (dys)</span>
+                </label>
+                <input type="number" min="1" class="input input-bordered w-full" x-model="n.newBid" :disabled="n.bidding">
+              </div>
+              <button type="submit" class="btn btn-primary md:w-auto w-full" :disabled="n.bidding || !n.newBid || !canBid(n)">
+              <span x-show="!n.bidding">Submit Bid</span>
+              <span x-show="n.bidding" class="loading loading-spinner loading-sm"></span>
+            </button>
+          </form>
+          <div class="mt-2 text-error text-sm" x-text="n.bidError"></div>
+          <div class="mt-2" x-show="n.bidTxHash" class="alert alert-success shadow-lg text-sm">
+            Bid submitted! Tx: <code class="text-xs" x-text="n.bidTxHash"></code>
+          </div>
+        </fieldset>
+        </template>
+
+
+        <!-- Owner Actions -->
+        <template x-if="isOwner(n)">
+          <fieldset class="fieldset bg-base-100 border border-base-300 rounded-lg p-4 space-y-4">
+            <legend class="fieldset-legend">NFT Owner Admin</legend>
+
+            <div class="space-y-4">
+
+
+              <!-- Listing Status (only when class not always listed) -->
+              <template x-if="!classAlwaysListed">
+                <fieldset class="fieldset bg-base-100 border border-base-300 rounded-lg p-4 ">
+                  <legend class="fieldset-legend">Listing Status</legend>
+                  <form class="flex items-center gap-4" @submit.prevent="toggleListed(n)">
+                    <label class="label cursor-pointer">
+                      <span class="label-text">Listed for Sale</span>
+                      <input type="checkbox" class="checkbox checkbox-primary ml-2" x-model="n.listed">
+                    </label>
+                    <button class="btn btn-primary btn-sm" :disabled="n.togglingListed">
+                      <span x-show="!n.togglingListed">Save</span>
+                      <span x-show="n.togglingListed" class="loading loading-spinner loading-xs"></span>
+                    </button>
+                    <div class="text-xs opacity-70">
+                      Note: If the parent <code>NFTClass.always_listed = true</code>, the NFT will be discoverable regardless of this flag. 
+                      Changing the listing status will not affect any existing bids and will only affect new bids.
+                    </div>
+                  </form>
+                </fieldset>
+              </template>
+
+              <!-- Accept Bid -->
+              <template x-if="n.hasActiveBid">
+                <fieldset class="fieldset bg-base-100 border border-base-300 rounded-lg p-4 space-y-4">
+                  <legend class="fieldset-legend">Accept Bid</legend>
+                  <!-- Current Bid Info -->
+                  <div class="text-sm">
+                    Current bid: <span class="font-semibold" x-text="`${n.currentBidAmount} ${n.currentBidDenom}`"></span>
+                    by <code x-text="n.currentBidder"></code>
+                  </div>
+
+                  <button class="btn btn-success btn-sm" @click="acceptBid(n)" :disabled="n.processingBid">
+                    Accept Bid
+                  </button>
+                  <span class="loading loading-spinner loading-xs" x-show="n.processingBid"></span>
+                </fieldset>
+              </template>
+
+              <!-- Reject Bid & Set New Valuation -->
+              <template x-if="n.hasActiveBid">
+                <fieldset class="fieldset bg-base-100 border border-base-300 rounded-lg p-4 space-y-4">
+                  <legend class="fieldset-legend">Reject Bid & Set New Valuation</legend>
+                  <div>
+                    <label class="label">
+                      <span class="label-text">New Valuation (dys)</span>
+                    </label>
+                    <input type="number" min="1" class="input input-bordered w-full" x-model="n.newValuation" :disabled="n.processingBid">
+                  </div>
+                  <button class="btn btn-error btn-sm" @click="rejectBid(n)" :disabled="n.processingBid">
+                    Reject & Set New Valuation
+                  </button>
+                  <span class="loading loading-spinner loading-xs" x-show="n.processingBid"></span>
+                </fieldset>
+              </template>
+
+              <!-- Set NFT Value (without bid) -->
+              <template x-if="!n.hasActiveBid">
+                <fieldset class="fieldset bg-base-100 border border-base-300 rounded-lg p-4 space-y-4">
+                  <legend class="fieldset-legend">Set NFT Value</legend>
+                  <div>
+                    <label class="label">
+                      <span class="label-text">Valuation (dys)</span>
+                    </label>
+                    <input type="number" min="1" class="input input-bordered w-full" x-model="n.newValuationSet" :disabled="n.settingValuation">
+                  </div>
+                  <button class="btn btn-primary btn-sm" @click="setValuation(n)" :disabled="n.settingValuation">
+                    <span x-show="!n.settingValuation">Save Valuation</span>
+                    <span x-show="n.settingValuation" class="loading loading-spinner loading-xs"></span>
+                  </button>
+                  <div class="mt-2 text-error text-sm" x-text="n.setValError"></div>
+                  <div class="mt-2" x-show="n.setValTxHash" class="alert alert-success shadow-lg text-sm">
+                    Valuation set! Tx: <code class="text-xs" x-text="n.setValTxHash"></code>
+                  </div>
+                </fieldset>
+              </template>
+
+              <!-- Action feedback -->
+              <div class="mt-2 text-error text-sm" x-text="n.ownerActionError"></div>
+              <div class="mt-2" x-show="n.ownerActionTxHash" class="alert alert-success shadow-lg text-sm">
+                Action success! Tx: <code class="text-xs" x-text="n.ownerActionTxHash"></code>
+              </div>
+
+            </div>
+          </fieldset>
+        </template>
+      </div>
+    </div>
+  </template>
+
+  <!-- Empty -->
+  <template x-if="!loading && nfts.length === 0 && !error">
+    <div class="text-center opacity-70">No NFTs found.</div>
+  </template>
+</section> 

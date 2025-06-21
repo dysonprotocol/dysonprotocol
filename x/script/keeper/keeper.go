@@ -605,24 +605,20 @@ func (k Keeper) RunWeb(ctx context.Context, address string, httpreq string) (str
 		return "", err
 	}
 
-	fmt.Println("Starting RPC server")
 	port, srv, err := k.NewRPCServer(cacheCtx, script.Address, k.App)
 
 	if err != nil {
 		return "", err
 	}
 	defer func() {
-		fmt.Println(fmt.Sprintf("Elapsed time %s", time.Since(now)))
+		k.Logger(sdkCtx).Info("Elapsed time", "time", time.Since(now))
 		k.currentDepth -= 1
 
 		if err := srv.Shutdown(context.Background()); err != nil {
-			fmt.Printf("shutdown error")
+			k.Logger(sdkCtx).Error("shutdown error", "error", err)
 			panic(err) // failure/timeout shutting down the server gracefully
 		}
-		fmt.Println("server stopped")
 	}()
-
-	fmt.Println("Started RPC server on port", port)
 
 	out, err := dysvm.Wsgi(port, string(scriptJSON), string(headerInfoJSON), httpreq)
 

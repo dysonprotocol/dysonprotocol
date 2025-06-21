@@ -248,7 +248,7 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				{
 					RpcMethod: "MoveNft",
 					Use:       "move-nft",
-					Short:     "Move an NFT between two accounts (requires signer to own the NFT class)",
+					Short:     "Force move an NFT between two accounts (requires signer to own the NFT class)",
 					FlagOptions: map[string]*autocliv1.FlagOptions{
 						"class_id": {
 							Name:         "class-id",
@@ -258,11 +258,6 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 						"nft_id": {
 							Name:         "nft-id",
 							Usage:        "The NFT ID",
-							DefaultValue: "",
-						},
-						"from_address": {
-							Name:         "from-address",
-							Usage:        "Current holder address (Bech32)",
 							DefaultValue: "",
 						},
 						"to_address": {
@@ -308,6 +303,62 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 							Name:         "extra-data",
 							Usage:        "The extra data JSON string",
 							DefaultValue: "",
+						},
+					},
+				},
+				{
+					RpcMethod: "SetNFTClassAlwaysListed",
+					Use:       "set-nft-class-always-listed --class-id=<class-id> --always-listed=<always-listed>",
+					Short:     "Set the always_listed flag for an NFT class",
+					FlagOptions: map[string]*autocliv1.FlagOptions{
+						"class_id": {
+							Name:         "class-id",
+							Usage:        "The class ID",
+							DefaultValue: "",
+						},
+						"always_listed": {
+							Name:         "always-listed",
+							Usage:        "Whether NFTs in this class should always be listed for sale",
+							DefaultValue: "false",
+						},
+					},
+				},
+				{
+					RpcMethod: "SetNFTClassAnnualPct",
+					Use:       "set-nft-class-annual-pct --class-id=<class-id> --annual-pct=<annual-pct>",
+					Short:     "Set the annual percentage rate for an NFT class",
+					FlagOptions: map[string]*autocliv1.FlagOptions{
+						"class_id": {
+							Name:         "class-id",
+							Usage:        "The class ID",
+							DefaultValue: "",
+						},
+						"annual_pct": {
+							Name:         "annual-pct",
+							Usage:        "The annual percentage rate (0.0 to 100.0)",
+							DefaultValue: "",
+						},
+					},
+				},
+				{
+					RpcMethod: "SetListed",
+					Use:       "set-listed --nft-class-id=<class-id> --nft-id=<nft-id> --listed=<listed>",
+					Short:     "Set the listed status for a specific NFT",
+					FlagOptions: map[string]*autocliv1.FlagOptions{
+						"nft_class_id": {
+							Name:         "nft-class-id",
+							Usage:        "The class ID of the NFT",
+							DefaultValue: "",
+						},
+						"nft_id": {
+							Name:         "nft-id",
+							Usage:        "The ID of the NFT",
+							DefaultValue: "",
+						},
+						"listed": {
+							Name:         "listed",
+							Usage:        "Whether the NFT should be listed for sale (true/false)",
+							DefaultValue: "false",
 						},
 					},
 				},
